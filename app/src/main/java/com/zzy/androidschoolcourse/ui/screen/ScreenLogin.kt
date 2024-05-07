@@ -1,5 +1,6 @@
 package com.zzy.androidschoolcourse.ui.screen
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -10,10 +11,13 @@ class ScreenLogin: Screen{
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.current
-
+    Column {
         Text(text = "This is Login Screen")
         Button(onClick = { navigator?.push(ScreenTest()) }) {
             Text(text = "next screen")
         }
+
+    }
     }
 }
+
