@@ -11,12 +11,12 @@ class ScreenLogin: Screen{
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.current
-    Column {
-        Text(text = "This is Login Screen")
-        Button(onClick = { navigator?.push(ScreenTest()) }) {
-            Text(text = "next screen")
+        Column {
+            Text(text = "This is Login Screen")
+            Button(onClick = { navigator?.push(ScreenTest()) }) {
+                Text(text = "next screen")
+            }
         }
-    }
     }
 }
 
