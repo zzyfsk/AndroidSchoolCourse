@@ -16,7 +16,6 @@ class ScreenLogin: Screen{
         Button(onClick = { navigator?.push(ScreenTest()) }) {
             Text(text = "next screen")
         }
-
     }
     }
 }
