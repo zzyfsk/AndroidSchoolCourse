@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.core.screen.Screen
 import com.zzy.androidschoolcourse.R
 
@@ -24,7 +25,6 @@ class ScreenTest:Screen {
             }
         }
     }
-
     @Composable
     fun ButtonYunSuan(id:Int,onClick:Boolean){
         Button(onClick = { /*TODO*/ }) {
@@ -32,3 +32,5 @@ class ScreenTest:Screen {
         }
     }
 }
+
+
