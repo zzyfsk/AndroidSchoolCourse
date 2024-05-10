@@ -76,11 +76,13 @@ class ScreenTest : Screen {
     ) {
         Box(
             modifier = modifier
-                .background(color = if (clicked) Color(0xFFEF8683) else Color.White)
+                .background(
+                    color = if (clicked) Color(0xFFEF8683) else Color.White,
+                    shape = RoundedCornerShape(1000.dp)
+                )
                 .clickable {
                     onClick(buttonId)
                 }
-                .clip(RoundedCornerShape(100.dp))
         ) {
             Icon(
                 painter = painterResource(id = imageId),
@@ -89,5 +91,6 @@ class ScreenTest : Screen {
                 else Color.White
             )
         }
+
     }
 }
