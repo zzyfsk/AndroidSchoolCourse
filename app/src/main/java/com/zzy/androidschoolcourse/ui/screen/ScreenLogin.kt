@@ -22,9 +22,6 @@ class ScreenLogin: Screen{
                 Button(onClick = { navigator?.push(ScreenTest()) }) {
                     Text(text = "next screen")
                 }
-                Button(onClick = { navigator?.push(zlhScreen()) }) {
-                    Text(text = "zlh's screen")
-                }
             }
 
         }
