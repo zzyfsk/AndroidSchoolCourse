@@ -30,13 +30,4 @@ class ScreenLogin: Screen{
         }
     }
 }
-@Composable
-fun CalculationButton(text: String, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .padding(16.dp)
-    ) {
-        Text(text = text)
-    }
-}
+
