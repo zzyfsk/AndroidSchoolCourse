@@ -1,29 +1,30 @@
 package com.zzy.androidschoolcourse.ui.screen
 
+
+
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import com.zzy.androidschoolcourse.R
 
-class ScreenZlh:Screen {
+import com.zzy.androidschoolcourse.ui.screen.DrawCircleWithImage
+import com.zzy.androidschoolcourse.ui.screen.CircularImageButton
+class ScreenZlh : Screen {
 
     @Composable
     override fun Content() {
@@ -34,13 +35,13 @@ class ScreenZlh:Screen {
                     .fillMaxHeight(0.7f)
             ) {
                 Column {
-                    SquareButton(num = "6")
-                    SquareButton(num = "7")
+                    CircularImageButton(imagePainter = painterResource(id = ResourceConstants.ADD_IMAGE_ID))
+                    CircularImageButton(imagePainter = painterResource(id = ResourceConstants.DEL_IMAGE_ID))
 
                 }
                 Column {
-                    SquareButton(num = "8")
-                    SquareButton(num = "9")
+                    CircularImageButton(imagePainter = painterResource(id = ResourceConstants.MINUS_IMAGE_ID))
+                    CircularImageButton(imagePainter = painterResource(id = ResourceConstants.DIVIDE_IMAGE_ID))
                 }
             }
             Row(
@@ -48,41 +49,8 @@ class ScreenZlh:Screen {
                     .fillMaxWidth()
                     .fillMaxHeight(0.3f)
             ) {
-                SquareButton()
+                CircularImageButton(imagePainter = painterResource(id = ResourceConstants.MINUS_IMAGE_ID))
             }
         }
     }
-
-    @Composable
-    fun SquareButton(
-        modifier: Modifier = Modifier,
-        onClick: () -> Unit = {},
-        imageId:Int = Companion.ADD_IMAGE_ID,
-        buttonSize: Dp = 64.dp,
-        buttonColor: Color = Color.Blue,
-        textColor: Color = Color.White
-    ) {
-        Button(
-            onClick = onClick,
-            modifier = modifier
-                .size(buttonSize)
-                .background(color = buttonColor, shape = RoundedCornerShape(8.dp)),
-            colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
-            contentPadding = PaddingValues(8.dp)
-        ) {
-            androidx.compose.material.Text(
-                text = buttonText,
-                color = textColor,
-                fontSize = 18.sp
-            )
-        }
-    }
-
-    companion object {
-        val ADD_IMAGE_ID = R.drawable.add
-        val DEL_IMAGE_ID = R.drawable.del
-        val MINUS_IMAGE_ID = R.drawable.mul
-        val DIVIDE_IMAGE_ID = R.drawable.div
-    }
 }
-
