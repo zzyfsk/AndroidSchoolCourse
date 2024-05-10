@@ -16,17 +16,18 @@ import com.zzy.androidschoolcourse.R
 class ScreenTest:Screen {
     @Composable
     override fun Content() {
-        Column (modifier = Modifier.fillMaxSize()){
+        val modifier = Modifier
+        Column (modifier = modifier.fillMaxSize()){
             Text("This is Test Screen")
-            Row (modifier = Modifier.weight(1f)){
-                ButtonYunSuan(id = R.drawable.add, onClick = false)
-                ButtonYunSuan(id = R.drawable.minus, onClick = false)
-                ButtonYunSuan(id = R.drawable.multiply, onClick = false)
+            Row (modifier = modifier.weight(1f)){
+                ButtonYunSuan(modifier,id = R.drawable.add, onClick = false)
+                ButtonYunSuan(modifier,id = R.drawable.minus, onClick = false)
+                ButtonYunSuan(modifier,id = R.drawable.multiply, onClick = false)
             }
         }
     }
     @Composable
-    fun ButtonYunSuan(id:Int,onClick:Boolean){
+    fun ButtonYunSuan(modifier:Modifier = Modifier,id:Int,onClick:Boolean){
         Button(onClick = { /*TODO*/ }) {
             Image(painter = painterResource(id = id), contentDescription = "")
         }
