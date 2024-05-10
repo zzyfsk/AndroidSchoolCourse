@@ -29,39 +29,45 @@ class ScreenTest : Screen {
         val modifier = Modifier
         Column(modifier = Modifier.fillMaxSize()) {
             Text("This is Test Screen")
+
             Row {
-                ButtonMath(
-                    modifier = modifier.weight(1f),
-                    imageId = R.drawable.add,
-                    buttonId = 1,
-                    clicked = clickedButton.intValue == 1,
-                    onClick = {
-                        clickedButton.intValue = it
-                    })
-                ButtonMath(
-                    modifier = modifier.weight(1f),
-                    imageId = R.drawable.del,
-                    buttonId = 2,
-                    clicked = clickedButton.intValue == 2,
-                    onClick = {
-                        clickedButton.intValue = it
-                    })
-                ButtonMath(
-                    modifier = modifier.weight(1f),
-                    imageId = R.drawable.mul,
-                    buttonId = 3,
-                    clicked = clickedButton.intValue == 3,
-                    onClick = {
-                        clickedButton.intValue = it
-                    })
-                ButtonMath(
-                    modifier = modifier.weight(1f),
-                    imageId = R.drawable.div,
-                    buttonId = 4,
-                    clicked = clickedButton.intValue == 4,
-                    onClick = {
-                        clickedButton.intValue = it
-                    })
+                Column {
+                    ButtonMath(
+                        modifier = modifier.weight(1f),
+                        imageId = R.drawable.add,
+                        buttonId = 1,
+                        clicked = clickedButton.intValue == 1,
+                        onClick = {
+                            clickedButton.intValue = it
+                        })
+                    ButtonMath(
+                        modifier = modifier.weight(1f),
+                        imageId = R.drawable.del,
+                        buttonId = 2,
+                        clicked = clickedButton.intValue == 2,
+                        onClick = {
+                            clickedButton.intValue = it
+                        })
+                }
+
+                Column {
+                    ButtonMath(
+                        modifier = modifier.weight(1f),
+                        imageId = R.drawable.mul,
+                        buttonId = 3,
+                        clicked = clickedButton.intValue == 3,
+                        onClick = {
+                            clickedButton.intValue = it
+                        })
+                    ButtonMath(
+                        modifier = modifier.weight(1f),
+                        imageId = R.drawable.div,
+                        buttonId = 4,
+                        clicked = clickedButton.intValue == 4,
+                        onClick = {
+                            clickedButton.intValue = it
+                        })
+                }
             }
         }
     }
