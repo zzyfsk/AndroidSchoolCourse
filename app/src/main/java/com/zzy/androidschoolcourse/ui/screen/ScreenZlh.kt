@@ -16,18 +16,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.zzy.androidschoolcourse.R
+
 class ScreenZlh : Screen {
 
     @Composable
     override fun Content() {
+        val fontfamily = FontFamily(
+            Font(R.font.poetsenone_regular, FontWeight.Normal)
+        )
         Column(
             modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+                .fillMaxSize()
+                .padding(16.dp)
 
         ) {
+            Text(text = "1234",)
             Column(
                 modifier = Modifier
                     .weight(2f)
@@ -62,8 +71,8 @@ class ScreenZlh : Screen {
             }
             Row(
                 modifier = Modifier
-                .weight(1f)
-                .fillMaxSize(),
+                    .weight(1f)
+                    .fillMaxSize(),
                 horizontalArrangement = Arrangement.Center
             ) {
                 CircularImageButton(size = 70.dp,imageId = ResourceConstants.ADD_IMAGE_ID)
