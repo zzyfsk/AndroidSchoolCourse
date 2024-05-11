@@ -60,12 +60,15 @@ class ScreenZlh : Screen {
                 CircularImageButton(size = 100.dp,imageId = ResourceConstants.MINUS_IMAGE_ID)
                 CircularImageButton(size = 100.dp,imageId = ResourceConstants.DIVIDE_IMAGE_ID)
             }
-            Row(modifier = Modifier
+            Row(
+                modifier = Modifier
                 .weight(1f)
-                .fillMaxSize()) {
-                CircularImageButton(imageId = ResourceConstants.ADD_IMAGE_ID)
-                CircularImageButton(imageId = ResourceConstants.ADD_IMAGE_ID)
-                CircularImageButton(imageId = ResourceConstants.ADD_IMAGE_ID)
+                .fillMaxSize(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                CircularImageButton(size = 70.dp,imageId = ResourceConstants.ADD_IMAGE_ID)
+                CircularImageButton(size = 70.dp,imageId = ResourceConstants.ADD_IMAGE_ID)
+                CircularImageButton(size = 70.dp,imageId = ResourceConstants.ADD_IMAGE_ID)
             }
         }
     }
