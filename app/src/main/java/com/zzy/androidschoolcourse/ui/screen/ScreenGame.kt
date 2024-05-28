@@ -1,11 +1,13 @@
 package com.zzy.androidschoolcourse.ui.screen
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import android.graphics.PointF
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -16,11 +18,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.zzy.androidschoolcourse.R
+import com.zzy.androidschoolcourse.ui.compoment.PieData
+import com.zzy.androidschoolcourse.ui.theme.NumberPressed
+import com.zzy.androidschoolcourse.ui.theme.NumberUnpressed
+import com.zzy.appBase.component.graph.LineChart
 
-class ScreenTest : Screen {
+class ScreenGame : Screen {
     @Composable
     override fun Content() {
         val clickedButton = remember {
@@ -29,6 +37,7 @@ class ScreenTest : Screen {
         val modifier = Modifier
         Column(modifier = Modifier.fillMaxSize()) {
             Text("This is Test Screen")
+            ButtonsNumber()
 
             Row {
                 ButtonMath(
@@ -64,6 +73,37 @@ class ScreenTest : Screen {
                         clickedButton.intValue = it
                     })
             }
+            val times = listOf("a", "b", "c", "d")
+            val color = listOf(Color.Black, Color.Black, Color.Black, Color.Black)
+            val data1 = listOf(
+                PointF(1f, 10f),
+                PointF(2f, 20f),
+                PointF(3f, 15f),
+                PointF(4f, 20f)
+            ) // 第一个数据集合
+            LineChart(times, color, data1, legends = listOf("aa"), chartTitle = "test")
+            val list = listOf(
+                PieData(name = "1", amount = 1f, groupName = "name"),
+                PieData(name = "2", amount = 2f, groupName = "name"),
+                PieData(name = "3", amount = 50f, groupName = "name"),
+                PieData(name = "4", amount = 30f, groupName = "name")
+            )
+            val listNew = listOf(list)
+            com.zzy.androidschoolcourse.ui.compoment.LineChart(payload = listNew, modifier = Modifier.fillMaxSize())
+        }
+    }
+
+    @Composable
+    fun ButtonsNumber() {
+        Column(Modifier.fillMaxWidth()) {
+            Row {
+                ButtonNumber(number = 1, clicked = true)
+                ButtonNumber(number = 4, clicked = false)
+            }
+            Row {
+                ButtonNumber(number = 12, clicked = false)
+                ButtonNumber(number = 7, clicked = false)
+            }
         }
     }
 
@@ -75,16 +115,40 @@ class ScreenTest : Screen {
         buttonId: Int = -1,
         onClick: (Int) -> Unit = {}
     ) {
-        Surface(modifier = modifier,
+        Surface(
+            modifier = modifier,
             onClick = { onClick(buttonId) },
             shape = RoundedCornerShape(100),
-            color = if (clicked) Color(0xFFEF8683) else Color.White) {
+            color = if (clicked) Color(0xFFEF8683) else Color.White
+        ) {
             Icon(
                 painter = painterResource(id = imageId),
                 contentDescription = "",
                 tint = if (!clicked) Color(0xFFEF8683)
                 else Color.White
             )
+        }
+    }
+
+    @Composable
+    fun ButtonNumber(
+        modifier: Modifier = Modifier,
+        number: Int,
+        clicked: Boolean,
+        buttonId: Int = -1,
+        onClick: () -> Unit = {},
+    ) {
+        Surface(
+            modifier = modifier
+                .size(100.dp, 100.dp)
+                .padding(10.dp),
+            onClick = { onClick() },
+            color = if (clicked) NumberPressed else NumberUnpressed,
+            shape = RoundedCornerShape(10.dp),
+        ) {
+            Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
+                Text(text = number.toString(), fontSize = 30.sp, textAlign = TextAlign.Center)
+            }
         }
     }
 }

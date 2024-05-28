@@ -11,5 +11,5 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val CalculatePressed = Color(0xFFEF8683)
-val NUM_PRESSED = Color(0xFF49BFA5)
-val NUM_UNPRESSED = Color(0xFFEDDBD)
+val NumberPressed = Color(0xFF49BFA5)
+val NumberUnpressed = Color(0xFF8EDDBD)
