@@ -13,3 +13,11 @@ val Pink40 = Color(0xFF7D5260)
 val CalculatePressed = Color(0xFFEF8683)
 val NumberPressed = Color(0xFF49BFA5)
 val NumberUnpressed = Color(0xFF8EDDBD)
+
+object MainColor {
+    val GameButtonPress = Color(0xff00CAAD)
+    val GameButtonUnPress = Color(0xff84EECB)
+
+    val SymbolButtonPress = Color(0xffFF8384)
+    val SymbolButtonUnPress = Color(0xffffffff)
+}

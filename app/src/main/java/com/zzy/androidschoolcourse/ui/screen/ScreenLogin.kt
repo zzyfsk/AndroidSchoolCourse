@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
+import com.zzy.androidschoolcourse.ui.screen.game.ScreenGameHiToRi
 
 
 class ScreenLogin: Screen{
@@ -18,12 +19,9 @@ class ScreenLogin: Screen{
         Column {
             Text(text = "This is Login Screen")
             Row {
-                Button(onClick = { navigator?.push(ScreenGame()) }) {
+                Button(onClick = { navigator?.push(ScreenGameHiToRi()) }) {
                     Text(text = "next screen")
                 }
-//                Button(onClick = { navigator?.push(ScreenTest()) }) {
-//                    Text(text = "zlh's screen")
-//                }
                 Button(onClick = { navigator?.push(ScreenText2()) }) {
                     Text(text = "yyx's Screen")
                 }

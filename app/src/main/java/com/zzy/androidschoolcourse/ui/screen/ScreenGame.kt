@@ -1,6 +1,5 @@
 package com.zzy.androidschoolcourse.ui.screen
 
-import android.graphics.PointF
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,10 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.zzy.androidschoolcourse.R
-import com.zzy.androidschoolcourse.ui.compoment.PieData
 import com.zzy.androidschoolcourse.ui.theme.NumberPressed
 import com.zzy.androidschoolcourse.ui.theme.NumberUnpressed
-import com.zzy.appBase.component.graph.LineChart
 
 class ScreenGame : Screen {
     @Composable
@@ -73,23 +70,6 @@ class ScreenGame : Screen {
                         clickedButton.intValue = it
                     })
             }
-            val times = listOf("a", "b", "c", "d")
-            val color = listOf(Color.Black, Color.Black, Color.Black, Color.Black)
-            val data1 = listOf(
-                PointF(1f, 10f),
-                PointF(2f, 20f),
-                PointF(3f, 15f),
-                PointF(4f, 20f)
-            ) // 第一个数据集合
-            LineChart(times, color, data1, legends = listOf("aa"), chartTitle = "test")
-            val list = listOf(
-                PieData(name = "1", amount = 1f, groupName = "name"),
-                PieData(name = "2", amount = 2f, groupName = "name"),
-                PieData(name = "3", amount = 50f, groupName = "name"),
-                PieData(name = "4", amount = 30f, groupName = "name")
-            )
-            val listNew = listOf(list)
-            com.zzy.androidschoolcourse.ui.compoment.LineChart(payload = listNew, modifier = Modifier.fillMaxSize())
         }
     }
 

@@ -46,9 +46,12 @@ dependencies {
     // Transitions
     api(libs.voyager.transitions)
 
+    //kotlin
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+
     api(libs.androidx.core.ktx)
     api(libs.androidx.appcompat)
-    api(libs.material)
     api(libs.androidx.core.ktx)
     api(libs.androidx.lifecycle.runtime.ktx)
     api(libs.androidx.activity.compose)
