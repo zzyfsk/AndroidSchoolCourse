@@ -2,8 +2,12 @@ package com.zzy.androidschoolcourse.ui.compoment
 
 import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -20,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -41,6 +46,7 @@ fun NumberButton(
     length: Int,
     fontSize: Int,
     backgroundColor: Color = Color.White,
+    visible: Boolean = true,
     onClick: (Int) -> Unit
 ) {
     var touch by remember {
@@ -50,8 +56,11 @@ fun NumberButton(
         targetValue = if (touch) (length + 10).dp else length.dp,
         label = ""
     )
+    val alpha by animateFloatAsState(targetValue = if (visible) 100f else 0f, label = "")
     Column(
-        modifier = modifier.size((length + 10).dp),
+        modifier = modifier
+            .size((length + 10).dp)
+            .alpha(alpha = alpha),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -69,20 +78,58 @@ fun NumberButton(
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onPress = {
-                            Log.d("TAG", "NumberButton: onPress")
-                            touch = true
-                            onClick(number)
+                            if (visible) {
+                                Log.d("TAG", "NumberButton: onPress")
+                                touch = true
+                            }
+//                            onClick(number)
                         },
                         onTap = {
-                            Log.d("TAG", "NumberButton: onTap")
-                            touch = false
-                            onClick(number)
+                            if (visible) {
+                                Log.d("TAG", "NumberButton: onTap")
+                                touch = false
+                                onClick(number)
+                            }
                         },
                         onLongPress = {
-                            Log.d("TAG", "NumberButton: onLongPress")
-                            touch = false
+                            if (visible) {
+                                Log.d("TAG", "NumberButton: onLongPress")
+                                touch = false
+                            }
                         }
                     )
+                    detectDragGestures(
+                        onDrag = { _, _ ->
+                            if (visible) {
+                                touch = false
+                                Log.d("TAG", "NumberButton: onDrag")
+                            }
+                        },
+                        onDragStart = {
+                            if (visible) {
+                                touch = false
+                                Log.d("TAG", "NumberButton: onDragStart")
+                            }
+                        },
+                        onDragEnd = {
+                            if (visible) {
+                                touch = false
+                                Log.d("TAG", "NumberButton: onDragEnd")
+                            }
+                        },
+                        onDragCancel = {
+                            if (visible) {
+                                touch = false
+                                Log.d("TAG", "NumberButton: onDragCancel")
+                            }
+                        }
+                    )
+//                    detectDragGesturesAfterLongPress(
+//                        onDrag = { _, _ -> touch = false },
+//                        onDragStart = { touch = false },
+//                        onDragEnd = { touch = false },
+//                        onDragCancel = { touch = false }
+//                    )
                 },
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -139,7 +186,6 @@ fun SymbolButton(
                     detectTapGestures(
                         onPress = {
                             touch = true
-                            onClick(number)
                         },
                         onTap = {
                             touch = false
@@ -153,7 +199,11 @@ fun SymbolButton(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(imageVector = ImageVector.vectorResource(id = imageId), contentDescription = "", tint = symbolColor)
+            Icon(
+                imageVector = ImageVector.vectorResource(id = imageId),
+                contentDescription = "",
+                tint = symbolColor
+            )
         }
     }
 }
