@@ -120,8 +120,8 @@ class ScreenGameHiToRi : Screen {
                     modifier = Modifier
                         .weight(1f),
                     number = 1,
-                    numberUp = viewModel.number1Top,
-                    numberDown = viewModel.number1Bottom,
+                    numberUp = viewModel.fraction1.numerator,
+                    numberDown = viewModel.fraction1.denominator,
                     length = 150,
                     fontSize = 50,
                     backgroundColor = backgroundColor(1),
@@ -132,8 +132,8 @@ class ScreenGameHiToRi : Screen {
                     modifier = Modifier
                         .weight(1f),
                     number = 2,
-                    numberUp = viewModel.number2Top,
-                    numberDown = viewModel.number2Bottom,
+                    numberUp = viewModel.fraction2.numerator,
+                    numberDown = viewModel.fraction2.denominator,
                     length = 150,
                     fontSize = 50,
                     backgroundColor = backgroundColor(2),
@@ -150,8 +150,8 @@ class ScreenGameHiToRi : Screen {
                     modifier = Modifier
                         .weight(1f),
                     number = 3,
-                    numberUp = viewModel.number3Top,
-                    numberDown = viewModel.number3Bottom,
+                    numberUp = viewModel.fraction3.numerator,
+                    numberDown = viewModel.fraction3.denominator,
                     length = 150,
                     fontSize = 50,
                     backgroundColor = backgroundColor(3),
@@ -162,8 +162,8 @@ class ScreenGameHiToRi : Screen {
                     modifier = Modifier
                         .weight(1f),
                     number = 4,
-                    numberUp =viewModel.number4Top,
-                    numberDown = viewModel.number4Bottom,
+                    numberUp =viewModel.fraction4.numerator,
+                    numberDown = viewModel.fraction4.denominator,
                     length = 150,
                     fontSize = 50,
                     backgroundColor = backgroundColor(4),

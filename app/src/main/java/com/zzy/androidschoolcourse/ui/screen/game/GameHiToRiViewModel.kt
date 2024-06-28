@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
+import com.zzy.androidschoolcourse.bean.Fraction
 import com.zzy.androidschoolcourse.service.QuestionService
 import com.zzy.androidschoolcourse.util.TimerUtil
 import java.util.Timer
@@ -34,14 +35,10 @@ class GameHiToRiViewModel : ScreenModel {
 
     // game logic
     private var initNumber = ""
-    var number1Top by mutableIntStateOf(1)
-    var number1Bottom by mutableIntStateOf(1)
-    var number2Top by mutableIntStateOf(1)
-    var number2Bottom by mutableIntStateOf(1)
-    var number3Top by mutableIntStateOf(1)
-    var number3Bottom by mutableIntStateOf(1)
-    var number4Top by mutableIntStateOf(1)
-    var number4Bottom by mutableIntStateOf(1)
+    val fraction1 by mutableStateOf(Fraction(1, 1))
+    val fraction2 by mutableStateOf(Fraction(1, 1))
+    val fraction3 by mutableStateOf(Fraction(1, 1))
+    val fraction4 by mutableStateOf(Fraction(1, 1))
 
     var number1Visible by mutableStateOf(true)
     var number2Visible by mutableStateOf(true)
@@ -55,14 +52,12 @@ class GameHiToRiViewModel : ScreenModel {
     fun readInitNumber(context: Context, fileName: String) {
         initNumber =
             QuestionService.questionService.readQuestion(context = context, fileName = fileName)
-        number1Top = initNumber[0].digitToInt()
-        number2Top = initNumber[1].digitToInt()
-        number3Top = initNumber[2].digitToInt()
-        number4Top = initNumber[3].digitToInt()
-        if (number1Top == 0) number1Top = 10
-        if (number2Top == 0) number2Top = 10
-        if (number3Top == 0) number3Top = 10
-        if (number4Top == 0) number4Top = 10
+
+        initNumber[0].digitToInt().let { if (it == 0) fraction1.numerator = 10 else fraction1.numerator = it }
+        initNumber[1].digitToInt().let { if (it == 0) fraction2.numerator = 10 else fraction2.numerator = it }
+        initNumber[2].digitToInt().let { if (it == 0) fraction3.numerator = 10 else fraction3.numerator = it }
+        initNumber[3].digitToInt().let { if (it == 0) fraction4.numerator = 10 else fraction4.numerator = it }
+
     }
 
     val numberClick: (Int) -> Unit = { number ->
