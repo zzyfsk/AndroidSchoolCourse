@@ -76,6 +76,7 @@ class GameHiToRiViewModel : ScreenModel {
         } else {
             clickFirstNumber(number)
         }
+        winCheck()
     }
 
     private fun clickFirstNumber(number: Int) {
