@@ -28,6 +28,14 @@ data class Fraction(var numerator: Int, var denominator: Int) {
         return Fraction(quotientNumerator, quotientDenominator)
     }
 
+    fun getInteger():Int{
+        return numerator/denominator
+    }
+
+    fun getRemainder():Int{
+        return numerator%denominator
+    }
+
 
     // 计算最小公倍数
     private fun lcm(a: Int, b: Int): Int {

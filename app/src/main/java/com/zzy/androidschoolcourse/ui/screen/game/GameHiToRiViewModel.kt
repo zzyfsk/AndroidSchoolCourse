@@ -21,6 +21,7 @@ class GameHiToRiViewModel : ScreenModel {
 
     var time by mutableStateOf("00:00")
 
+    var addCount = 0
 
     fun setUpTimeSchedule() {
         val timer = Timer()
@@ -63,14 +64,14 @@ class GameHiToRiViewModel : ScreenModel {
     private fun initNumber() {
         numberStateList.forEachIndexed { index, _ ->
             initNumber[index].digitToInt().let {
-                Log.d(tag, "initNumber: $")
-                numberStateList[index].fraction.numerator = it
+                numberStateList[index].fraction.numerator = if (it==0) 10 else it
+                numberStateList[index].fraction.denominator = 1
             }
         }
     }
 
     val numberClick: (Int) -> Unit = { number ->
-        if (currentSymbol != 0) {
+        if (currentSymbol != 0 && firstNumber != 0) {
             clickSecondNumber(number)
         } else {
             clickFirstNumber(number)
@@ -83,20 +84,26 @@ class GameHiToRiViewModel : ScreenModel {
     }
 
     private fun clickSecondNumber(number: Int) {
-        secondNumber = number
-        numberStateList[firstNumber - 1].numberVisible = false
 
-        when (currentSymbol) {
-            1 -> numberStateList[secondNumber - 1].fraction += numberStateList[firstNumber - 1].fraction
-            2 -> numberStateList[secondNumber - 1].fraction -= numberStateList[firstNumber - 1].fraction
-            3 -> numberStateList[secondNumber - 1].fraction *= numberStateList[firstNumber - 1].fraction
-            4 -> numberStateList[secondNumber - 1].fraction /= numberStateList[firstNumber - 1].fraction
+        if (number ==firstNumber){
+            return
+        }else{
+            addCount++
+            secondNumber = number
+            numberStateList[firstNumber - 1].numberVisible = false
+
+            when (currentSymbol) {
+                1 -> numberStateList[secondNumber - 1].fraction += numberStateList[firstNumber - 1].fraction
+                2 -> numberStateList[secondNumber-1].fraction = numberStateList[firstNumber-1].fraction - numberStateList[secondNumber-1].fraction
+                3 -> numberStateList[secondNumber - 1].fraction *= numberStateList[firstNumber - 1].fraction
+                4 -> numberStateList[secondNumber-1].fraction = numberStateList[firstNumber-1].fraction / numberStateList[secondNumber-1].fraction
+            }
+
+
+            firstNumber = 0
+            secondNumber = 0
+            currentSymbol = 0
         }
-
-
-        firstNumber = 0
-        secondNumber = 0
-        currentSymbol = 0
     }
 
     val symbolClick: (Int) -> Unit = {
@@ -106,17 +113,29 @@ class GameHiToRiViewModel : ScreenModel {
 
     fun resetGame() {
         initNumber()
-        numberStateList.forEach {
-            it.numberVisible = true
-        }
+        for (i in 0..3) numberStateList[i].numberVisible = true
         firstNumber = 0
         secondNumber = 0
         currentSymbol = 0
+        addCount = 0
+        numberStateList.add(ButtonState())
+        numberStateList.removeLast()
     }
 
     fun init(context: Context) {
         readInitNumber(context = context)
         initNumber()
+        addCount = 0
+    }
+
+    fun winCheck(){
+        if (addCount == 3){
+            numberStateList.forEach {
+                if (it.numberVisible && it.fraction.getInteger()==24 && it.fraction.getRemainder()==0){
+                    Log.d(tag, "winCheck: win")
+                }
+            }
+        }
     }
 
     data class ButtonState(

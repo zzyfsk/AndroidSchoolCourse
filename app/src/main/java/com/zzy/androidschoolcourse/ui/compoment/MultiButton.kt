@@ -3,11 +3,14 @@ package com.zzy.androidschoolcourse.ui.compoment
 import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -54,7 +57,11 @@ fun NumberButton(
         targetValue = if (touch) (length + 10).dp else length.dp,
         label = ""
     )
-    val alpha by animateFloatAsState(targetValue = if (visible) 100f else 0f, label = "")
+    val alpha by animateFloatAsState(
+        targetValue = if (visible) 1f else 0f,
+        label = "",
+        visibilityThreshold = 0.01f
+    )
     Column(
         modifier = modifier
             .size((length + 10).dp)
@@ -122,12 +129,6 @@ fun NumberButton(
                             }
                         }
                     )
-//                    detectDragGesturesAfterLongPress(
-//                        onDrag = { _, _ -> touch = false },
-//                        onDragStart = { touch = false },
-//                        onDragEnd = { touch = false },
-//                        onDragCancel = { touch = false }
-//                    )
                 },
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -139,6 +140,32 @@ fun NumberButton(
                         text = it, fontSize = fontSize.sp,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight(800),
+                        color = Color.White
+                    )
+                }
+            } else {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        modifier = Modifier,
+                        text = numberUp.toString(), fontSize = (fontSize - 5).sp,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight(700),
+                        color = Color.White
+                    )
+                    Box(
+                        modifier = Modifier
+                            .width(50.dp)
+                            .height(10.dp)
+                            .background(color = Color.White)
+                    )
+                    Text(
+                        modifier = Modifier,
+                        text = numberDown.toString(), fontSize = (fontSize - 5).sp,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight(700),
                         color = Color.White
                     )
                 }

@@ -65,9 +65,6 @@ class ScreenGameHiToRi : Screen {
             NumberButtonGroup()
             BarSymbol()
             BarAction()
-            Button(onClick = { screenModel.resetGame() }) {
-                Text(text = "reset")
-            }
         }
     }
     
@@ -210,7 +207,15 @@ class ScreenGameHiToRi : Screen {
     }
 
     @Composable
-    fun BarAction() {
+    fun BarAction(modifier: Modifier = Modifier) {
+        val viewModel = rememberScreenModel {
+            GameHiToRiViewModel()
+        }
 
+        Row (modifier = modifier.fillMaxWidth()){
+            Button(onClick = { viewModel.resetGame() }) {
+                Text(text = "reset")
+            }
+        }
     }
 }
