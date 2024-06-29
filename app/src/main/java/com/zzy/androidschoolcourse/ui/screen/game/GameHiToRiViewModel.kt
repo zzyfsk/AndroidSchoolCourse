@@ -16,24 +16,14 @@ import java.util.TimerTask
 
 class GameHiToRiViewModel : ScreenModel {
 
+    var winShow by mutableStateOf(false)
+
     private val tag = "GameHiToRiViewModel"
     var timeValue = 1
 
     var time by mutableStateOf("00:00")
 
     private var addCount = 0
-
-    fun setUpTimeSchedule() {
-        val timer = Timer()
-
-        val timerTask = object : TimerTask() {
-            override fun run() {
-                time = TimerUtil.timer.getMinuteAndSecond(timeValue++)
-            }
-        }
-
-        timer.schedule(timerTask, 1000, 1000)
-    }
 
     val numberStateList = mutableStateListOf<ButtonState>()
         get() {
@@ -133,10 +123,23 @@ class GameHiToRiViewModel : ScreenModel {
         if (addCount == 3){
             numberStateList.forEach {
                 if (it.numberVisible && it.fraction.getInteger()==24 && it.fraction.getRemainder()==0){
+                    winShow = true
                     Log.d(tag, "winCheck: win")
                 }
             }
         }
+    }
+
+    fun setUpTimeSchedule() {
+        val timer = Timer()
+
+        val timerTask = object : TimerTask() {
+            override fun run() {
+                time = TimerUtil.timer.getMinuteAndSecond(timeValue++)
+            }
+        }
+
+        timer.schedule(timerTask, 1000, 1000)
     }
 
     data class ButtonState(

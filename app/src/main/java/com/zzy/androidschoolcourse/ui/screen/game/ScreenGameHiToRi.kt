@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -38,6 +39,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import com.zzy.androidschoolcourse.R
 import com.zzy.androidschoolcourse.ui.compoment.NumberButton
 import com.zzy.androidschoolcourse.ui.compoment.SymbolButton
+import com.zzy.androidschoolcourse.ui.screen.win.ScreenWin
 import com.zzy.androidschoolcourse.ui.theme.MainColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,6 +52,7 @@ class ScreenGameHiToRi : Screen {
         val screenModel = rememberScreenModel {
             GameHiToRiViewModel()
         }
+        val navigator = LocalNavigator.current
         val context = LocalContext.current
         LaunchedEffect(Unit) {
             screenModel.init(context)
@@ -65,9 +68,13 @@ class ScreenGameHiToRi : Screen {
             NumberButtonGroup()
             BarSymbol()
             BarAction()
+            if (screenModel.winShow){
+                screenModel.winShow = false
+                navigator?.replace(ScreenWin())
+            }
         }
     }
-    
+
     @Composable
     fun Timer(modifier: Modifier = Modifier) {
         val screenModel = rememberScreenModel {
