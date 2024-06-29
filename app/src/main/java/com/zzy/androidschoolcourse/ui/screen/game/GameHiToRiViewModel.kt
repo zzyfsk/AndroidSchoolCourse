@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -33,31 +34,39 @@ class GameHiToRiViewModel : ScreenModel {
         timer.schedule(timerTask, 1000, 1000)
     }
 
+    val numberStateList = mutableStateListOf<ButtonState>()
+        get() {
+            if (field.isEmpty()) {
+                for (i in 0..3) {
+                    field.add(ButtonState())
+                }
+            }
+            return field
+        }
+
     // game logic
     private var initNumber = ""
-    val fraction1 by mutableStateOf(Fraction(1, 1))
-    val fraction2 by mutableStateOf(Fraction(1, 1))
-    val fraction3 by mutableStateOf(Fraction(1, 1))
-    val fraction4 by mutableStateOf(Fraction(1, 1))
 
-    var number1Visible by mutableStateOf(true)
-    var number2Visible by mutableStateOf(true)
-    var number3Visible by mutableStateOf(true)
-    var number4Visible by mutableStateOf(true)
 
     var firstNumber by mutableIntStateOf(0)
     private var secondNumber = 0
     var currentSymbol by mutableIntStateOf(0)
 
-    fun readInitNumber(context: Context, fileName: String) {
+    private fun readInitNumber(context: Context) {
         initNumber =
-            QuestionService.questionService.readQuestion(context = context, fileName = fileName)
+            QuestionService.questionService.readQuestion(
+                context = context,
+                fileName = "dataSet.txt"
+            )
+    }
 
-        initNumber[0].digitToInt().let { if (it == 0) fraction1.numerator = 10 else fraction1.numerator = it }
-        initNumber[1].digitToInt().let { if (it == 0) fraction2.numerator = 10 else fraction2.numerator = it }
-        initNumber[2].digitToInt().let { if (it == 0) fraction3.numerator = 10 else fraction3.numerator = it }
-        initNumber[3].digitToInt().let { if (it == 0) fraction4.numerator = 10 else fraction4.numerator = it }
-
+    private fun initNumber() {
+        numberStateList.forEachIndexed { index, _ ->
+            initNumber[index].digitToInt().let {
+                Log.d(tag, "initNumber: $")
+                numberStateList[index].fraction.numerator = it
+            }
+        }
     }
 
     val numberClick: (Int) -> Unit = { number ->
@@ -75,12 +84,16 @@ class GameHiToRiViewModel : ScreenModel {
 
     private fun clickSecondNumber(number: Int) {
         secondNumber = number
-        when (firstNumber) {
-            1 -> number1Visible = false
-            2 -> number2Visible = false
-            3 -> number3Visible = false
-            4 -> number4Visible = false
+        numberStateList[firstNumber - 1].numberVisible = false
+
+        when (currentSymbol) {
+            1 -> numberStateList[secondNumber - 1].fraction += numberStateList[firstNumber - 1].fraction
+            2 -> numberStateList[secondNumber - 1].fraction -= numberStateList[firstNumber - 1].fraction
+            3 -> numberStateList[secondNumber - 1].fraction *= numberStateList[firstNumber - 1].fraction
+            4 -> numberStateList[secondNumber - 1].fraction /= numberStateList[firstNumber - 1].fraction
         }
+
+
         firstNumber = 0
         secondNumber = 0
         currentSymbol = 0
@@ -90,4 +103,24 @@ class GameHiToRiViewModel : ScreenModel {
         currentSymbol = if (it == currentSymbol) 0 else it
         Log.d(tag, ": $currentSymbol")
     }
+
+    fun resetGame() {
+        initNumber()
+        numberStateList.forEach {
+            it.numberVisible = true
+        }
+        firstNumber = 0
+        secondNumber = 0
+        currentSymbol = 0
+    }
+
+    fun init(context: Context) {
+        readInitNumber(context = context)
+        initNumber()
+    }
+
+    data class ButtonState(
+        var fraction: Fraction = Fraction(1, 1),
+        var numberVisible: Boolean = true
+    )
 }

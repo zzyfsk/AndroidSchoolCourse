@@ -1,5 +1,6 @@
 package com.zzy.androidschoolcourse.ui.screen.game
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -50,7 +52,7 @@ class ScreenGameHiToRi : Screen {
         }
         val context = LocalContext.current
         LaunchedEffect(Unit) {
-            screenModel.readInitNumber(context = context ,fileName = "dataSet.txt")
+            screenModel.init(context)
             scope.launch (Dispatchers.IO){
                 screenModel.setUpTimeSchedule()
             }
@@ -63,6 +65,9 @@ class ScreenGameHiToRi : Screen {
             NumberButtonGroup()
             BarSymbol()
             BarAction()
+            Button(onClick = { screenModel.resetGame() }) {
+                Text(text = "reset")
+            }
         }
     }
     
@@ -100,6 +105,8 @@ class ScreenGameHiToRi : Screen {
 
     @Composable
     fun NumberButtonGroup(modifier: Modifier = Modifier) {
+        Log.d("tag", "Content: ButtonGroup")
+
         val viewModel = rememberScreenModel {
             GameHiToRiViewModel()
         }
@@ -120,24 +127,24 @@ class ScreenGameHiToRi : Screen {
                     modifier = Modifier
                         .weight(1f),
                     number = 1,
-                    numberUp = viewModel.fraction1.numerator,
-                    numberDown = viewModel.fraction1.denominator,
+                    numberUp = viewModel.numberStateList[0].fraction.numerator,
+                    numberDown = viewModel.numberStateList[0].fraction.denominator,
                     length = 150,
                     fontSize = 50,
                     backgroundColor = backgroundColor(1),
-                    visible = viewModel.number1Visible,
+                    visible = viewModel.numberStateList[0].numberVisible,
                     onClick = viewModel.numberClick
                 )
                 NumberButton(
                     modifier = Modifier
                         .weight(1f),
                     number = 2,
-                    numberUp = viewModel.fraction2.numerator,
-                    numberDown = viewModel.fraction2.denominator,
+                    numberUp = viewModel.numberStateList[1].fraction.numerator,
+                    numberDown = viewModel.numberStateList[1].fraction.denominator,
                     length = 150,
                     fontSize = 50,
                     backgroundColor = backgroundColor(2),
-                    visible = viewModel.number2Visible,
+                    visible = viewModel.numberStateList[1].numberVisible,
                     onClick = viewModel.numberClick
                 )
             }
@@ -150,24 +157,24 @@ class ScreenGameHiToRi : Screen {
                     modifier = Modifier
                         .weight(1f),
                     number = 3,
-                    numberUp = viewModel.fraction3.numerator,
-                    numberDown = viewModel.fraction3.denominator,
+                    numberUp = viewModel.numberStateList[2].fraction.numerator,
+                    numberDown = viewModel.numberStateList[2].fraction.denominator,
                     length = 150,
                     fontSize = 50,
                     backgroundColor = backgroundColor(3),
-                    visible = viewModel.number3Visible,
+                    visible = viewModel.numberStateList[2].numberVisible,
                     onClick = viewModel.numberClick
                 )
                 NumberButton(
                     modifier = Modifier
                         .weight(1f),
                     number = 4,
-                    numberUp =viewModel.fraction4.numerator,
-                    numberDown = viewModel.fraction4.denominator,
+                    numberUp =viewModel.numberStateList[3].fraction.numerator,
+                    numberDown = viewModel.numberStateList[3].fraction.denominator,
                     length = 150,
                     fontSize = 50,
                     backgroundColor = backgroundColor(4),
-                    visible = viewModel.number4Visible,
+                    visible = viewModel.numberStateList[3].numberVisible,
                     onClick = viewModel.numberClick
                 )
             }
