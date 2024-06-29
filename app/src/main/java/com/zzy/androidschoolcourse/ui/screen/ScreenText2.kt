@@ -16,7 +16,7 @@ import cafe.adriel.voyager.core.screen.Screen
 class ScreenText2 : Screen{
     @Composable
     override fun Content() {
-        TODO("Not yet implemented")
+
     }
     @Composable
     fun ButtonNumber(

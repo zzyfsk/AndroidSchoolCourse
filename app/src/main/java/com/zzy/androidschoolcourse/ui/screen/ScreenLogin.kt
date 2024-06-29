@@ -1,8 +1,6 @@
 package com.zzy.androidschoolcourse.ui.screen
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -19,9 +17,12 @@ class ScreenLogin: Screen{
         val navigator = LocalNavigator.current
         Column (modifier = Modifier.fillMaxSize()){
             Text(text = "This is Login Screen")
-            Row {
+            Column {
                 Button(onClick = { navigator?.push(ScreenGameHiToRi()) }) {
-                    Text(text = "next screen")
+                    Text(text = "单人游戏")
+                }
+                Button(onClick = {  }) {
+                    Text(text = "多人游戏")
                 }
                 Button(onClick = { navigator?.push(ScreenText2()) }) {
                     Text(text = "yyx's Screen")
@@ -29,9 +30,6 @@ class ScreenLogin: Screen{
                 Button(onClick = { navigator?.push(ScreenZlh()) }) {
                     Text(text = "zlh's screen")
                 }
-            }
-            Canvas(modifier = Modifier) {
-
 
             }
         }

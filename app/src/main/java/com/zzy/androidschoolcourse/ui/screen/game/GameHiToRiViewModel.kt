@@ -21,7 +21,7 @@ class GameHiToRiViewModel : ScreenModel {
 
     var time by mutableStateOf("00:00")
 
-    var addCount = 0
+    private var addCount = 0
 
     fun setUpTimeSchedule() {
         val timer = Timer()
@@ -129,7 +129,7 @@ class GameHiToRiViewModel : ScreenModel {
         addCount = 0
     }
 
-    fun winCheck(){
+    private fun winCheck(){
         if (addCount == 3){
             numberStateList.forEach {
                 if (it.numberVisible && it.fraction.getInteger()==24 && it.fraction.getRemainder()==0){
