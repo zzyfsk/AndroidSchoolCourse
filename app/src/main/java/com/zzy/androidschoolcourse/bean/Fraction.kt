@@ -6,26 +6,29 @@ data class Fraction(var numerator: Int, var denominator: Int) {
         val commonDenominator = lcm(denominator, another.denominator)
         val sumNumerator =
             numerator * (commonDenominator / denominator) + another.numerator * (commonDenominator / another.denominator)
-        return Fraction(sumNumerator, commonDenominator)
+        return simplifyFraction( Fraction(sumNumerator, commonDenominator) )
     }
 
     operator fun minus(another: Fraction): Fraction {
         val commonDenominator = lcm(denominator, another.denominator)
         val differenceNumerator =
             numerator * (commonDenominator / denominator) - another.numerator * (commonDenominator / another.denominator)
-        return Fraction(differenceNumerator, commonDenominator)
+        return simplifyFraction( Fraction(differenceNumerator, commonDenominator) )
+
     }
 
     operator fun times(another: Fraction): Fraction {
         val productNumerator = numerator * another.numerator
         val productDenominator = denominator * another.denominator
-        return Fraction(productNumerator, productDenominator)
+        return simplifyFraction( Fraction(productNumerator, productDenominator) )
+
     }
 
     operator fun div(another: Fraction): Fraction {
         val quotientNumerator = numerator * another.denominator
         val quotientDenominator = denominator * another.numerator
-        return Fraction(quotientNumerator, quotientDenominator)
+        return simplifyFraction( Fraction(quotientNumerator, quotientDenominator) )
+
     }
 
     fun getInteger():Int{
@@ -46,4 +49,10 @@ data class Fraction(var numerator: Int, var denominator: Int) {
     private fun gcd(a: Int, b: Int): Int {
         return if (b == 0) a else gcd(b, a % b)
     }
+
+    private fun simplifyFraction(fraction:Fraction):Fraction{
+        var GCD = gcd(fraction.numerator,fraction.denominator)
+        return Fraction(fraction.numerator/GCD, fraction.denominator/GCD)
+    }
+
 }
