@@ -9,7 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.zzy.androidschoolcourse.bean.Fraction
-import com.zzy.androidschoolcourse.service.QuestionService
+import com.zzy.androidschoolcourse.net.QuestionService
 import com.zzy.androidschoolcourse.util.TimerUtil
 import java.util.Timer
 import java.util.TimerTask

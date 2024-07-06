@@ -51,8 +51,8 @@ data class Fraction(var numerator: Int, var denominator: Int) {
     }
 
     private fun simplifyFraction(fraction:Fraction):Fraction{
-        var GCD = gcd(fraction.numerator,fraction.denominator)
-        return Fraction(fraction.numerator/GCD, fraction.denominator/GCD)
+        gcd(fraction.numerator,fraction.denominator).let {
+            return Fraction(fraction.numerator/it, fraction.denominator/it)
+        }
     }
-
 }

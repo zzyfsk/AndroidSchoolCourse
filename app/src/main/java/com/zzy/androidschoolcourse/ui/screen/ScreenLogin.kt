@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.zzy.androidschoolcourse.ui.screen.game.ScreenGameHiToRi
+import com.zzy.androidschoolcourse.ui.screen.online.ScreenOnline
 
 
 class ScreenLogin: Screen{
@@ -21,7 +22,7 @@ class ScreenLogin: Screen{
                 Button(onClick = { navigator?.push(ScreenGameHiToRi()) }) {
                     Text(text = "单人游戏")
                 }
-                Button(onClick = {  }) {
+                Button(onClick = { navigator?.push(ScreenOnline()) }) {
                     Text(text = "多人游戏")
                 }
                 Button(onClick = { navigator?.push(ScreenText2()) }) {

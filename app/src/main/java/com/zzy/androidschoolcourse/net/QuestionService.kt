@@ -1,4 +1,4 @@
-package com.zzy.androidschoolcourse.service
+package com.zzy.androidschoolcourse.net
 
 import android.content.Context
 import com.zzy.androidschoolcourse.util.AssertUtil
