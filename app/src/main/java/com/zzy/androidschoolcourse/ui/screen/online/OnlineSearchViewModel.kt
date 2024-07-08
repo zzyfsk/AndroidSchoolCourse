@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
-import com.zzy.androidschoolcourse.net.server.find.ClientFind
+import com.zzy.androidschoolcourse.net.server.find.ClientFindNew
 import com.zzy.androidschoolcourse.net.server.find.ServerFind
 import com.zzy.androidschoolcourse.util.IPUtil
 
@@ -18,30 +18,36 @@ class OnlineSearchViewModel : ScreenModel {
     var ip: String = "0.0.0.0"
     private var run = false
 
-    fun start(context: Context){
+    fun start(context: Context,navigate:()->Unit){
         ip = IPUtil.ipUtil.getWifiIP(context)
-        val serverFind = ServerFind()
-        serverFind.runServer(ip = ip, port = 5124, onConnect = {
+        ServerFind.runServer(ip = ip, port = 5124, onConnect = {
             showDialog = true
+        }, onConnectSecond = {
+            navigate()
         })
     }
 
     fun end(){
-
+        clientShutDown()
     }
 
     fun clientStart(){
         deviceList.clear()
-        val clientFind = ClientFind()
-        clientFind.clientStart(ip = ip,port = 5124, onFind = {
+        val clientFind = ClientFindNew(ip = ip)
+        clientFind.clientStart(onFind = {
             deviceList.add(it)
         })
     }
 
-    fun clientConnect(target:String,port:Int){
-        val clientFind = ClientFind()
-        clientFind.clientConnect(ip = target,port = port, onSuccess = {})
+    fun clientConnect(target:String,port:Int=5124,navigate:()->Unit={}){
+        val clientFind = ClientFindNew(ip = target,port = port)
+        clientFind.clientConnect(onSuccess = {
+            navigate()
+        })
     }
 
-    data class SearchResult(val name: String, val address: String)
+    fun clientShutDown(){
+        val clientFind = ClientFindNew(ip = ip)
+        clientFind.clientShutDown()
+    }
 }

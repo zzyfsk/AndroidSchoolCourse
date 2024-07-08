@@ -60,18 +60,9 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
-    // ktor
-    // HTTP引擎: 处理网络请求.
-//    api (libs.ktor.server.core)
-//    api (libs.ktor.server.netty)
-//    api (libs.ktor.client.android)
-// 用于设置JSON序列化和逆序列化, 向多平台项目推荐.
-//    api (libs.ktor.client.serialization)
-// kotlinx.serialization, 用于实体序列化
+    // http
     api (libs.kotlinx.serialization.json)
-// 用于打印HTTP请求
-//    api(libs.ktor.client.logging.jvm)
-//    api(libs.ktor.server.websockets)
+    api(libs.netty.all)
 
     api(libs.androidx.core.ktx)
     api(libs.androidx.appcompat)

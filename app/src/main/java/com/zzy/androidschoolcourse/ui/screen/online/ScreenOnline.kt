@@ -27,6 +27,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.zzy.androidschoolcourse.R
+import com.zzy.androidschoolcourse.net.server.find.ServerFind
 import com.zzy.androidschoolcourse.util.IPUtil
 
 class ScreenOnline : Screen {
@@ -42,7 +43,7 @@ class ScreenOnline : Screen {
         }
         Column(modifier = Modifier.fillMaxSize()) {
             BarTitle()
-            Button(onClick = { viewModel.start(context) }) {
+            Button(onClick = { viewModel.start(context, navigate = {navigator?.push(ScreenFuTaRi(ip = viewModel.ip))}) }) {
                 Text(text = "Server Run")
             }
             Button(onClick = { viewModel.end() }) {
@@ -55,15 +56,21 @@ class ScreenOnline : Screen {
                 Text(text = "client stop")
             }
             LazyColumn {
-                items(viewModel.deviceList){
+                items(viewModel.deviceList) {
                     Text(modifier = Modifier.clickable {
-                        viewModel.clientConnect(it,5124)
-                    },text = it)
+                        viewModel.clientConnect(it, 5124, navigate = {
+                            navigator?.push(ScreenFuTaRi(ip = it))
+                        })
+                    }, text = it)
                 }
             }
         }
-        if (viewModel.showDialog) DialogOnline()
+        if (viewModel.showDialog) DialogOnline(onConfirm = {
+            ServerFind.connect()
+            navigator?.push(ScreenFuTaRi(ip = viewModel.ip))
+        })
         BackHandler {
+            viewModel.end()
             navigator?.pop()
         }
 
@@ -94,7 +101,7 @@ class ScreenOnline : Screen {
     }
 
     @Composable
-    fun DialogOnline() {
+    fun DialogOnline(onDismiss: () -> Unit = {}, onConfirm: () -> Unit = {}) {
         val viewModel = rememberScreenModel {
             OnlineSearchViewModel()
         }
@@ -103,7 +110,10 @@ class ScreenOnline : Screen {
             onDismissRequest = { viewModel.showDialog = false },
             confirmButton = {
                 Text(
-                    modifier = Modifier.clickable { viewModel.showDialog = false },
+                    modifier = Modifier.clickable {
+                        onConfirm()
+                        viewModel.showDialog = false
+                    },
                     text = "confirm"
                 )
             },
@@ -115,9 +125,9 @@ class ScreenOnline : Screen {
             text = {
                 Text(
                     modifier = Modifier.clickable {
+                        onDismiss()
                         viewModel.showDialog = false
-
-                                                  },
+                    },
                     text = "a device wang to compete with you"
                 )
             }
