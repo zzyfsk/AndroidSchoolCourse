@@ -32,10 +32,11 @@ fun TwentyFourGame(
     click: (TwentyFourGameState) -> Unit = {},
     initNumber: String
 ) {
+    val tag = "TwentyFourGame"
     var firstNumber by remember { mutableIntStateOf(0) }
     var secondNumber by remember { mutableIntStateOf(0) }
     var currentSymbol by remember { mutableIntStateOf(0) }
-    var addCount = 0
+    var addCount by remember { mutableIntStateOf(0) }
     val numberStateList = remember { mutableStateListOf<TwentyFourGameButtonState>() }
 
     fun getNumberState(): SnapshotStateList<TwentyFourGameButtonState> {
@@ -46,8 +47,6 @@ fun TwentyFourGame(
         }
         return numberStateList
     }
-
-
 
 
     fun initNumber() {
@@ -64,7 +63,10 @@ fun TwentyFourGame(
         if (addCount == 3) {
             getNumberState().forEach {
                 if (it.numberVisible && it.fraction.getInteger() == 24 && it.fraction.getRemainder() == 0) {
-                    Log.d("WinCheck", "TwentyFourGame: ${it.fraction.getInteger()},${it.fraction.getRemainder()}")
+                    Log.d(
+                        "WinCheck",
+                        "TwentyFourGame: ${it.fraction.getInteger()},${it.fraction.getRemainder()}"
+                    )
                     win()
                 }
             }
@@ -79,6 +81,7 @@ fun TwentyFourGame(
     val clickSecondNumber: (Int) -> Unit = { number ->
         if (number != firstNumber) {
             addCount++
+            Log.d(tag, "addCount: $addCount")
             secondNumber = number
             getNumberState()[firstNumber - 1].numberVisible = false
 
@@ -289,7 +292,7 @@ data class TwentyFourGameState(
     val currentSymbol: Int,
     val addCount: Int,
     val numberStateList: List<TwentyFourGameButtonState>
-){
+) {
     override fun toString(): String {
         return "$firstNumber,$secondNumber,$currentSymbol,$addCount"
     }
