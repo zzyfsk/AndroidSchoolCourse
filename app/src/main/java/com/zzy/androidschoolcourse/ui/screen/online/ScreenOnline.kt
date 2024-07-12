@@ -27,8 +27,6 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.zzy.androidschoolcourse.R
-import com.zzy.androidschoolcourse.net.server.find.ServerFind
-import com.zzy.androidschoolcourse.util.IPUtil
 
 class ScreenOnline : Screen {
     @Composable
@@ -46,31 +44,29 @@ class ScreenOnline : Screen {
             Button(onClick = { viewModel.start(context, navigate = {navigator?.push(ScreenFuTaRi(ip = viewModel.ip))}) }) {
                 Text(text = "Server Run")
             }
-            Button(onClick = { viewModel.end() }) {
-                Text(text = "Server stop")
+            Button(onClick = { viewModel.sendMessage() }) {
+                Text(text = "send message")
             }
-            Button(onClick = { viewModel.clientStart() }) {
-                Text(text = "client Run")
+            Button(onClick = { viewModel.finish() }) {
+                Text(text = "finish")
             }
-            Button(onClick = { viewModel.end() }) {
-                Text(text = "client stop")
+            Button(onClick = { viewModel }) {
+                Text(text = "client com.zzy.androidschoolcourse.net.server.find.stop")
             }
             LazyColumn {
                 items(viewModel.deviceList) {
                     Text(modifier = Modifier.clickable {
-                        viewModel.clientConnect(it, 5124, navigate = {
-                            navigator?.push(ScreenFuTaRi(ip = it))
-                        })
+
+
                     }, text = it)
                 }
             }
         }
         if (viewModel.showDialog) DialogOnline(onConfirm = {
-            ServerFind.connect()
             navigator?.push(ScreenFuTaRi(ip = viewModel.ip))
         })
         BackHandler {
-            viewModel.end()
+            viewModel.finish()
             navigator?.pop()
         }
 

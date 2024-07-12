@@ -1,4 +1,4 @@
-package com.zzy.androidschoolcourse.net.server.game
+package com.zzy.androidschoolcourse.net.socket.game
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

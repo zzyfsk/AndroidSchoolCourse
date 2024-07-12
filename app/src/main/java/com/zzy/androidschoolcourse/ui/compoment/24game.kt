@@ -1,6 +1,5 @@
 package com.zzy.androidschoolcourse.ui.compoment
 
-import android.util.Log
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,7 +31,7 @@ fun TwentyFourGame(
     click: (TwentyFourGameState) -> Unit = {},
     initNumber: String
 ) {
-    val tag = "TwentyFourGame"
+//    val tag = "TwentyFourGame"
     var firstNumber by remember { mutableIntStateOf(0) }
     var secondNumber by remember { mutableIntStateOf(0) }
     var currentSymbol by remember { mutableIntStateOf(0) }
@@ -63,10 +62,6 @@ fun TwentyFourGame(
         if (addCount == 3) {
             getNumberState().forEach {
                 if (it.numberVisible && it.fraction.getInteger() == 24 && it.fraction.getRemainder() == 0) {
-                    Log.d(
-                        "WinCheck",
-                        "TwentyFourGame: ${it.fraction.getInteger()},${it.fraction.getRemainder()}"
-                    )
                     win()
                 }
             }
@@ -81,7 +76,6 @@ fun TwentyFourGame(
     val clickSecondNumber: (Int) -> Unit = { number ->
         if (number != firstNumber) {
             addCount++
-            Log.d(tag, "addCount: $addCount")
             secondNumber = number
             getNumberState()[firstNumber - 1].numberVisible = false
 
@@ -119,7 +113,6 @@ fun TwentyFourGame(
                 getNumberState()
             )
         )
-        Log.d("tag", "TwentyFourGame: $")
     }
 
     fun resetGame() {

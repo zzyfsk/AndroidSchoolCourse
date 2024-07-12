@@ -62,7 +62,10 @@ dependencies {
 
     // http
     api (libs.kotlinx.serialization.json)
-    api(libs.netty.all)
+
+
+
+
 
     api(libs.androidx.core.ktx)
     api(libs.androidx.appcompat)
