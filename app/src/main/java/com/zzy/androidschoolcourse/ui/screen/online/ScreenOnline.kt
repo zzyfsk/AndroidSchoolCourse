@@ -50,13 +50,12 @@ class ScreenOnline : Screen {
             Button(onClick = { viewModel.finish() }) {
                 Text(text = "finish")
             }
-            Button(onClick = { viewModel }) {
-                Text(text = "client com.zzy.androidschoolcourse.net.server.find.stop")
+            Button(onClick = { viewModel.find() }) {
+                Text(text = "find")
             }
             LazyColumn {
                 items(viewModel.deviceList) {
                     Text(modifier = Modifier.clickable {
-
 
                     }, text = it)
                 }

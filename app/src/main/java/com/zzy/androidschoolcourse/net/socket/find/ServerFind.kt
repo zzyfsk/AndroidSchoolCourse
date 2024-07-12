@@ -18,7 +18,6 @@ import java.util.concurrent.ArrayBlockingQueue
 
 class ServerFind {
     private val port = 5124
-    private val messageEnd = "exit"
 
     val users = mutableListOf<FindTask>()
     private var run = true
@@ -37,6 +36,7 @@ class ServerFind {
                     val socket = serverSocket?.accept()
                     CoroutineScope(Dispatchers.IO).launch {
                         val findTask = FindTask(socket!!, onFinish)
+                        users.add(findTask)
                         findTask.start()
                     }
                 }
@@ -63,6 +63,7 @@ class ServerFind {
                         println(e.message)
                     }
                     if (message != null) {
+                        Log.d("tag", "run: ${users.size}")
                         for (user in users) {
                             user.sendMessage(message)
                         }
@@ -87,8 +88,16 @@ class ServerFind {
                         message = input.readLine()
                         if (message != null) {
                             val msg = Json.decodeFromString<BeanSocketFind>(message)
+                            Log.d(tag, "start: $message")
                             when (msg.type) {
-                                SocketMessage.Function -> TODO()
+                                SocketMessage.Function -> {
+                                    if (msg.content == "find"){
+                                        Log.d(tag, serverSocket?.localSocketAddress.toString())
+                                        messageQueue.put(BeanSocketFind(SocketMessage.Function, serverSocket?.localSocketAddress.toString()))
+//                                        socket.close()
+//                                        TODO("can not finish at once")
+                                    }
+                                }
                                 SocketMessage.Message -> {
                                     Log.d(tag, "start: ${msg.content}")
                                     messageQueue.put(BeanSocketFind(SocketMessage.Message, msg.content))
@@ -119,7 +128,7 @@ class ServerFind {
         }
 
         init {
-            Log.d(tag, "new user");
+            Log.d(tag, "new user")
         }
 
     }

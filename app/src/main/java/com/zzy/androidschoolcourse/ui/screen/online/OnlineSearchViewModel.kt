@@ -25,6 +25,13 @@ class OnlineSearchViewModel : ScreenModel {
         serviceFind.controllerStart(ip)
     }
 
+    fun find(){
+        deviceList.clear()
+        serviceFind.findServer(ip, onFind = {deviceList.add(it)})
+        deviceList.add("0.0.0.0")
+        deviceList.remove("0.0.0.0")
+    }
+
     fun connect(){
         serviceFind.controllerStart(ip)
     }
