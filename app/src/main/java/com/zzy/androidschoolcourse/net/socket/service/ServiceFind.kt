@@ -16,28 +16,39 @@ class ServiceFind {
     private lateinit var controller: ClientFind
     private lateinit var client: ClientFind
 
-    val ipList = mutableListOf<String>()
-
-
-    fun serverStart() {
+    fun serverStart(ip: String,onConnect:()->Unit={}) {
         server = ServerFind()
-        server.start()
+        server.start(ip)
     }
 
     fun controllerStart(ip: String) {
         CoroutineScope(Dispatchers.IO).launch {
             controller = ClientFind()
             controller.start(ip)
+            controller.setRight("command")
+        }
+    }
+
+    fun clientConnect(ip: String,onConnect: () -> Unit){
+        CoroutineScope(Dispatchers.IO).launch {
+            client = ClientFind()
+            client.start(ip, onConnect = onConnect)
+            client.sendMessage(BeanSocketFind(SocketMessage.Function,"connect"))
         }
     }
 
     fun clientStart(ip: String) {
         client = ClientFind()
         client.start(ip)
+        controller.sendMessage(BeanSocketFind(SocketMessage.Function,"client"))
     }
 
-    fun clientSendMessage(message: String) {
+    fun controllerSendMessage(message: String) {
         controller.sendMessage(BeanSocketFind(SocketMessage.Message, message))
+    }
+
+    fun controllerSendResult(boolean: Boolean){
+        controller.sendMessage(BeanSocketFind(SocketMessage.Result,if (boolean)"true" else "false"))
     }
 
     fun finish() {
@@ -62,10 +73,7 @@ class ServiceFind {
                 }
                 Log.d("tag", "start: true")
                 client.sendMessage(BeanSocketFind(SocketMessage.Function, "find"))
-
             }
         }
-
     }
-
 }

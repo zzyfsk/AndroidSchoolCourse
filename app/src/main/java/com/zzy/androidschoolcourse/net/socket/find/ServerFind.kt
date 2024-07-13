@@ -20,12 +20,15 @@ class ServerFind {
     private val port = 5124
 
     val users = mutableListOf<FindTask>()
+    private val right = mutableMapOf<FindTask,String>()
     private var run = true
     private var serverSocket: ServerSocket? = null
     val messageQueue = ArrayBlockingQueue<BeanSocketFind>(20)
+    private var ip:String = ""
 
 
-    fun start() {
+    fun start(ip: String = "0.0.0.0") {
+        this@ServerFind.ip = ip
         serverSocket = ServerSocket(port)
         CoroutineScope(Dispatchers.IO).launch {
             PushMessageTask().run()
@@ -87,26 +90,55 @@ class ServerFind {
                     try {
                         message = input.readLine()
                         if (message != null) {
+                            Log.d(tag, "right: ${this@FindTask}")
                             val msg = Json.decodeFromString<BeanSocketFind>(message)
-                            Log.d(tag, "start: $message")
+                            Log.d(tag, "start: $message ${right[this@FindTask]}")
                             when (msg.type) {
                                 SocketMessage.Function -> {
-                                    if (msg.content == "find"){
-                                        Log.d(tag, serverSocket?.localSocketAddress.toString())
-                                        messageQueue.put(BeanSocketFind(SocketMessage.Function, serverSocket?.localSocketAddress.toString()))
-//                                        socket.close()
-//                                        TODO("can not finish at once")
+                                    if (msg.content == "find") {
+                                        messageQueue.put(
+                                            BeanSocketFind(
+                                                SocketMessage.Function,
+                                                ip
+                                            )
+                                        )
+                                    }
+                                    if (right[this@FindTask] == "command"&&msg.content == "exit") {
+                                        Log.d(tag, "start: exit")
+                                        messageQueue.put(BeanSocketFind(SocketMessage.Exit, "exit"))
+                                        socket.close()
+                                    }
+                                    if (msg.content == "command"){
+                                        right[this@FindTask] = msg.content
+                                    }
+                                    if (msg.content == "client"){
+                                        right[this@FindTask] = msg.content
+                                    }
+                                    if (msg.content == "connect"&&right[this@FindTask] == "client"){
+                                        messageQueue.put(BeanSocketFind(SocketMessage.Function, "connect"))
                                     }
                                 }
+
                                 SocketMessage.Message -> {
                                     Log.d(tag, "start: ${msg.content}")
-                                    messageQueue.put(BeanSocketFind(SocketMessage.Message, msg.content))
+                                    messageQueue.put(
+                                        BeanSocketFind(
+                                            SocketMessage.Message,
+                                            msg.content
+                                        )
+                                    )
                                 }
 
                                 SocketMessage.Exit -> {
-                                    messageQueue.put(BeanSocketFind(SocketMessage.Exit, "exit"))
-                                    socket.close()
-                                    onFinish()
+                                    if (right[this@FindTask] == "command"){
+                                        messageQueue.put(BeanSocketFind(SocketMessage.Exit, "exit"))
+                                        socket.close()
+                                        onFinish()
+                                    }
+                                }
+
+                                SocketMessage.Result -> {
+
                                 }
                             }
                         }

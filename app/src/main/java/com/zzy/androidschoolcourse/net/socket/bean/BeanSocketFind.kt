@@ -8,5 +8,6 @@ data class BeanSocketFind(val type:SocketMessage,val content:String)
 enum class SocketMessage {
     Function,
     Message,
-    Exit
+    Exit,
+    Result
 }
