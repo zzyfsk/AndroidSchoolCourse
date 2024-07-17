@@ -41,7 +41,7 @@ class ScreenOnline : Screen {
         }
         Column(modifier = Modifier.fillMaxSize()) {
             BarTitle()
-            Button(onClick = { viewModel.start(context, navigate = {navigator?.push(ScreenFuTaRi(ip = viewModel.ip))}) }) {
+            Button(onClick = { viewModel.start(context) }) {
                 Text(text = "Server Run")
             }
             Button(onClick = { viewModel.sendMessage() }) {
