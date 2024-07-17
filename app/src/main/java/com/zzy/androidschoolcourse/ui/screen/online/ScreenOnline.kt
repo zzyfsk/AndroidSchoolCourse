@@ -56,13 +56,16 @@ class ScreenOnline : Screen {
             LazyColumn {
                 items(viewModel.deviceList) {
                     Text(modifier = Modifier.clickable {
-
+                        viewModel.connect(it)
                     }, text = it)
                 }
             }
         }
         if (viewModel.showDialog) DialogOnline(onConfirm = {
+            viewModel.sendResult(true)
             navigator?.push(ScreenFuTaRi(ip = viewModel.ip))
+        }, onDismiss = {
+            viewModel.sendResult(false)
         })
         BackHandler {
             viewModel.finish()

@@ -7,6 +7,10 @@ import com.zzy.androidschoolcourse.net.socket.find.ClientFind
 import com.zzy.androidschoolcourse.net.socket.find.ServerFind
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import java.net.ConnectException
 import java.net.NoRouteToHostException
@@ -16,39 +20,54 @@ class ServiceFind {
     private lateinit var controller: ClientFind
     private lateinit var client: ClientFind
 
-    fun serverStart(ip: String,onConnect:()->Unit={}) {
+    fun serverStart(ip: String, onConnect: () -> Unit = {}) {
         server = ServerFind()
         server.start(ip)
     }
 
-    fun controllerStart(ip: String) {
+    fun controllerStart(ip: String, onConnect: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             controller = ClientFind()
-            controller.start(ip)
+            controller.start(ip, onConnect = onConnect)
             controller.setRight("command")
         }
     }
 
-    fun clientConnect(ip: String,onConnect: () -> Unit){
+    fun clientConnect(
+        ip: String,
+        onConnect: () -> Unit,
+        onConfirm: () -> Unit,
+        onDisConfirm: () -> Unit
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             client = ClientFind()
-            client.start(ip, onConnect = onConnect)
-            client.sendMessage(BeanSocketFind(SocketMessage.Function,"connect"))
+            client.start(
+                ip,
+                onConnect = onConnect,
+                onConfirm = onConfirm,
+                onDisConFirm = onDisConfirm
+            )
+            client.sendMessage(BeanSocketFind(SocketMessage.Function, "connect"))
         }
     }
 
     fun clientStart(ip: String) {
         client = ClientFind()
         client.start(ip)
-        controller.sendMessage(BeanSocketFind(SocketMessage.Function,"client"))
+        controller.sendMessage(BeanSocketFind(SocketMessage.Function, "client"))
     }
 
     fun controllerSendMessage(message: String) {
         controller.sendMessage(BeanSocketFind(SocketMessage.Message, message))
     }
 
-    fun controllerSendResult(boolean: Boolean){
-        controller.sendMessage(BeanSocketFind(SocketMessage.Result,if (boolean)"true" else "false"))
+    fun controllerSendResult(boolean: Boolean) {
+        controller.sendMessage(
+            BeanSocketFind(
+                SocketMessage.Result,
+                if (boolean) "true" else "false"
+            )
+        )
     }
 
     fun finish() {
@@ -57,23 +76,55 @@ class ServiceFind {
 
     fun findServer(ip: String, onFind: (String) -> Unit = {}) {
         val realIP = ip.substring(0, ip.lastIndexOf(".") + 1)
-        for (i in 101..101) {
-            Log.e("tag", realIP + i.toString())
+        for (i in 1..255) {
             CoroutineScope(Dispatchers.IO).launch {
-                client = ClientFind()
+                val clientFind = ClientFind()
                 try {
-                    client.start(
+                    clientFind.start(
                         ip = realIP + i.toString(),
                         onFind = onFind
                     )
+                    Log.d("tag", "start: true")
+                    clientFind.sendMessage(BeanSocketFind(SocketMessage.Function, "find"))
                 } catch (e: ConnectException) {
-                    println(e.message)
+                    e.localizedMessage
                 } catch (e: NoRouteToHostException) {
-                    println(e.message)
+                    e.localizedMessage
                 }
-                Log.d("tag", "start: true")
-                client.sendMessage(BeanSocketFind(SocketMessage.Function, "find"))
             }
         }
+    }
+
+    fun findDevices(ip: String): Flow<String> {
+        val realIP = ip.substring(0, ip.lastIndexOf(".") + 1)
+        var count = 0
+        return callbackFlow {
+            for (i in 1..255) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val clientFind = ClientFind()
+                    try {
+                        clientFind.start(
+                            ip = realIP + i.toString(),
+                            onFind = {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    Log.e("tag", "found a device $realIP$i")
+                                }
+                            }
+                        )
+                        clientFind.sendMessage(BeanSocketFind(SocketMessage.Function, "find"))
+                        send(realIP + i)
+                    } catch (e: ConnectException) {
+                        e.localizedMessage
+                    } catch (e: NoRouteToHostException) {
+                        e.localizedMessage
+                    }
+                }
+                count++
+                Log.d("tag", "findDevices: $count")
+            }
+            Thread.sleep(5000)
+            awaitClose{}
+        }
+            .flowOn(Dispatchers.IO)
     }
 }

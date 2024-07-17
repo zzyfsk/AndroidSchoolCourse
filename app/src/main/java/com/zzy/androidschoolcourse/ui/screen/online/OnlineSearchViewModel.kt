@@ -1,6 +1,7 @@
 package com.zzy.androidschoolcourse.ui.screen.online
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +11,11 @@ import com.zzy.androidschoolcourse.net.socket.bean.BeanSocketFind
 import com.zzy.androidschoolcourse.net.socket.bean.SocketMessage
 import com.zzy.androidschoolcourse.net.socket.service.ServiceFind
 import com.zzy.androidschoolcourse.util.IPUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class OnlineSearchViewModel : ScreenModel {
     var showDialog by mutableStateOf(false)
@@ -21,32 +27,42 @@ class OnlineSearchViewModel : ScreenModel {
 
     private val serviceFind = ServiceFind()
 
-    fun start(context: Context,navigate:()->Unit){
+    fun start(context: Context, navigate: () -> Unit) {
         ip = IPUtil.ipUtil.getWifiIP(context)
         serviceFind.serverStart(ip)
-        serviceFind.controllerStart(ip)
+        serviceFind.controllerStart(ip, onConnect = {
+            showDialog = true
+        })
     }
 
-    fun find(){
+    fun find() {
         deviceList.clear()
-        serviceFind.findServer(ip, onFind = {deviceList.add(it)})
-        deviceList.add("0.0.0.0")
-        deviceList.remove("0.0.0.0")
+        CoroutineScope(Dispatchers.IO).launch {
+            serviceFind.findDevices(ip)
+                .onEach {
+                    deviceList.add(it)
+                    Log.e("tag", "fun find: $it")
+                }
+                .collect {}
+        }
+//        serviceFind.findServer(ip, onFind = {deviceList.add(it)})
     }
 
-    fun connect(){
-        serviceFind.clientConnect(ip, onConnect = {showDialog = true})
+    fun connect(serverIP: String) {
+        serviceFind.clientConnect(serverIP, onConnect = { showDialog = true }, onConfirm = {
+            serviceFind.finish()
+        }, onDisConfirm = {})
     }
 
-    fun sendResult(boolean: Boolean){
-
+    fun sendResult(boolean: Boolean) {
+        serviceFind.controllerSendResult(boolean)
     }
 
-    fun sendMessage(){
+    fun sendMessage() {
         serviceFind.controllerSendMessage("test")
     }
 
-    fun finish(){
+    fun finish() {
         serviceFind.finish()
     }
 }

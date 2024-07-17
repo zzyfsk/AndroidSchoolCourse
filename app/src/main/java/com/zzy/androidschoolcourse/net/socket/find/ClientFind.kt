@@ -20,29 +20,37 @@ class ClientFind {
     private lateinit var output: PrintWriter
     private var right = "client"
 
-
-    fun start( ip: String,  port: Int = 5124,onFind: (String) -> Unit = {},onConnect: () -> Unit = {}) {
+    fun start(
+        ip: String,
+        port: Int = 5124,
+        onFind: (String) -> Unit = {},
+        onConnect: () -> Unit = {},
+        onConfirm: () -> Unit = {},
+        onDisConFirm: () -> Unit = {}
+    ) {
         socket = Socket(ip, port)
         input = BufferedReader(InputStreamReader(socket.getInputStream()))
         output = PrintWriter(socket.getOutputStream(), true)
 
-        CoroutineScope(Dispatchers.IO).launch{
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 while (true) {
                     val message = input.readLine()
                     if (message != null) {
                         val msg = Json.decodeFromString<BeanSocketFind>(message)
-                        Log.d("tag", "client $message")
+                        Log.e("tag", "client $message , $right")
                         when (msg.type) {
                             SocketMessage.Function -> {
-                                if (msg.content.contains(".")){
+                                if (msg.content.contains(".")) {
                                     CoroutineScope(Dispatchers.Main).launch {
+                                        Log.e("tag", "collect the msg", )
                                         onFind(msg.content)
                                     }
-                                    sendMessage(BeanSocketFind(SocketMessage.Function,"exit"))
+                                    sendMessage(BeanSocketFind(SocketMessage.Function, "exit"))
                                     socket.close()
+                                    Log.e("tag", "find: $ip")
                                 }
-                                if (msg.content == "connect" && right == "command"){
+                                if (msg.content == "connect" && right == "command") {
                                     onConnect()
                                 }
                             }
@@ -56,20 +64,25 @@ class ClientFind {
                             }
 
                             SocketMessage.Result -> {
-
+                                if (msg.content == "true") {
+                                    onConfirm()
+                                }
+                                if (msg.content == "false") {
+                                    onDisConFirm()
+                                }
                             }
                         }
                     }
                 }
-            }catch (e:SocketException){
+            } catch (e: SocketException) {
                 e.localizedMessage
             }
         }
     }
 
-    fun setRight(right: String){
+    fun setRight(right: String) {
         this.right = right
-        sendMessage(BeanSocketFind(SocketMessage.Function,right))
+        sendMessage(BeanSocketFind(SocketMessage.Function, right))
     }
 
     fun sendMessage(message: BeanSocketFind) {

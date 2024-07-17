@@ -5,6 +5,7 @@ import com.zzy.androidschoolcourse.net.socket.bean.BeanSocketFind
 import com.zzy.androidschoolcourse.net.socket.bean.SocketMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -20,11 +21,11 @@ class ServerFind {
     private val port = 5124
 
     val users = mutableListOf<FindTask>()
-    private val right = mutableMapOf<FindTask,String>()
+    private val right = mutableMapOf<FindTask, String>()
     private var run = true
     private var serverSocket: ServerSocket? = null
     val messageQueue = ArrayBlockingQueue<BeanSocketFind>(20)
-    private var ip:String = ""
+    private var ip: String = ""
 
 
     fun start(ip: String = "0.0.0.0") {
@@ -90,32 +91,36 @@ class ServerFind {
                     try {
                         message = input.readLine()
                         if (message != null) {
-                            Log.d(tag, "right: ${this@FindTask}")
                             val msg = Json.decodeFromString<BeanSocketFind>(message)
-                            Log.d(tag, "start: $message ${right[this@FindTask]}")
+                            Log.d(tag, "right: ${right[this@FindTask]} msg: ${msg.content}")
                             when (msg.type) {
                                 SocketMessage.Function -> {
                                     if (msg.content == "find") {
-                                        messageQueue.put(
+                                        this@FindTask.sendMessage(
                                             BeanSocketFind(
                                                 SocketMessage.Function,
                                                 ip
                                             )
                                         )
                                     }
-                                    if (right[this@FindTask] == "command"&&msg.content == "exit") {
+                                    if (right[this@FindTask] == "command" && msg.content == "exit") {
                                         Log.d(tag, "start: exit")
                                         messageQueue.put(BeanSocketFind(SocketMessage.Exit, "exit"))
                                         socket.close()
                                     }
-                                    if (msg.content == "command"){
+                                    if (msg.content == "command") {
                                         right[this@FindTask] = msg.content
                                     }
-                                    if (msg.content == "client"){
+                                    if (msg.content == "client") {
                                         right[this@FindTask] = msg.content
                                     }
-                                    if (msg.content == "connect"&&right[this@FindTask] == "client"){
-                                        messageQueue.put(BeanSocketFind(SocketMessage.Function, "connect"))
+                                    if (msg.content == "connect") {
+                                        messageQueue.put(
+                                            BeanSocketFind(
+                                                SocketMessage.Function,
+                                                "connect"
+                                            )
+                                        )
                                     }
                                 }
 
@@ -130,7 +135,7 @@ class ServerFind {
                                 }
 
                                 SocketMessage.Exit -> {
-                                    if (right[this@FindTask] == "command"){
+                                    if (right[this@FindTask] == "command") {
                                         messageQueue.put(BeanSocketFind(SocketMessage.Exit, "exit"))
                                         socket.close()
                                         onFinish()
@@ -138,7 +143,7 @@ class ServerFind {
                                 }
 
                                 SocketMessage.Result -> {
-
+                                    messageQueue.put(BeanSocketFind(SocketMessage.Result,msg.content))
                                 }
                             }
                         }
