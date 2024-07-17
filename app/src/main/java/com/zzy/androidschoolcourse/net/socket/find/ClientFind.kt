@@ -38,17 +38,14 @@ class ClientFind {
                     val message = input.readLine()
                     if (message != null) {
                         val msg = Json.decodeFromString<BeanSocketFind>(message)
-                        Log.e("tag", "client $message , $right")
                         when (msg.type) {
                             SocketMessage.Function -> {
                                 if (msg.content.contains(".")) {
                                     CoroutineScope(Dispatchers.Main).launch {
-                                        Log.e("tag", "collect the msg", )
                                         onFind(msg.content)
                                     }
                                     sendMessage(BeanSocketFind(SocketMessage.Function, "exit"))
                                     socket.close()
-                                    Log.e("tag", "find: $ip")
                                 }
                                 if (msg.content == "connect" && right == "command") {
                                     onConnect()

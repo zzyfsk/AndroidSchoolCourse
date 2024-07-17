@@ -5,7 +5,6 @@ import com.zzy.androidschoolcourse.net.socket.bean.BeanSocketFind
 import com.zzy.androidschoolcourse.net.socket.bean.SocketMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -137,6 +136,7 @@ class ServerFind {
                                 SocketMessage.Exit -> {
                                     if (right[this@FindTask] == "command") {
                                         messageQueue.put(BeanSocketFind(SocketMessage.Exit, "exit"))
+                                        while (messageQueue.isNotEmpty())Thread.sleep(100)
                                         socket.close()
                                         onFinish()
                                     }

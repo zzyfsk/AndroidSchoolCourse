@@ -20,7 +20,6 @@ class OnlineSearchViewModel : ScreenModel {
     val deviceList = mutableStateListOf<String>()
 
     var ip: String = "0.0.0.0"
-    private var run = false
 
     private val serviceFind = ServiceFind()
 
@@ -45,9 +44,10 @@ class OnlineSearchViewModel : ScreenModel {
 //        serviceFind.findServer(ip, onFind = {deviceList.add(it)})
     }
 
-    fun connect(serverIP: String) {
+    fun connect(serverIP: String,onConfirm:()->Unit) {
         serviceFind.clientConnect(serverIP, onConnect = { showDialog = true }, onConfirm = {
             serviceFind.finish()
+            onConfirm()
         }, onDisConfirm = {})
     }
 

@@ -56,14 +56,17 @@ class ScreenOnline : Screen {
             LazyColumn {
                 items(viewModel.deviceList) {
                     Text(modifier = Modifier.clickable {
-                        viewModel.connect(it)
+                        viewModel.connect(it, onConfirm = {
+                            navigator?.replace(ScreenFuTaRi(it))
+                        })
                     }, text = it)
                 }
             }
         }
         if (viewModel.showDialog) DialogOnline(onConfirm = {
             viewModel.sendResult(true)
-            navigator?.push(ScreenFuTaRi(ip = viewModel.ip))
+            viewModel.finish()
+            navigator?.replace(ScreenFuTaRi(ip = viewModel.ip))
         }, onDismiss = {
             viewModel.sendResult(false)
         })
@@ -103,7 +106,6 @@ class ScreenOnline : Screen {
         val viewModel = rememberScreenModel {
             OnlineSearchViewModel()
         }
-        val navigator = LocalNavigator.current
         AlertDialog(
             onDismissRequest = { viewModel.showDialog = false },
             confirmButton = {
