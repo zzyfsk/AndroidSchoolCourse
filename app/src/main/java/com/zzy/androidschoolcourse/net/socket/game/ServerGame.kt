@@ -1,5 +1,6 @@
 package com.zzy.androidschoolcourse.net.socket.game
 
+import android.util.Log
 import com.zzy.androidschoolcourse.net.socket.bean.BeanSocketGame
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
 import com.zzy.androidschoolcourse.net.socket.bean.GameSocketState
@@ -103,6 +104,9 @@ class ServerGame {
                                             if (msg.right == GameRight.Client) GameRight.Command else GameRight.Client
                                         )
                                     )
+                                    users.forEach {
+                                        Log.d("tag", "start: ${right[it]}")
+                                    }
                                 }
 
                                 GameSocketState.Right -> {
@@ -128,7 +132,8 @@ class ServerGame {
                     } catch (e: SocketException) {
                         e.localizedMessage
                     } finally {
-                        right.remove(this@GameTask)
+//                        right.remove(this@GameTask)
+                        // 此处不知道哪里会抛异常
                     }
                 }
             }

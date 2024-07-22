@@ -286,7 +286,7 @@ fun TwentyFourGameView(
     }
 
     val backgroundColor: (Int) -> Color = {
-        if (it == gameViewModel.currentSymbol) MainColor.GameButtonPress
+        if (it == gameViewModel.firstNumber) MainColor.GameButtonPress
         else MainColor.GameButtonUnPress
     }
 
@@ -300,7 +300,7 @@ fun TwentyFourGameView(
     Column(modifier = Modifier) {
         Row(
             modifier = Modifier
-                .height(350.dp)
+                .height(340.dp)
                 .padding(horizontal = 10.dp)
         ) {
             Column(
