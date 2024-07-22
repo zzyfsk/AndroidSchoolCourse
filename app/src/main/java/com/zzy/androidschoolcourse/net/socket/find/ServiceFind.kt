@@ -1,9 +1,7 @@
-package com.zzy.androidschoolcourse.net.socket.service
+package com.zzy.androidschoolcourse.net.socket.find
 
 import com.zzy.androidschoolcourse.net.socket.bean.BeanSocketFind
 import com.zzy.androidschoolcourse.net.socket.bean.SocketMessage
-import com.zzy.androidschoolcourse.net.socket.find.ClientFind
-import com.zzy.androidschoolcourse.net.socket.find.ServerFind
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose

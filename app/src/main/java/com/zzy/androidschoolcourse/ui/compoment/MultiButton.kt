@@ -46,7 +46,7 @@ fun NumberButton(
     fontSize: Int,
     backgroundColor: Color = Color.White,
     visible: Boolean = true,
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit = {}
 ) {
     var touch by remember {
         mutableStateOf(false)
@@ -180,7 +180,7 @@ fun SymbolButton(
     length: Dp,
     backgroundColor: Color = Color.White,
     symbolColor: Color = Color.Black,
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit = {}
 ) {
     var touch by remember {
         mutableStateOf(false)

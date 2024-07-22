@@ -38,7 +38,7 @@ class ServerFind {
                 while (run) {
                     val socket = serverSocket?.accept()
                     CoroutineScope(Dispatchers.IO).launch {
-                        val findTask = FindTask(socket!!, onFinish)
+                        val findTask = FindTask(socket!!)
                         users.add(findTask)
                         findTask.start()
                     }
@@ -76,7 +76,7 @@ class ServerFind {
         }
     }
 
-    inner class FindTask(private val socket: Socket, val onFinish: () -> Unit) {
+    inner class FindTask(private val socket: Socket) {
         private val input: BufferedReader =
             BufferedReader(InputStreamReader(socket.getInputStream()))
         private val output: PrintWriter = PrintWriter(socket.getOutputStream(), true)

@@ -3,6 +3,7 @@ package com.zzy.androidschoolcourse.ui.compoment
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,15 +24,15 @@ import androidx.compose.ui.unit.dp
 import com.zzy.androidschoolcourse.R
 import com.zzy.androidschoolcourse.bean.Fraction
 import com.zzy.androidschoolcourse.ui.theme.MainColor
+import kotlinx.serialization.Serializable
 
 @Composable
 fun TwentyFourGame(
     modifier: Modifier = Modifier,
-    win: () -> Unit,
+    win: () -> Unit = {},
     click: (TwentyFourGameState) -> Unit = {},
-    initNumber: String
+    initNumber: String,
 ) {
-//    val tag = "TwentyFourGame"
     var firstNumber by remember { mutableIntStateOf(0) }
     var secondNumber by remember { mutableIntStateOf(0) }
     var currentSymbol by remember { mutableIntStateOf(0) }
@@ -110,7 +111,8 @@ fun TwentyFourGame(
                 secondNumber,
                 currentSymbol,
                 addCount,
-                getNumberState()
+                getNumberState(),
+                initNumber
             )
         )
     }
@@ -218,7 +220,8 @@ fun TwentyFourGame(
                     secondNumber,
                     currentSymbol,
                     addCount,
-                    getNumberState()
+                    getNumberState(),
+                    initNumber
                 )
             )
         }
@@ -271,22 +274,162 @@ fun TwentyFourGame(
             Text(text = "Reset")
         }
     }
+}
+
+@Composable
+fun TwentyFourGameView(
+    gameViewModel: TwentyFourGameState,
+    modifier: Modifier = Modifier
+) {
+    fun getNumberState(): MutableList<TwentyFourGameButtonState> {
+        return gameViewModel.numberStateList
+    }
+
+    val backgroundColor: (Int) -> Color = {
+        if (it == gameViewModel.currentSymbol) MainColor.GameButtonPress
+        else MainColor.GameButtonUnPress
+    }
+
+    val symbolBackgroundColor: (Int) -> Color = {
+        if (it == gameViewModel.currentSymbol) MainColor.SymbolButtonPress else MainColor.SymbolButtonUnPress
+    }
+    val symbolColor: (Int) -> Color = {
+        if (it == gameViewModel.currentSymbol) MainColor.SymbolButtonUnPress else MainColor.SymbolButtonPress
+    }
+
+    Column(modifier = Modifier) {
+        Row(
+            modifier = Modifier
+                .height(350.dp)
+                .padding(horizontal = 10.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                NumberButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    number = 1,
+                    numberUp = getNumberState()[0].fraction.numerator,
+                    numberDown = getNumberState()[0].fraction.denominator,
+                    length = 130,
+                    fontSize = 50,
+                    backgroundColor = backgroundColor(1),
+                    visible = getNumberState()[0].numberVisible,
+                )
+                NumberButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    number = 3,
+                    numberUp = getNumberState()[2].fraction.numerator,
+                    numberDown = getNumberState()[2].fraction.denominator,
+                    length = 130,
+                    fontSize = 50,
+                    backgroundColor = backgroundColor(3),
+                    visible = getNumberState()[2].numberVisible,
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                NumberButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    number = 2,
+                    numberUp = getNumberState()[1].fraction.numerator,
+                    numberDown = getNumberState()[1].fraction.denominator,
+                    length = 130,
+                    fontSize = 50,
+                    backgroundColor = backgroundColor(2),
+                    visible = getNumberState()[1].numberVisible,
+                )
+                NumberButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    number = 4,
+                    numberUp = getNumberState()[3].fraction.numerator,
+                    numberDown = getNumberState()[3].fraction.denominator,
+                    length = 130,
+                    fontSize = 50,
+                    backgroundColor = backgroundColor(4),
+                    visible = getNumberState()[3].numberVisible,
+                )
+            }
+            BoxWithConstraints(modifier = modifier
+                .fillMaxHeight()
+                .weight(0.5f)) {
+                val eachSize by remember {
+                    mutableStateOf(((maxHeight - 20.dp) / 4))
+                }
+                Column(modifier = Modifier) {
+                    SymbolButton(
+                        modifier = modifier,
+                        number = 1,
+                        imageId = R.drawable.add,
+                        length = eachSize,
+                        backgroundColor = symbolBackgroundColor(1),
+                        symbolColor = symbolColor(1)
+                    )
+                    SymbolButton(
+                        modifier = modifier,
+                        number = 2,
+                        imageId = R.drawable.del,
+                        length = eachSize,
+                        backgroundColor = symbolBackgroundColor(2),
+                        symbolColor = symbolColor(2)
+                    )
+                    SymbolButton(
+                        modifier = modifier,
+                        number = 3,
+                        imageId = R.drawable.mul,
+                        length = eachSize,
+                        backgroundColor = symbolBackgroundColor(3),
+                        symbolColor = symbolColor(3)
+                    )
+                    SymbolButton(
+                        modifier = modifier,
+                        number = 4,
+                        imageId = R.drawable.div,
+                        length = eachSize,
+                        backgroundColor = symbolBackgroundColor(4),
+                        symbolColor = symbolColor(4)
+                    )
+
+                }
+            }
+        }
+
+
+    }
 
 }
 
+@Serializable
 data class TwentyFourGameButtonState(
     var fraction: Fraction = Fraction(1, 1),
     var numberVisible: Boolean = true
 )
 
+@Serializable
 data class TwentyFourGameState(
-    val firstNumber: Int,
-    val secondNumber: Int,
-    val currentSymbol: Int,
-    val addCount: Int,
-    val numberStateList: List<TwentyFourGameButtonState>
+    val firstNumber: Int = 0,
+    val secondNumber: Int = 0,
+    val currentSymbol: Int = 0,
+    val addCount: Int = 0,
+    val numberStateList: MutableList<TwentyFourGameButtonState> = mutableStateListOf(),
+    val numbers: String = "0000"
 ) {
     override fun toString(): String {
         return "$firstNumber,$secondNumber,$currentSymbol,$addCount"
+    }
+
+    init {
+        for (i in 0..3) {
+            numberStateList.add(TwentyFourGameButtonState())
+        }
     }
 }

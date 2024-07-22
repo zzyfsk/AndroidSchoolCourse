@@ -27,6 +27,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.zzy.androidschoolcourse.R
+import com.zzy.androidschoolcourse.net.socket.bean.GameRight
 
 class ScreenOnline : Screen {
     @Composable
@@ -53,11 +54,14 @@ class ScreenOnline : Screen {
             Button(onClick = { viewModel.find() }) {
                 Text(text = "find")
             }
+            Button(onClick = { navigator?.replace(ScreenFuTaRi(ip = viewModel.ip, right = GameRight.Client))}){
+                Text(text = "to next")
+            }
             LazyColumn {
                 items(viewModel.deviceList) {
                     Text(modifier = Modifier.clickable {
                         viewModel.connect(it, onConfirm = {
-                            navigator?.replace(ScreenFuTaRi(it))
+                            navigator?.replace(ScreenFuTaRi(ip = it, right = GameRight.Client))
                         })
                     }, text = it)
                 }
@@ -66,7 +70,7 @@ class ScreenOnline : Screen {
         if (viewModel.showDialog) DialogOnline(onConfirm = {
             viewModel.sendResult(true)
             viewModel.finish()
-            navigator?.replace(ScreenFuTaRi(ip = viewModel.ip))
+            navigator?.replace(ScreenFuTaRi(ip = viewModel.ip, right = GameRight.Command))
         }, onDismiss = {
             viewModel.sendResult(false)
         })

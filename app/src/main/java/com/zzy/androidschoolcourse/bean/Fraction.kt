@@ -1,5 +1,8 @@
 package com.zzy.androidschoolcourse.bean
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Fraction(var numerator: Int, var denominator: Int) {
 
     operator fun plus(another: Fraction): Fraction {
