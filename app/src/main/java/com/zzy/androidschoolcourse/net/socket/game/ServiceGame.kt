@@ -1,6 +1,7 @@
 package com.zzy.androidschoolcourse.net.socket.game
 
 import android.util.Log
+import com.zzy.androidschoolcourse.net.socket.bean.BeanGameState
 import com.zzy.androidschoolcourse.net.socket.bean.BeanSocketGame
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
 import com.zzy.androidschoolcourse.net.socket.bean.GameSocketState
@@ -18,50 +19,107 @@ class ServiceGame {
         server.start()
     }
 
-    fun controllerStart(ip:String,port:Int,onMessage:(String)->Unit){
+    fun controllerStart(
+        ip: String,
+        port: Int,
+        onSet: (String) -> Unit = {},
+        onGet: () -> String,
+        onMessage: (String) -> Unit
+    ) {
         controller = ClientGame()
-        controller.start(ip, port){ type,message->
-            when(type){
-                GameSocketState.Function -> TODO()
+        val right = GameRight.Command
+        controller.start(ip, port) { type, message ->
+            Log.e("tag", "controllerStart: $type $message" )
+            when (type) {
+                GameSocketState.Function -> {
+                    if (message == "init") {
+                        Log.e("tag", "controllerStart:init Rec ", )
+                        controller.sendMessage(
+                            BeanSocketGame(
+                                GameSocketState.Set,
+                                Json.encodeToString(BeanGameState(initNumber = onGet())),
+                                right
+                            )
+                        )
+                    }
+                }
+
                 GameSocketState.Message -> {
                     onMessage(message)
                 }
+
                 GameSocketState.Right -> TODO()
                 GameSocketState.Exit -> {}
+                GameSocketState.Set -> {
+                    Log.e("tag", "controllerStart: Set Rec", )
+                    onSet(message)
+                }
             }
         }
         controller.setRight(GameRight.Command)
     }
 
-    fun clientStart(ip:String,port:Int,onMessage: (String) -> Unit){
+    fun clientStart(
+        ip: String,
+        port: Int,
+        onSet: (String) -> Unit = {},
+        onMessage: (String) -> Unit
+    ) {
         client = ClientGame()
-        client.start(ip, port){type,message->
-            when(type){
-                GameSocketState.Function -> TODO()
+        client.start(ip, port) { type, message ->
+            when (type) {
+                GameSocketState.Function -> {
+
+                }
+
                 GameSocketState.Message -> {
                     onMessage(message)
                 }
+
                 GameSocketState.Right -> TODO()
                 GameSocketState.Exit -> TODO()
+                GameSocketState.Set -> {
+                    onSet(message)
+                }
             }
-
         }
+        client.setRight(GameRight.Client)
+        client.sendMessage(
+            BeanSocketGame(
+                GameSocketState.Function,
+                "Start", GameRight.Client
+            )
+        )
     }
 
-    fun sendGameState(gameState:TwentyFourGameState,right: GameRight){
-        if (right == GameRight.Client){
-            Log.d("tag", "sendGameState: client")
-            client.sendMessage(BeanSocketGame(
-                GameSocketState.Message,
-                Json.encodeToString(gameState),
+    fun clientSendGameStart() {
+        client.sendMessage(
+            BeanSocketGame(
+                GameSocketState.Function,
+                "Start",
                 GameRight.Client
-            ))
-        }else if (right == GameRight.Command){
-            controller.sendMessage(BeanSocketGame(
-                GameSocketState.Message,
-                Json.encodeToString(gameState),
-                GameRight.Command
-            ))
+            )
+        )
+    }
+
+    fun sendGameState(gameState: TwentyFourGameState, right: GameRight) {
+        if (right == GameRight.Client) {
+            Log.d("tag", "sendGameState: client")
+            client.sendMessage(
+                BeanSocketGame(
+                    GameSocketState.Message,
+                    Json.encodeToString(gameState),
+                    GameRight.Client
+                )
+            )
+        } else if (right == GameRight.Command) {
+            controller.sendMessage(
+                BeanSocketGame(
+                    GameSocketState.Message,
+                    Json.encodeToString(gameState),
+                    GameRight.Command
+                )
+            )
         }
     }
 }

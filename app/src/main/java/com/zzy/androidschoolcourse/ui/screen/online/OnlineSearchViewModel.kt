@@ -41,7 +41,7 @@ class OnlineSearchViewModel : ScreenModel {
                 }
                 .collect {}
         }
-//        serviceFind.findServer(ip, onFind = {deviceList.add(it)})
+        deviceList.add("192.168.31.101")
     }
 
     fun connect(serverIP: String,onConfirm:()->Unit) {

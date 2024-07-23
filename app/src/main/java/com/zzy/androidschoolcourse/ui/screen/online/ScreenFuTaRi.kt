@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
@@ -19,7 +20,8 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
 
     @Composable
     override fun Content() {
-        viewModel = rememberScreenModel { FuTaRiViewModel(ip, port, right) }
+        val context = LocalContext.current
+        viewModel = rememberScreenModel { FuTaRiViewModel(ip, port, right,context) }
         LaunchedEffect(key1 = Unit) {
             viewModel?.init()
         }
@@ -48,6 +50,6 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
         TwentyFourGame(win = { }, click = {
             viewModel?.gameState = it
             viewModel?.sendGameState()
-        }, initNumber = "1111")
+        }, initNumber = viewModel?.gameState?.numbers?:"2222")
     }
 }

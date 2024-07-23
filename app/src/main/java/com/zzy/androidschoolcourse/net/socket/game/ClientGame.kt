@@ -1,5 +1,6 @@
 package com.zzy.androidschoolcourse.net.socket.game
 
+import android.util.Log
 import com.zzy.androidschoolcourse.net.socket.bean.BeanSocketGame
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
 import com.zzy.androidschoolcourse.net.socket.bean.GameSocketState
@@ -21,51 +22,62 @@ class ClientGame {
     private var right = GameRight.Client
 
     fun start(
-        ip:String,
-        port:Int = 5123,
-        onEvent:(GameSocketState,String)->Unit={ _,_-> }
-    ){
-        socket = Socket(ip,port)
+        ip: String,
+        port: Int = 5123,
+        onEvent: (GameSocketState, String) -> Unit = { _, _ -> }
+    ) {
+        socket = Socket(ip, port)
         input = BufferedReader(InputStreamReader(socket.getInputStream()))
-        output = PrintWriter(socket.getOutputStream(),true)
+        output = PrintWriter(socket.getOutputStream(), true)
 
-        CoroutineScope(Dispatchers.IO).launch{
+        CoroutineScope(Dispatchers.IO).launch {
             try {
-                while (true){
+                while (true) {
                     val message = input.readLine()
-                    if (message != null){
+                    if (message != null) {
                         val msg = Json.decodeFromString<BeanSocketGame>(message)
-                        when(msg.type){
+                        when (msg.type) {
                             GameSocketState.Function -> {
+                                if (msg.content == "Start") {
+                                    Log.e("tag", "client:Start Rec $right", )
+                                    onEvent(GameSocketState.Function,"init")
+                                }
+                            }
 
-                            }
                             GameSocketState.Message -> {
-                                onEvent(GameSocketState.Message,msg.content)
+                                onEvent(GameSocketState.Message, msg.content)
                             }
+
                             GameSocketState.Right -> {
 
                             }
-                            GameSocketState.Exit -> {
-                                sendMessage(BeanSocketGame(GameSocketState.Exit,"",GameRight.All))
-                                socket.close()
-                                onEvent(GameSocketState.Exit,"")
+
+                            GameSocketState.Set -> {
+                                onEvent(GameSocketState.Set, msg.content)
                             }
+
+                            GameSocketState.Exit -> {
+                                sendMessage(BeanSocketGame(GameSocketState.Exit, "", GameRight.All))
+                                socket.close()
+                                onEvent(GameSocketState.Exit, "")
+                            }
+
                         }
                     }
                 }
-            }catch (e:SocketException){
+            } catch (e: SocketException) {
                 e.localizedMessage
             }
         }
     }
 
-    fun setRight(right:GameRight){
+    fun setRight(right: GameRight) {
         this.right = right
-        sendMessage(BeanSocketGame(GameSocketState.Right,"",right))
+        sendMessage(BeanSocketGame(GameSocketState.Right, "", right))
     }
 
-    fun sendMessage(message:BeanSocketGame){
-        CoroutineScope(Dispatchers.IO).launch{
+    fun sendMessage(message: BeanSocketGame) {
+        CoroutineScope(Dispatchers.IO).launch {
             output.println(Json.encodeToString(message))
         }
     }

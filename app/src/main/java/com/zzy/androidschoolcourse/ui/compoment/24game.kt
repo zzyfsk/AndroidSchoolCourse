@@ -41,7 +41,7 @@ fun TwentyFourGame(
 
     fun getNumberState(): SnapshotStateList<TwentyFourGameButtonState> {
         if (numberStateList.isEmpty()) {
-            for (i in 0..3) {
+            while (numberStateList.size<4) {
                 numberStateList.add(TwentyFourGameButtonState())
             }
         }
@@ -50,11 +50,10 @@ fun TwentyFourGame(
 
 
     fun initNumber() {
-        getNumberState().forEachIndexed { index, _ ->
-            initNumber[index].digitToInt().let {
-                numberStateList[index].fraction.numerator = if (it == 0) 10 else it
-                numberStateList[index].fraction.denominator = 1
-            }
+
+        initNumber.forEachIndexed{index, c ->
+            getNumberState()[index].fraction.numerator = if (c == '0') 10 else c.digitToInt()
+            getNumberState()[index].fraction.denominator = 1
         }
     }
 

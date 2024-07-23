@@ -2,9 +2,11 @@ package com.zzy.androidschoolcourse.ui.screen.online
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -54,16 +57,38 @@ class ScreenOnline : Screen {
             Button(onClick = { viewModel.find() }) {
                 Text(text = "find")
             }
-            Button(onClick = { navigator?.replace(ScreenFuTaRi(ip = viewModel.ip, right = GameRight.Client))}){
+            Button(onClick = {
+                navigator?.replace(
+                    ScreenFuTaRi(
+                        ip = viewModel.ip,
+                        right = GameRight.Client
+                    )
+                )
+            }) {
                 Text(text = "to next")
             }
-            LazyColumn {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(viewModel.deviceList) {
-                    Text(modifier = Modifier.clickable {
-                        viewModel.connect(it, onConfirm = {
-                            navigator?.replace(ScreenFuTaRi(ip = it, right = GameRight.Client))
-                        })
-                    }, text = it)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(30.dp),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        HorizontalDivider()
+                        Text(modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                viewModel.connect(it, onConfirm = {
+                                    navigator?.replace(
+                                        ScreenFuTaRi(
+                                            ip = it,
+                                            right = GameRight.Client
+                                        )
+                                    )
+                                })
+                            }, text = it)
+                    }
                 }
             }
         }

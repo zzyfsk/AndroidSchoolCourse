@@ -93,6 +93,15 @@ class ServerGame {
                             val msg = Json.decodeFromString<BeanSocketGame>(message)
                             when (msg.type) {
                                 GameSocketState.Function -> {
+                                    if (msg.content == "Start") {
+                                        messageQueue.put(
+                                            BeanSocketGame(
+                                                GameSocketState.Function,
+                                                "Start",
+                                                GameRight.Command
+                                            )
+                                        )
+                                    }
 
                                 }
 
@@ -111,6 +120,17 @@ class ServerGame {
 
                                 GameSocketState.Right -> {
                                     right[this@GameTask] = msg.right
+                                    Log.e("tag", "right:${right[this@GameTask]} ")
+                                }
+
+                                GameSocketState.Set -> {
+                                    messageQueue.put(
+                                        BeanSocketGame(
+                                            GameSocketState.Set,
+                                            msg.content,
+                                            GameRight.All
+                                        )
+                                    )
                                 }
 
                                 GameSocketState.Exit -> {
@@ -127,6 +147,7 @@ class ServerGame {
                                         finish
                                     }
                                 }
+
                             }
                         }
                     } catch (e: SocketException) {
