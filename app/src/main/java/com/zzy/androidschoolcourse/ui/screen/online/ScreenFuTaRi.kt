@@ -1,5 +1,6 @@
 package com.zzy.androidschoolcourse.ui.screen.online
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.HorizontalDivider
@@ -13,22 +14,23 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
 import com.zzy.androidschoolcourse.ui.compoment.TwentyFourGame
+import com.zzy.androidschoolcourse.ui.compoment.TwentyFourGameState
 import com.zzy.androidschoolcourse.ui.compoment.TwentyFourGameView
 
 class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: GameRight) : Screen {
-    private var viewModel: FuTaRiViewModel? = null
+
 
     @Composable
     override fun Content() {
         val context = LocalContext.current
-        viewModel = rememberScreenModel { FuTaRiViewModel(ip, port, right,context) }
+        val viewModel: FuTaRiViewModel = rememberScreenModel { FuTaRiViewModel(ip, port, right,context) }
         LaunchedEffect(key1 = Unit) {
-            viewModel?.init()
+            viewModel.init()
         }
         Column(modifier = Modifier.fillMaxSize()) {
-            Text(text = "多人游戏界面")
+            Text(text = "多人游戏界面 ${viewModel.gameState.numbers}")
             BarTop()
-            GameOppose()
+            GameOppose(opposeState = viewModel.opposeState)
             HorizontalDivider(thickness = 1.dp)
             GameMe()
         }
@@ -41,15 +43,18 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
     }
 
     @Composable
-    fun GameOppose() {
-        viewModel?.opposeState?.let { TwentyFourGameView(it) }
+    fun GameOppose(opposeState:TwentyFourGameState) {
+        TwentyFourGameView(opposeState)
     }
 
     @Composable
     fun GameMe() {
-        TwentyFourGame(win = { }, click = {
-            viewModel?.gameState = it
-            viewModel?.sendGameState()
-        }, initNumber = viewModel?.gameState?.numbers?:"2222")
+        val context = LocalContext.current
+        val viewModel: FuTaRiViewModel = rememberScreenModel { FuTaRiViewModel(ip, port, right,context) }
+            TwentyFourGame(win = { }, click = {
+                Log.e("tag", "game state: ${it.numbers} " )
+                viewModel.gameState = it
+                viewModel.sendGameState()
+            }, gameState = viewModel.gameState)
+        }
     }
-}

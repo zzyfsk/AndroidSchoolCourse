@@ -31,13 +31,14 @@ fun TwentyFourGame(
     modifier: Modifier = Modifier,
     win: () -> Unit = {},
     click: (TwentyFourGameState) -> Unit = {},
-    initNumber: String,
+    gameState: TwentyFourGameState,
 ) {
     var firstNumber by remember { mutableIntStateOf(0) }
     var secondNumber by remember { mutableIntStateOf(0) }
     var currentSymbol by remember { mutableIntStateOf(0) }
     var addCount by remember { mutableIntStateOf(0) }
     val numberStateList = remember { mutableStateListOf<TwentyFourGameButtonState>() }
+    var initNumber by remember { mutableStateOf("0000") }
 
     fun getNumberState(): SnapshotStateList<TwentyFourGameButtonState> {
         if (numberStateList.isEmpty()) {
@@ -48,15 +49,12 @@ fun TwentyFourGame(
         return numberStateList
     }
 
-
     fun initNumber() {
-
         initNumber.forEachIndexed{index, c ->
             getNumberState()[index].fraction.numerator = if (c == '0') 10 else c.digitToInt()
             getNumberState()[index].fraction.denominator = 1
         }
     }
-
 
     val winCheck: () -> Unit = {
         if (addCount == 3) {
@@ -132,7 +130,8 @@ fun TwentyFourGame(
         else MainColor.GameButtonUnPress
     }
 
-    LaunchedEffect(key1 = initNumber) {
+    LaunchedEffect(key1 = gameState.numbers) {
+        initNumber = gameState.numbers
         resetGame()
         addCount = 0
     }
@@ -420,7 +419,7 @@ data class TwentyFourGameState(
     val currentSymbol: Int = 0,
     val addCount: Int = 0,
     val numberStateList: MutableList<TwentyFourGameButtonState> = mutableStateListOf(),
-    val numbers: String = "0000"
+    val numbers: String
 ) {
     override fun toString(): String {
         return "$firstNumber,$secondNumber,$currentSymbol,$addCount"

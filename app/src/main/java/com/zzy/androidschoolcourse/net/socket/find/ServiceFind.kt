@@ -71,27 +71,6 @@ class ServiceFind {
         controller.sendMessage(BeanSocketFind(SocketMessage.Exit, ""))
     }
 
-//    fun findServer(ip: String, onFind: (String) -> Unit = {}) {
-//        val realIP = ip.substring(0, ip.lastIndexOf(".") + 1)
-//        for (i in 1..255) {
-//            CoroutineScope(Dispatchers.IO).launch {
-//                val clientFind = ClientFind()
-//                try {
-//                    clientFind.start(
-//                        ip = realIP + i.toString(),
-//                        onFind = onFind
-//                    )
-//                    Log.d("tag", "start: true")
-//                    clientFind.sendMessage(BeanSocketFind(SocketMessage.Function, "find"))
-//                } catch (e: ConnectException) {
-//                    e.localizedMessage
-//                } catch (e: NoRouteToHostException) {
-//                    e.localizedMessage
-//                }
-//            }
-//        }
-//    }
-
     fun findDevices(ip: String): Flow<String> {
         val realIP = ip.substring(0, ip.lastIndexOf(".") + 1)
         var count = 0

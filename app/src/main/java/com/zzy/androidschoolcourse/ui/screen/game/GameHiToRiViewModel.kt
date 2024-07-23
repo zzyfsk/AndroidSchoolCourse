@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.zzy.androidschoolcourse.net.QuestionService
+import com.zzy.androidschoolcourse.ui.compoment.TwentyFourGameState
 import com.zzy.androidschoolcourse.util.TimerUtil
 import java.util.Timer
 import java.util.TimerTask
@@ -14,7 +15,6 @@ class GameHiToRiViewModel : ScreenModel {
 
     var winShow by mutableStateOf(false)
 
-    private val tag = "GameHiToRiViewModel"
     var timeValue = 1
 
     var time by mutableStateOf("00:00")
@@ -22,15 +22,17 @@ class GameHiToRiViewModel : ScreenModel {
     private var addCount = 0
 
     // game logic
-    var initNumber by mutableStateOf("0000")
+    var gameState by mutableStateOf(TwentyFourGameState(numbers = "1234"))
 
 
     private fun readInitNumber(context: Context) {
-        initNumber =
+        gameState = TwentyFourGameState(
+            numbers =
             QuestionService.questionService.readQuestion(
                 context = context,
                 fileName = "dataSet.txt"
             )
+        )
     }
 
     fun init(context: Context) {

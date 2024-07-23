@@ -45,19 +45,23 @@ class ScreenGameHiToRi : Screen {
         val context = LocalContext.current
         LaunchedEffect(Unit) {
             screenModel.init(context)
-            scope.launch (Dispatchers.IO){
+            scope.launch(Dispatchers.IO) {
                 screenModel.setUpTimeSchedule()
             }
         }
         Column(modifier = Modifier.fillMaxSize()) {
             BarTitle()
             Spacer(modifier = Modifier.requiredHeight(10.dp))
+            Text(text = screenModel.gameState.numbers)
             Timer()
             Spacer(modifier = Modifier.requiredHeight(10.dp))
-            TwentyFourGame(win = { screenModel.winShow = true }, initNumber = screenModel.initNumber, click = {
-                Log.d("tag", "Content: $it")
-            })
-            if (screenModel.winShow){
+            TwentyFourGame(
+                win = { screenModel.winShow = true },
+                gameState = screenModel.gameState,
+                click = {
+                    Log.d("tag", "Content: $it")
+                })
+            if (screenModel.winShow) {
                 screenModel.winShow = false
                 navigator?.replace(ScreenWin())
             }
@@ -69,9 +73,9 @@ class ScreenGameHiToRi : Screen {
         val screenModel = rememberScreenModel {
             GameHiToRiViewModel()
         }
-        Row (modifier = modifier.fillMaxWidth()){
+        Row(modifier = modifier.fillMaxWidth()) {
             Spacer(modifier = Modifier.weight(1f))
-            Text(modifier = Modifier.requiredWidth(60.dp),text = screenModel.time)
+            Text(modifier = Modifier.requiredWidth(60.dp), text = screenModel.time)
         }
     }
 

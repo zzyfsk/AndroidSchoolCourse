@@ -33,7 +33,6 @@ class ServiceGame {
             when (type) {
                 GameSocketState.Function -> {
                     if (message == "init") {
-                        Log.e("tag", "controllerStart:init Rec ", )
                         controller.sendMessage(
                             BeanSocketGame(
                                 GameSocketState.Set,
@@ -51,8 +50,8 @@ class ServiceGame {
                 GameSocketState.Right -> TODO()
                 GameSocketState.Exit -> {}
                 GameSocketState.Set -> {
-                    Log.e("tag", "controllerStart: Set Rec", )
                     onSet(message)
+
                 }
             }
         }
@@ -84,15 +83,10 @@ class ServiceGame {
             }
         }
         client.setRight(GameRight.Client)
-        client.sendMessage(
-            BeanSocketGame(
-                GameSocketState.Function,
-                "Start", GameRight.Client
-            )
-        )
+        clientSendGameStart()
     }
 
-    fun clientSendGameStart() {
+    private fun clientSendGameStart() {
         client.sendMessage(
             BeanSocketGame(
                 GameSocketState.Function,

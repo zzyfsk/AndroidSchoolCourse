@@ -25,12 +25,19 @@ class FuTaRiViewModel(
     ScreenModel {
     private val tag = "FuTaRiViewModel"
     private val serviceGame = ServiceGame()
-    var opposeState by mutableStateOf(TwentyFourGameState())
-    var gameState by mutableStateOf(TwentyFourGameState())
+    var opposeState by mutableStateOf(TwentyFourGameState(numbers = "1234"))
+    var gameState by mutableStateOf(TwentyFourGameState(numbers = "4321"))
 
 
     fun sendGameState() {
         serviceGame.sendGameState(gameState, right)
+    }
+
+    private fun set(){
+        opposeState.numbers[0].digitToInt().let { num->opposeState.numberStateList[0].fraction.numerator = if (num==0) 10 else num }
+        opposeState.numbers[1].digitToInt().let { num->opposeState.numberStateList[1].fraction.numerator = if (num==0) 10 else num }
+        opposeState.numbers[2].digitToInt().let { num->opposeState.numberStateList[2].fraction.numerator = if (num==0) 10 else num }
+        opposeState.numbers[3].digitToInt().let { num->opposeState.numberStateList[3].fraction.numerator = if (num==0) 10 else num }
     }
 
     private fun readInitNumber(context: Context): String {
@@ -47,10 +54,11 @@ class FuTaRiViewModel(
                 serviceGame.controllerStart(ip = ip, port = port, onSet = { message ->
                     val state = Json.decodeFromString<BeanGameState>(message)
                     gameState = TwentyFourGameState(numbers = state.initNumber)
+                    opposeState = TwentyFourGameState(numbers = state.initNumber)
+                    set()
                 }, onGet = {
                     return@controllerStart readInitNumber(context)
                 }, onMessage = { opposeState ->
-                    Log.d(tag, "init: $opposeState")
                     this@FuTaRiViewModel.opposeState =
                         Json.decodeFromString<TwentyFourGameState>(opposeState)
                 })
@@ -60,9 +68,10 @@ class FuTaRiViewModel(
                     try {
                         Thread.sleep(200)
                         serviceGame.clientStart(ip = ip, port = port, onSet = { message ->
-                            Log.e("tag", "init: number changed", )
                             val state = Json.decodeFromString<BeanGameState>(message)
                             gameState = TwentyFourGameState(numbers = state.initNumber)
+                            opposeState = TwentyFourGameState(numbers = state.initNumber)
+                            set()
                         }, onMessage = { opposeState ->
                             this@FuTaRiViewModel.opposeState =
                                 Json.decodeFromString<TwentyFourGameState>(opposeState)
@@ -78,6 +87,6 @@ class FuTaRiViewModel(
     }
 
     init {
-        Log.d(tag, "ip:$ip port:$port right:$right ");
+        Log.d(tag, "ip:$ip port:$port right:$right ")
     }
 }
