@@ -26,7 +26,7 @@ class ScreenLogin: Screen{
                     Text(text = "多人游戏")
                 }
                 Button(onClick = { navigator?.push(ScreenText2()) }) {
-                    Text(text = "ktor Server")
+                    Text(text = "test Screen")
                 }
                 Button(onClick = { navigator?.push(ScreenZlh()) }) {
                     Text(text = "zlh's screen")

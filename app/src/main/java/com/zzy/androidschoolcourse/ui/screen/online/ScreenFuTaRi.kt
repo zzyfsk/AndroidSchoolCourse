@@ -1,6 +1,8 @@
 package com.zzy.androidschoolcourse.ui.screen.online
 
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.HorizontalDivider
@@ -8,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -23,7 +26,8 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
     @Composable
     override fun Content() {
         val context = LocalContext.current
-        val viewModel: FuTaRiViewModel = rememberScreenModel { FuTaRiViewModel(ip, port, right,context) }
+        val viewModel: FuTaRiViewModel =
+            rememberScreenModel { FuTaRiViewModel(ip, port, right, context) }
         LaunchedEffect(key1 = Unit) {
             viewModel.init()
         }
@@ -35,6 +39,10 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
             GameMe()
         }
 
+        if (viewModel.showWin) {
+            WinComponent()
+        }
+
     }
 
     @Composable
@@ -43,18 +51,30 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
     }
 
     @Composable
-    fun GameOppose(opposeState:TwentyFourGameState) {
+    fun GameOppose(opposeState: TwentyFourGameState) {
         TwentyFourGameView(opposeState)
     }
 
     @Composable
     fun GameMe() {
         val context = LocalContext.current
-        val viewModel: FuTaRiViewModel = rememberScreenModel { FuTaRiViewModel(ip, port, right,context) }
-            TwentyFourGame(win = { }, click = {
-                Log.e("tag", "game state: ${it.numbers} " )
-                viewModel.gameState = it
-                viewModel.sendGameState()
-            }, gameState = viewModel.gameState)
+        val viewModel: FuTaRiViewModel =
+            rememberScreenModel { FuTaRiViewModel(ip, port, right, context) }
+        TwentyFourGame(win = { viewModel.gameWin() }, click = {
+            viewModel.gameState = it
+            viewModel.sendGameState()
+        }, gameState = viewModel.gameState)
+    }
+
+    @Composable
+    fun WinComponent(modifier: Modifier = Modifier) {
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(color = Color.White.copy(0.5f))
+        ) {
+
         }
     }
+}
+

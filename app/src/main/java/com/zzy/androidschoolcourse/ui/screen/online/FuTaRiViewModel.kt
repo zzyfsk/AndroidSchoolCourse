@@ -27,7 +27,8 @@ class FuTaRiViewModel(
     private val serviceGame = ServiceGame()
     var opposeState by mutableStateOf(TwentyFourGameState(numbers = "1234"))
     var gameState by mutableStateOf(TwentyFourGameState(numbers = "4321"))
-
+    var showWin by mutableStateOf(false)
+    private var winState by mutableStateOf(false)
 
     fun sendGameState() {
         serviceGame.sendGameState(gameState, right)
@@ -38,6 +39,8 @@ class FuTaRiViewModel(
         opposeState.numbers[1].digitToInt().let { num->opposeState.numberStateList[1].fraction.numerator = if (num==0) 10 else num }
         opposeState.numbers[2].digitToInt().let { num->opposeState.numberStateList[2].fraction.numerator = if (num==0) 10 else num }
         opposeState.numbers[3].digitToInt().let { num->opposeState.numberStateList[3].fraction.numerator = if (num==0) 10 else num }
+        showWin = false
+        winState = false
     }
 
     private fun readInitNumber(context: Context): String {
@@ -45,6 +48,11 @@ class FuTaRiViewModel(
             context = context,
             fileName = "dataSet.txt"
         )
+    }
+
+    fun gameWin(){
+        winState = true
+        serviceGame.sendWin(right)
     }
 
     fun init() {
@@ -61,7 +69,11 @@ class FuTaRiViewModel(
                 }, onMessage = { opposeState ->
                     this@FuTaRiViewModel.opposeState =
                         Json.decodeFromString<TwentyFourGameState>(opposeState)
-                })
+                },
+                    onWin = {
+                        showWin = true
+                        // TODO
+                    })
             } else if (right == GameRight.Client) {
                 var bool = true
                 while (bool) {
@@ -75,6 +87,8 @@ class FuTaRiViewModel(
                         }, onMessage = { opposeState ->
                             this@FuTaRiViewModel.opposeState =
                                 Json.decodeFromString<TwentyFourGameState>(opposeState)
+                        }, onWin = {
+                            showWin = true
                         })
                         bool = false
                     } catch (e: Exception) {

@@ -94,15 +94,19 @@ class ServerGame {
                             when (msg.type) {
                                 GameSocketState.Function -> {
                                     if (msg.content == "Start") {
-                                        messageQueue.put(
-                                            BeanSocketGame(
+                                        messageQueue.put(BeanSocketGame(
                                                 GameSocketState.Function,
                                                 "Start",
                                                 GameRight.Command
-                                            )
-                                        )
+                                            ))
                                     }
-
+                                    if (msg.content == "Win") {
+                                        messageQueue.put(BeanSocketGame(
+                                                GameSocketState.Function,
+                                                "Win",
+                                                GameRight.All
+                                            ))
+                                    }
                                 }
 
                                 GameSocketState.Message -> {

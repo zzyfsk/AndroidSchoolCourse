@@ -24,7 +24,8 @@ class ServiceGame {
         port: Int,
         onSet: (String) -> Unit = {},
         onGet: () -> String,
-        onMessage: (String) -> Unit
+        onMessage: (String) -> Unit,
+        onWin: () -> Unit = {}
     ) {
         controller = ClientGame()
         val right = GameRight.Command
@@ -40,6 +41,9 @@ class ServiceGame {
                                 right
                             )
                         )
+                    }
+                    if (message == "Win"){
+                        onWin()
                     }
                 }
 
@@ -62,13 +66,16 @@ class ServiceGame {
         ip: String,
         port: Int,
         onSet: (String) -> Unit = {},
-        onMessage: (String) -> Unit
+        onMessage: (String) -> Unit,
+        onWin: () -> Unit = {}
     ) {
         client = ClientGame()
         client.start(ip, port) { type, message ->
             when (type) {
                 GameSocketState.Function -> {
-
+                    if (message == "Win"){
+                        onWin()
+                    }
                 }
 
                 GameSocketState.Message -> {
@@ -111,6 +118,27 @@ class ServiceGame {
                 BeanSocketGame(
                     GameSocketState.Message,
                     Json.encodeToString(gameState),
+                    GameRight.Command
+                )
+            )
+        }
+    }
+
+    fun sendWin(right: GameRight) {
+        if (right == GameRight.Client) {
+            Log.d("tag", "sendGameState: client")
+            client.sendMessage(
+                BeanSocketGame(
+                    GameSocketState.Message,
+                    "Win",
+                    GameRight.Client
+                )
+            )
+        } else if (right == GameRight.Command) {
+            controller.sendMessage(
+                BeanSocketGame(
+                    GameSocketState.Message,
+                    "Win",
                     GameRight.Command
                 )
             )

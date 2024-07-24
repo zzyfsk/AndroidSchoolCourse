@@ -39,8 +39,10 @@ class ClientGame {
                         when (msg.type) {
                             GameSocketState.Function -> {
                                 if (msg.content == "Start") {
-                                    Log.e("tag", "client:Start Rec $right", )
                                     onEvent(GameSocketState.Function,"init")
+                                }
+                                if(msg.content == "Win"){
+                                    onEvent(GameSocketState.Function,"Win")
                                 }
                             }
 
