@@ -1,5 +1,6 @@
 package com.zzy.androidschoolcourse.ui.screen
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,9 +22,11 @@ import cafe.adriel.voyager.core.screen.Screen
 class ScreenText2 : Screen {
     @Composable
     override fun Content() {
+
         var show by remember {
             mutableStateOf(false)
         }
+        val alpha by animateFloatAsState(targetValue = if (show) 0.5f else 0f, label = "")
 
         Column(modifier = Modifier
             .fillMaxSize()
@@ -38,7 +41,7 @@ class ScreenText2 : Screen {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = Color.White.copy(alpha = 0.5f)),
+                    .background(color = Color.White.copy(alpha = alpha)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {

@@ -60,7 +60,17 @@ class ScreenOnline : Screen {
             Button(onClick = {
                 navigator?.replace(
                     ScreenFuTaRi(
-                        ip = viewModel.ip,
+                        ip = "116.198.234.250",
+                        right = GameRight.Command
+                    )
+                )
+            }) {
+                Text(text = "to next command")
+            }
+            Button(onClick = {
+                navigator?.replace(
+                    ScreenFuTaRi(
+                        ip = "116.198.234.250",
                         right = GameRight.Client
                     )
                 )

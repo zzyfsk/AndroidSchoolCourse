@@ -123,6 +123,16 @@ fun TwentyFourGame(
         addCount = 0
         numberStateList.add(TwentyFourGameButtonState())
         numberStateList.removeLast()
+        click(
+            TwentyFourGameState(
+                firstNumber,
+                secondNumber,
+                currentSymbol,
+                addCount,
+                getNumberState(),
+                initNumber
+            )
+        )
     }
 
     val backgroundColor: (Int) -> Color = {
