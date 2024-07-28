@@ -1,4 +1,4 @@
-package com.zzy.androidschoolcourse.ui.compoment
+package com.zzy.androidschoolcourse.ui.component
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable

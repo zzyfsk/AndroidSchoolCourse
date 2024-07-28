@@ -17,14 +17,6 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
-//    packaging{
-//        resources{
-//            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-//            excludes += "/META-INF/INDEX.LIST"
-//            excludes += "/META-INF/io.netty.versions.properties"
-//        }
-//    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -77,6 +69,7 @@ dependencies {
     api(libs.androidx.ui.graphics)
     api(libs.androidx.ui.tooling.preview)
     api(libs.androidx.material3)
+    api (libs.material3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

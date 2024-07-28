@@ -28,7 +28,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.zzy.androidschoolcourse.R
-import com.zzy.androidschoolcourse.ui.compoment.TwentyFourGame
+import com.zzy.androidschoolcourse.ui.component.TwentyFourGame
 import com.zzy.androidschoolcourse.ui.screen.win.ScreenWin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

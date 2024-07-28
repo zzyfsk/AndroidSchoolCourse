@@ -1,4 +1,4 @@
-package com.zzy.androidschoolcourse.ui.compoment
+package com.zzy.androidschoolcourse.ui.component
 
 import android.util.Log
 import androidx.compose.animation.core.animateDpAsState

@@ -15,9 +15,9 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
-import com.zzy.androidschoolcourse.ui.compoment.TwentyFourGame
-import com.zzy.androidschoolcourse.ui.compoment.TwentyFourGameState
-import com.zzy.androidschoolcourse.ui.compoment.TwentyFourGameView
+import com.zzy.androidschoolcourse.ui.component.TwentyFourGame
+import com.zzy.androidschoolcourse.ui.component.TwentyFourGameState
+import com.zzy.androidschoolcourse.ui.component.TwentyFourGameView
 
 class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: GameRight) : Screen {
 

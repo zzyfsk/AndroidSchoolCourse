@@ -6,8 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.zzy.androidschoolcourse.net.QuestionService
-import com.zzy.androidschoolcourse.ui.compoment.TwentyFourGameState
+import com.zzy.androidschoolcourse.ui.component.TwentyFourGameState
 import com.zzy.androidschoolcourse.util.TimerUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Timer
 import java.util.TimerTask
 
@@ -36,7 +39,9 @@ class GameHiToRiViewModel : ScreenModel {
     }
 
     fun init(context: Context) {
-        readInitNumber(context = context)
+        CoroutineScope(Dispatchers.Default).launch {
+            readInitNumber(context = context)
+        }
         addCount = 0
     }
 

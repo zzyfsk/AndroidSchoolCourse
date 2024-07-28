@@ -52,8 +52,8 @@ android {
 
 dependencies {
     implementation(project(":base"))
+    implementation(libs.androidx.material3)
     testImplementation(libs.junit)
-
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

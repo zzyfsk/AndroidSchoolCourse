@@ -5,7 +5,7 @@ import com.zzy.androidschoolcourse.net.socket.bean.BeanGameState
 import com.zzy.androidschoolcourse.net.socket.bean.BeanSocketGame
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
 import com.zzy.androidschoolcourse.net.socket.bean.GameSocketState
-import com.zzy.androidschoolcourse.ui.compoment.TwentyFourGameState
+import com.zzy.androidschoolcourse.ui.component.TwentyFourGameState
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 

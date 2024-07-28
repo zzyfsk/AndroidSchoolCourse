@@ -10,7 +10,7 @@ import com.zzy.androidschoolcourse.net.QuestionService
 import com.zzy.androidschoolcourse.net.socket.bean.BeanGameState
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
 import com.zzy.androidschoolcourse.net.socket.game.ServiceGame
-import com.zzy.androidschoolcourse.ui.compoment.TwentyFourGameState
+import com.zzy.androidschoolcourse.ui.component.TwentyFourGameState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
