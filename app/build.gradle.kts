@@ -52,6 +52,7 @@ android {
 
 dependencies {
     implementation(project(":base"))
+    implementation(project(":login"))
     implementation(libs.androidx.material3)
     testImplementation(libs.junit)
 
