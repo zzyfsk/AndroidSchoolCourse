@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.zzy.login"
+    namespace = "com.zzy.component"
     compileSdk = 34
 
     defaultConfig {
@@ -38,7 +38,6 @@ android {
 
 dependencies {
     implementation(project(":base"))
-    implementation(project(":component"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

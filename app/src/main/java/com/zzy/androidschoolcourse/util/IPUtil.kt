@@ -3,7 +3,6 @@ package com.zzy.androidschoolcourse.util
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.wifi.WifiInfo
-import android.net.wifi.WifiManager
 
 class IPUtil {
     private val tag = "IpUtil"
