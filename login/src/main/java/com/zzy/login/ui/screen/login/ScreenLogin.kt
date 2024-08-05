@@ -34,7 +34,6 @@ import com.zzy.base.bean.theme.Theme
 import com.zzy.base.bean.theme.ThemeViewModel
 import com.zzy.component.box.MaskAnimModel
 import com.zzy.component.box.MaskBox
-import com.zzy.login.R
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 

@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
-import com.zzy.base.bean.account.AccountViewModel
 
 class LoginViewModel: ScreenModel {
 
