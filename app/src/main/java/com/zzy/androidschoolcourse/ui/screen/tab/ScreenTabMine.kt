@@ -1,6 +1,7 @@
 package com.zzy.androidschoolcourse.ui.screen.tab
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -15,7 +16,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.zzy.androidschoolcourse.R
+import com.zzy.base.bean.account.AccountViewModel
 import com.zzy.login.ui.screen.login.ScreenLogin
+import org.koin.androidx.compose.koinViewModel
 
 object ScreenTabMine : Tab {
     private fun readResolve(): Any = ScreenTabMain
@@ -37,10 +40,18 @@ object ScreenTabMine : Tab {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow.parent!!
+        val accountViewModel:AccountViewModel = koinViewModel()
+        
         Box(modifier = Modifier.fillMaxSize()){
-            Text(text = "This is Mine Screen")
-            Button(onClick = { navigator.push(ScreenLogin()) }) {
-                
+            if (!accountViewModel.isLogin()){
+                Column {
+                    Text(text = "This is Mine Screen")
+                    Button(onClick = { navigator.push(ScreenLogin()) }) {
+                        Text(text = "login")
+                    }
+                }
+            } else{
+                Text(text = "你好 ${accountViewModel.user().name}")
             }
         }
     }

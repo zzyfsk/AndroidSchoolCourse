@@ -8,7 +8,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
 import com.zzy.androidschoolcourse.ui.screen.tab.ScreenTab
 import com.zzy.androidschoolcourse.ui.theme.AndroidSchoolCourseTheme
-import com.zzy.base.bean.login.appModule
+import com.zzy.base.bean.account.appModule
 import com.zzy.base.bean.theme.ThemeViewModel
 import com.zzy.base.bean.theme.themeModule
 import org.koin.android.ext.koin.androidContext
