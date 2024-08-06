@@ -26,7 +26,8 @@ object ScreenTabMine : Tab {
         @Composable
         get() {
             val title = "我的"
-            val icon = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.person))
+            val icon =
+                rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.person))
 
             return remember {
                 TabOptions(
@@ -40,19 +41,24 @@ object ScreenTabMine : Tab {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow.parent!!
-        val accountViewModel:AccountViewModel = koinViewModel()
-        
-        Box(modifier = Modifier.fillMaxSize()){
-            if (!accountViewModel.isLogin()){
-                Column {
+        val accountViewModel: AccountViewModel = koinViewModel()
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column {
+
+                if (!accountViewModel.isLogin()) {
                     Text(text = "This is Mine Screen")
                     Button(onClick = { navigator.push(ScreenLogin()) }) {
                         Text(text = "login")
                     }
+                } else {
+                    Text(text = "你好 ${accountViewModel.user().name}")
+                    Button(onClick = { accountViewModel.logout() }) {
+                        Text(text = "logout")
+                    }
                 }
-            } else{
-                Text(text = "你好 ${accountViewModel.user().name}")
             }
+
         }
     }
 }
