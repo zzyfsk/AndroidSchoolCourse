@@ -29,9 +29,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.zzy.base.bean.account.AccountViewModel
-import com.zzy.base.bean.theme.Theme
-import com.zzy.base.bean.theme.ThemeViewModel
+import com.zzy.base.koin.account.AccountViewModel
+import com.zzy.base.koin.theme.Theme
+import com.zzy.base.koin.theme.ThemeViewModel
 import com.zzy.component.box.MaskAnimModel
 import com.zzy.component.box.MaskBox
 import kotlinx.coroutines.launch

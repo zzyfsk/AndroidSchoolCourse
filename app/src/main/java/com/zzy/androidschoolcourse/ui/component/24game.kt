@@ -42,7 +42,7 @@ fun TwentyFourGame(
 
     fun getNumberState(): SnapshotStateList<TwentyFourGameButtonState> {
         if (numberStateList.isEmpty()) {
-            while (numberStateList.size<4) {
+            while (numberStateList.size < 4) {
                 numberStateList.add(TwentyFourGameButtonState())
             }
         }
@@ -50,7 +50,7 @@ fun TwentyFourGame(
     }
 
     fun initNumber() {
-        initNumber.forEachIndexed{index, c ->
+        initNumber.forEachIndexed { index, c ->
             getNumberState()[index].fraction.numerator = if (c == '0') 10 else c.digitToInt()
             getNumberState()[index].fraction.denominator = 1
         }
@@ -367,9 +367,11 @@ fun TwentyFourGameView(
                     visible = getNumberState()[3].numberVisible,
                 )
             }
-            BoxWithConstraints(modifier = modifier
-                .fillMaxHeight()
-                .weight(0.5f)) {
+            BoxWithConstraints(
+                modifier = modifier
+                    .fillMaxHeight()
+                    .weight(0.5f)
+            ) {
                 val eachSize by remember {
                     mutableStateOf(((maxHeight - 20.dp) / 4))
                 }
@@ -440,4 +442,33 @@ data class TwentyFourGameState(
             numberStateList.add(TwentyFourGameButtonState())
         }
     }
+}
+
+@Serializable
+data class TwentyFourGameRecord(
+    val gameMode: GameMode,
+    val recordList: MutableList<TwentyFourGameState> = mutableStateListOf(),
+    val recordList2: MutableList<TwentyFourGameState> = mutableStateListOf()
+){
+    fun reset(){
+        recordList.clear()
+        recordList2.clear()
+    }
+
+    /**
+     * @param recordPosition 此参数1为自己2为对面
+     */
+    fun record(recordPosition:Int,gameState: TwentyFourGameState){
+        if (recordPosition == 1){
+            recordList.add(gameState)
+        }else{
+            recordList2.add(gameState)
+        }
+    }
+}
+
+@Serializable
+enum class GameMode{
+    HiToRi,
+    HuTaRi
 }

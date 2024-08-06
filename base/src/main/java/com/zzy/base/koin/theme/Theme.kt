@@ -1,4 +1,4 @@
-package com.zzy.base.bean.theme
+package com.zzy.base.koin.theme
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

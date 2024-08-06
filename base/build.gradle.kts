@@ -70,9 +70,11 @@ dependencies {
     api(libs.androidx.ui.tooling.preview)
     api(libs.androidx.material3)
     api (libs.material3)
+    // koin
     api(libs.koin.android)
     api(libs.koin.androidx.compose)
 
+    // ktor
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
 

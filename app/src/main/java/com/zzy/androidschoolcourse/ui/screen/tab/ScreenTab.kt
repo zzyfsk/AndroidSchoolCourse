@@ -24,8 +24,8 @@ import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.zzy.androidschoolcourse.ui.component.TabNavigationItem
 import com.zzy.androidschoolcourse.ui.theme.AndroidSchoolCourseTheme
-import com.zzy.base.bean.theme.Theme
-import com.zzy.base.bean.theme.ThemeViewModel
+import com.zzy.base.koin.theme.Theme
+import com.zzy.base.koin.theme.ThemeViewModel
 import com.zzy.component.box.MaskAnimModel
 import com.zzy.component.box.MaskBox
 import kotlinx.coroutines.launch

@@ -28,8 +28,8 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.zzy.androidschoolcourse.R
-import com.zzy.base.bean.account.AccountViewModel
-import com.zzy.base.bean.account.Friend
+import com.zzy.base.koin.account.AccountViewModel
+import com.zzy.base.koin.account.Friend
 import org.koin.androidx.compose.koinViewModel
 
 object ScreenTabFriend : Tab {

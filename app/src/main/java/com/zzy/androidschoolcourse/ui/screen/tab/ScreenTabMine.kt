@@ -16,7 +16,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.zzy.androidschoolcourse.R
-import com.zzy.base.bean.account.AccountViewModel
+import com.zzy.base.koin.account.AccountViewModel
 import com.zzy.login.ui.screen.login.ScreenLogin
 import org.koin.androidx.compose.koinViewModel
 

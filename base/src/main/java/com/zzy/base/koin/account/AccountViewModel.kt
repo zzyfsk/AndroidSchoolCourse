@@ -1,4 +1,4 @@
-package com.zzy.base.bean.account
+package com.zzy.base.koin.account
 
 import androidx.lifecycle.ViewModel
 import com.zzy.base.util.HttpUtil

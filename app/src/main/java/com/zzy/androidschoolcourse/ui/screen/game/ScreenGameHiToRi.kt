@@ -38,13 +38,13 @@ class ScreenGameHiToRi : Screen {
     @Composable
     override fun Content() {
         val scope = rememberCoroutineScope()
+        val context = LocalContext.current
         val screenModel = rememberScreenModel {
-            GameHiToRiViewModel()
+            GameHiToRiViewModel(context)
         }
         val navigator = LocalNavigator.current
-        val context = LocalContext.current
         LaunchedEffect(Unit) {
-            screenModel.init(context)
+            screenModel.init()
             scope.launch(Dispatchers.IO) {
                 screenModel.setUpTimeSchedule()
             }
@@ -53,7 +53,7 @@ class ScreenGameHiToRi : Screen {
             BarTitle()
             Spacer(modifier = Modifier.requiredHeight(10.dp))
             Text(text = screenModel.gameState.numbers)
-            Timer()
+            Timer(modifier = Modifier, time = screenModel.time)
             Spacer(modifier = Modifier.requiredHeight(10.dp))
             TwentyFourGame(
                 win = { screenModel.winShow = true },
@@ -69,13 +69,10 @@ class ScreenGameHiToRi : Screen {
     }
 
     @Composable
-    fun Timer(modifier: Modifier = Modifier) {
-        val screenModel = rememberScreenModel {
-            GameHiToRiViewModel()
-        }
+    fun Timer(modifier: Modifier = Modifier,time:String) {
         Row(modifier = modifier.fillMaxWidth()) {
             Spacer(modifier = Modifier.weight(1f))
-            Text(modifier = Modifier.requiredWidth(60.dp), text = screenModel.time)
+            Text(modifier = Modifier.requiredWidth(60.dp), text = time)
         }
     }
 

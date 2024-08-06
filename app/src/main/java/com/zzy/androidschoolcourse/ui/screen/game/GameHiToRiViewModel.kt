@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.zzy.androidschoolcourse.net.QuestionService
+import com.zzy.androidschoolcourse.ui.component.GameMode
+import com.zzy.androidschoolcourse.ui.component.TwentyFourGameRecord
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGameState
 import com.zzy.androidschoolcourse.util.TimerUtil
 import kotlinx.coroutines.CoroutineScope
@@ -14,8 +16,7 @@ import kotlinx.coroutines.launch
 import java.util.Timer
 import java.util.TimerTask
 
-class GameHiToRiViewModel : ScreenModel {
-
+class GameHiToRiViewModel(val context: Context) : ScreenModel {
     var winShow by mutableStateOf(false)
 
     var timeValue = 1
@@ -23,6 +24,8 @@ class GameHiToRiViewModel : ScreenModel {
     var time by mutableStateOf("00:00")
 
     private var addCount = 0
+
+    private val record = TwentyFourGameRecord(gameMode = GameMode.HiToRi)
 
     // game logic
     var gameState by mutableStateOf(TwentyFourGameState(numbers = "1234"))
@@ -38,11 +41,12 @@ class GameHiToRiViewModel : ScreenModel {
         )
     }
 
-    fun init(context: Context) {
+    fun init() {
         CoroutineScope(Dispatchers.Default).launch {
             readInitNumber(context = context)
         }
         addCount = 0
+        record.reset()
     }
 
     fun setUpTimeSchedule() {
@@ -55,5 +59,9 @@ class GameHiToRiViewModel : ScreenModel {
         }
 
         timer.schedule(timerTask, 1000, 1000)
+    }
+
+    fun recordState(gameState: TwentyFourGameState){
+        record.record(1,gameState)
     }
 }

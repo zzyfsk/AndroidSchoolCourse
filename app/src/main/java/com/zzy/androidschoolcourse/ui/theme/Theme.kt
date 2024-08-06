@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.zzy.base.bean.theme.Theme
+import com.zzy.base.koin.theme.Theme
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,

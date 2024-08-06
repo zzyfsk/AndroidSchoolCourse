@@ -1,4 +1,4 @@
-package com.zzy.base.bean.account
+package com.zzy.base.koin.account
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
