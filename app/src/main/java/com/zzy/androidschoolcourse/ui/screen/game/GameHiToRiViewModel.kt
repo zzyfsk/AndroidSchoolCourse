@@ -10,6 +10,7 @@ import com.zzy.androidschoolcourse.ui.component.GameMode
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGameRecord
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGameState
 import com.zzy.androidschoolcourse.util.TimerUtil
+import com.zzy.base.util.FileUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,6 +18,7 @@ import java.util.Timer
 import java.util.TimerTask
 
 class GameHiToRiViewModel(val context: Context) : ScreenModel {
+    private val fileUtil = FileUtil(context)
     var winShow by mutableStateOf(false)
 
     var timeValue = 1
@@ -63,5 +65,9 @@ class GameHiToRiViewModel(val context: Context) : ScreenModel {
 
     fun recordState(gameState: TwentyFourGameState){
         record.record(1,gameState)
+    }
+
+    fun saveState(){
+        record.save(fileUtil = fileUtil)
     }
 }

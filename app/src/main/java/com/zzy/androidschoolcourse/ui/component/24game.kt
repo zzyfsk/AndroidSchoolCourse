@@ -24,7 +24,12 @@ import androidx.compose.ui.unit.dp
 import com.zzy.androidschoolcourse.R
 import com.zzy.androidschoolcourse.bean.Fraction
 import com.zzy.androidschoolcourse.ui.theme.MainColor
+import com.zzy.base.util.FileName
+import com.zzy.base.util.FileUtil
+import com.zzy.base.util.TimeUtil
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @Composable
 fun TwentyFourGame(
@@ -449,8 +454,8 @@ data class TwentyFourGameRecord(
     val gameMode: GameMode,
     val recordList: MutableList<TwentyFourGameState> = mutableStateListOf(),
     val recordList2: MutableList<TwentyFourGameState> = mutableStateListOf()
-){
-    fun reset(){
+) {
+    fun reset() {
         recordList.clear()
         recordList2.clear()
     }
@@ -458,17 +463,28 @@ data class TwentyFourGameRecord(
     /**
      * @param recordPosition 此参数1为自己2为对面
      */
-    fun record(recordPosition:Int,gameState: TwentyFourGameState){
-        if (recordPosition == 1){
+    fun record(recordPosition: Int, gameState: TwentyFourGameState) {
+        if (recordPosition == 1) {
             recordList.add(gameState)
-        }else{
+        } else {
             recordList2.add(gameState)
         }
+    }
+
+    fun save(fileUtil: FileUtil) {
+        val timeStamp = TimeUtil.timeUtil.getTime()
+        val fileName = "${
+            when (gameMode) {
+                GameMode.HiToRi -> "1"
+                GameMode.HuTaRi -> "2"
+            }
+        }_$timeStamp"
+        fileUtil.saveFile(FileName(fileName = fileName), Json.encodeToString(this))
     }
 }
 
 @Serializable
-enum class GameMode{
+enum class GameMode {
     HiToRi,
     HuTaRi
 }

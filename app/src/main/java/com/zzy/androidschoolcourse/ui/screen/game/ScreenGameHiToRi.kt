@@ -56,10 +56,14 @@ class ScreenGameHiToRi : Screen {
             Timer(modifier = Modifier, time = screenModel.time)
             Spacer(modifier = Modifier.requiredHeight(10.dp))
             TwentyFourGame(
-                win = { screenModel.winShow = true },
+                win = {
+                    screenModel.saveState()
+                    screenModel.winShow = true
+                },
                 gameState = screenModel.gameState,
-                click = {
-                    Log.d("tag", "Content: $it")
+                click = { gameState->
+                    screenModel.recordState(gameState)
+                    Log.d("tag", "Content: $gameState")
                 })
             if (screenModel.winShow) {
                 screenModel.winShow = false
@@ -69,7 +73,7 @@ class ScreenGameHiToRi : Screen {
     }
 
     @Composable
-    fun Timer(modifier: Modifier = Modifier,time:String) {
+    fun Timer(modifier: Modifier = Modifier, time: String) {
         Row(modifier = modifier.fillMaxWidth()) {
             Spacer(modifier = Modifier.weight(1f))
             Text(modifier = Modifier.requiredWidth(60.dp), text = time)
