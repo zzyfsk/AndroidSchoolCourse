@@ -1,6 +1,5 @@
 package com.zzy.androidschoolcourse.ui.screen.game
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -60,11 +59,11 @@ class ScreenGameHiToRi : Screen {
                     screenModel.saveState()
                     screenModel.winShow = true
                 },
-                gameState = screenModel.gameState,
                 click = { gameState->
                     screenModel.recordState(gameState)
-                    Log.d("tag", "Content: $gameState")
-                })
+                },
+                gameState = screenModel.gameState
+            )
             if (screenModel.winShow) {
                 screenModel.winShow = false
                 navigator?.replace(ScreenWin())

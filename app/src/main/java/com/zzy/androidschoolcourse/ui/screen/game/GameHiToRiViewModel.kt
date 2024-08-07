@@ -11,9 +11,6 @@ import com.zzy.androidschoolcourse.ui.component.TwentyFourGameRecord
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGameState
 import com.zzy.androidschoolcourse.util.TimerUtil
 import com.zzy.base.util.FileUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.Timer
 import java.util.TimerTask
 
@@ -30,11 +27,11 @@ class GameHiToRiViewModel(val context: Context) : ScreenModel {
     private val record = TwentyFourGameRecord(gameMode = GameMode.HiToRi)
 
     // game logic
-    var gameState by mutableStateOf(TwentyFourGameState(numbers = "1234"))
+    var gameState by mutableStateOf(readInitNumber(context))
 
 
-    private fun readInitNumber(context: Context) {
-        gameState = TwentyFourGameState(
+    private fun readInitNumber(context: Context) :TwentyFourGameState{
+        return TwentyFourGameState(
             numbers =
             QuestionService.questionService.readQuestion(
                 context = context,
@@ -44,11 +41,11 @@ class GameHiToRiViewModel(val context: Context) : ScreenModel {
     }
 
     fun init() {
-        CoroutineScope(Dispatchers.Default).launch {
-            readInitNumber(context = context)
-        }
+//        CoroutineScope(Dispatchers.Default).launch {
+//            readInitNumber(context = context)
+//        }
         addCount = 0
-        record.reset()
+        record. reset()
     }
 
     fun setUpTimeSchedule() {
@@ -69,5 +66,10 @@ class GameHiToRiViewModel(val context: Context) : ScreenModel {
 
     fun saveState(){
         record.save(fileUtil = fileUtil)
+    }
+
+    fun update(gameState: TwentyFourGameState){
+        this.gameState = gameState
+        println("firstClick:${gameState.firstNumber} secondClick:${gameState.secondNumber} currentSymbol:${gameState.currentSymbol}")
     }
 }

@@ -25,4 +25,8 @@ class FileUtil (val context: Context){
     }
 }
 
-data class FileName (val fileName:String)
+data class FileName (val fileName:String){
+    override fun toString(): String {
+        return super.toString()
+    }
+}

@@ -13,11 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -42,10 +40,10 @@ fun TwentyFourGame(
     var secondNumber by remember { mutableIntStateOf(0) }
     var currentSymbol by remember { mutableIntStateOf(0) }
     var addCount by remember { mutableIntStateOf(0) }
-    val numberStateList = remember { mutableStateListOf<TwentyFourGameButtonState>() }
+    val numberStateList = remember { gameState.numberStateList }
     var initNumber by remember { mutableStateOf("0000") }
 
-    fun getNumberState(): SnapshotStateList<TwentyFourGameButtonState> {
+    fun getNumberState(): MutableList<TwentyFourGameButtonState> {
         if (numberStateList.isEmpty()) {
             while (numberStateList.size < 4) {
                 numberStateList.add(TwentyFourGameButtonState())
@@ -80,6 +78,7 @@ fun TwentyFourGame(
         if (number != firstNumber) {
             addCount++
             secondNumber = number
+
             getNumberState()[firstNumber - 1].numberVisible = false
 
             when (currentSymbol) {
@@ -106,7 +105,29 @@ fun TwentyFourGame(
         } else {
             clickFirstNumber(it)
         }
+//        click(gameState)
+        click(
+            TwentyFourGameState(
+                firstNumber,
+                secondNumber,
+                currentSymbol,
+                addCount,
+                getNumberState(),
+                initNumber
+            )
+        )
         winCheck()
+    }
+
+    fun resetGame() {
+        initNumber()
+        for (i in 0..3) getNumberState()[i].numberVisible = true
+        firstNumber = 0
+        secondNumber = 0
+        currentSymbol = 0
+        addCount = 0
+        numberStateList.add(TwentyFourGameButtonState())
+        numberStateList.removeLast()
         click(
             TwentyFourGameState(
                 firstNumber,
@@ -119,27 +140,6 @@ fun TwentyFourGame(
         )
     }
 
-    fun resetGame() {
-        initNumber()
-        for (i in 0..3) getNumberState()[i].numberVisible = true
-        firstNumber = 0
-        secondNumber = 0
-        currentSymbol = 0
-        addCount = 0
-        numberStateList.add(TwentyFourGameButtonState())
-        numberStateList.removeLast()
-//        click(
-//            TwentyFourGameState(
-//                firstNumber,
-//                secondNumber,
-//                currentSymbol,
-//                addCount,
-//                getNumberState(),
-//                initNumber
-//            )
-//        )
-    }
-
     val backgroundColor: (Int) -> Color = {
         if (it == firstNumber) MainColor.GameButtonPress
         else MainColor.GameButtonUnPress
@@ -149,6 +149,17 @@ fun TwentyFourGame(
         initNumber = gameState.numbers
         resetGame()
         addCount = 0
+        click(
+            TwentyFourGameState(
+                firstNumber,
+                secondNumber,
+                currentSymbol,
+                addCount,
+                getNumberState(),
+                initNumber
+            )
+        )
+//        click(gameState)
     }
 
     Column(modifier = Modifier) {
@@ -237,6 +248,7 @@ fun TwentyFourGame(
                     initNumber
                 )
             )
+//            click(gameState)
         }
 
         BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
@@ -435,15 +447,26 @@ data class TwentyFourGameState(
     val secondNumber: Int = 0,
     val currentSymbol: Int = 0,
     val addCount: Int = 0,
-    val numberStateList: MutableList<TwentyFourGameButtonState> = mutableStateListOf(),
+    val numberStateList: MutableList<TwentyFourGameButtonState> = mutableListOf(),
     val numbers: String
 ) {
     override fun toString(): String {
         return "$firstNumber,$secondNumber,$currentSymbol,$addCount"
     }
 
+//    fun copy(
+//        firstNumber: Int = this.firstNumber,
+//        secondNumber: Int = this.secondNumber,
+//        currentSymbol: Int = this.currentSymbol,
+//        addCount: Int = this.addCount,
+//        numberStateList: MutableList<TwentyFourGameButtonState> = this.numberStateList,
+//        numbers: String = this.numbers
+//    ){
+//
+//    }
+
     init {
-        for (i in 0..3) {
+        while (numberStateList.size<4){
             numberStateList.add(TwentyFourGameButtonState())
         }
     }
@@ -451,9 +474,9 @@ data class TwentyFourGameState(
 
 @Serializable
 data class TwentyFourGameRecord(
-    val gameMode: GameMode,
-    val recordList: MutableList<TwentyFourGameState> = mutableStateListOf(),
-    val recordList2: MutableList<TwentyFourGameState> = mutableStateListOf()
+    val gameMode: GameMode = GameMode.HiToRi,
+    val recordList: MutableList<TwentyFourGameState> = mutableListOf(),
+    val recordList2: MutableList<TwentyFourGameState> = mutableListOf()
 ) {
     fun reset() {
         recordList.clear()
@@ -464,10 +487,19 @@ data class TwentyFourGameRecord(
      * @param recordPosition 此参数1为自己2为对面
      */
     fun record(recordPosition: Int, gameState: TwentyFourGameState) {
+        // 解决观察者模式
+        val temp = Json.encodeToString(gameState)
+        val state = Json.decodeFromString<TwentyFourGameState>(temp)
         if (recordPosition == 1) {
-            recordList.add(gameState)
+            recordList.add(state)
         } else {
-            recordList2.add(gameState)
+            recordList2.add(state)
+        }
+        recordList.forEach { it->
+            it.numberStateList.forEach {
+                print("${it.fraction.numerator} ")
+            }
+            println()
         }
     }
 
@@ -477,14 +509,22 @@ data class TwentyFourGameRecord(
             when (gameMode) {
                 GameMode.HiToRi -> "1"
                 GameMode.HuTaRi -> "2"
+                GameMode.NULL -> "0"
             }
         }_$timeStamp"
-        fileUtil.saveFile(FileName(fileName = fileName), Json.encodeToString(this))
+        recordList.forEach { it ->
+            it.numberStateList.forEach {
+                print("${it.fraction.numerator} ")
+            }
+            println()
+        }
+        fileUtil.saveFile(FileName(fileName = fileName), Json.encodeToString(this@TwentyFourGameRecord))
     }
 }
 
 @Serializable
 enum class GameMode {
     HiToRi,
-    HuTaRi
+    HuTaRi,
+    NULL
 }

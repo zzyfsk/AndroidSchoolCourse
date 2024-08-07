@@ -1,9 +1,8 @@
 package com.zzy.androidschoolcourse.ui.screen.tab
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,17 +17,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.zzy.androidschoolcourse.R
+import com.zzy.androidschoolcourse.ui.screen.history.ScreenHistory
+import com.zzy.base.util.FileName
 
-object ScreenTabHistory:Tab {
+object ScreenTabHistory : Tab {
     private fun readResolve(): Any = ScreenTabMain
     override val options: TabOptions
         @Composable
         get() {
             val title = "历史"
-            val icon = rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.history))
+            val icon =
+                rememberVectorPainter(image = ImageVector.vectorResource(id = R.drawable.history))
 
             return remember {
                 TabOptions(
@@ -42,20 +47,28 @@ object ScreenTabHistory:Tab {
     @Composable
     override fun Content() {
         val context = LocalContext.current
-        val viewModel:TabViewModel = rememberScreenModel {
+        val navigator = LocalNavigator.currentOrThrow.parent!!
+        val viewModel: TabViewModel = rememberScreenModel {
             TabViewModel(context)
         }
-        LazyColumn (modifier = Modifier.fillMaxSize()){
-            items(viewModel.fileList){ file->
-                HistoryItem(modifier = Modifier.height(30.dp), fileName = file.fileName )
+        viewModel.refresh()
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(viewModel.fileList) { file ->
+                HistoryItem(
+                    modifier = Modifier.height(30.dp),
+                    fileName = file,
+                    navigator = navigator
+                )
             }
         }
     }
 
     @Composable
-    fun HistoryItem(modifier: Modifier,fileName:String){
-        Row (modifier = modifier, verticalAlignment = Alignment.CenterVertically){
-            Text(text = fileName)
+    fun HistoryItem(modifier: Modifier, fileName: FileName, navigator: Navigator) {
+        Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+            Text(text = fileName.fileName, modifier = Modifier.clickable {
+                navigator.push(ScreenHistory(fileName.fileName))
+            })
         }
     }
 
