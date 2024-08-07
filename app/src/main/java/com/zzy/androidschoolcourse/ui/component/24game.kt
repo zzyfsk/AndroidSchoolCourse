@@ -105,7 +105,6 @@ fun TwentyFourGame(
         } else {
             clickFirstNumber(it)
         }
-//        click(gameState)
         click(
             TwentyFourGameState(
                 firstNumber,
@@ -159,7 +158,6 @@ fun TwentyFourGame(
                 initNumber
             )
         )
-//        click(gameState)
     }
 
     Column(modifier = Modifier) {
