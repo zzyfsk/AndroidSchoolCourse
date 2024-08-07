@@ -41,9 +41,6 @@ class GameHiToRiViewModel(val context: Context) : ScreenModel {
     }
 
     fun init() {
-//        CoroutineScope(Dispatchers.Default).launch {
-//            readInitNumber(context = context)
-//        }
         addCount = 0
         record. reset()
     }
@@ -68,8 +65,4 @@ class GameHiToRiViewModel(val context: Context) : ScreenModel {
         record.save(fileUtil = fileUtil)
     }
 
-    fun update(gameState: TwentyFourGameState){
-        this.gameState = gameState
-        println("firstClick:${gameState.firstNumber} secondClick:${gameState.secondNumber} currentSymbol:${gameState.currentSymbol}")
-    }
 }

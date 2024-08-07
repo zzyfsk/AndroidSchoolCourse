@@ -53,12 +53,11 @@ class ScreenLogin : Screen {
             },
             animFinish = {
             }) { maskAnimActive ->
-            println("recompose")
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TopBar( theme = themeViewModel.getTheme(), maskAnimActive = maskAnimActive)
+                TopBar(theme = themeViewModel.getTheme(), maskAnimActive = maskAnimActive)
                 Logo()
                 TextFields(navigator = navigator)
             }
@@ -68,7 +67,6 @@ class ScreenLogin : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun TopBar(
-        modifier: Modifier = Modifier,
         theme: Theme,
         maskAnimActive: (MaskAnimModel, Float, Float) -> Unit
     ) {
