@@ -41,12 +41,18 @@ class ScreenOnline : Screen {
         }
         val navigator = LocalNavigator.current
         LaunchedEffect(Unit) {
-
+            viewModel.start(context)
         }
+
+        fun finish() {
+            viewModel.finish()
+            navigator?.pop()
+        }
+
         Column(modifier = Modifier.fillMaxSize()) {
-            BarTitle()
+            BarTitle(onFinish = { finish() })
             Button(onClick = { viewModel.start(context) }) {
-                Text(text = "Server Run")
+                Text(text = "运行服务器（弃用）")
             }
             Button(onClick = { viewModel.sendMessage() }) {
                 Text(text = "send message")
@@ -65,7 +71,7 @@ class ScreenOnline : Screen {
                     )
                 )
             }) {
-                Text(text = "to next command")
+                Text(text = "连接远程服务器 房主")
             }
             Button(onClick = {
                 navigator?.replace(
@@ -75,7 +81,7 @@ class ScreenOnline : Screen {
                     )
                 )
             }) {
-                Text(text = "to next")
+                Text(text = "连接远程服务器 客户")
             }
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(viewModel.deviceList) {
@@ -97,7 +103,8 @@ class ScreenOnline : Screen {
                                         )
                                     )
                                 })
-                            }, text = it)
+                            }, text = it
+                        )
                     }
                 }
             }
@@ -109,9 +116,10 @@ class ScreenOnline : Screen {
         }, onDismiss = {
             viewModel.sendResult(false)
         })
+
+
         BackHandler {
-            viewModel.finish()
-            navigator?.pop()
+            finish()
         }
 
 
@@ -119,8 +127,7 @@ class ScreenOnline : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun BarTitle(modifier: Modifier = Modifier) {
-        val navigator = LocalNavigator.current
+    fun BarTitle(modifier: Modifier = Modifier, onFinish: () -> Unit) {
         TopAppBar(
             modifier = modifier.fillMaxWidth(),
             title = { Text(text = "搜索") },
@@ -130,7 +137,7 @@ class ScreenOnline : Screen {
                         .size(30.dp)
                         .clip(RoundedCornerShape(100))
                         .clickable {
-                            navigator?.pop()
+                            onFinish()
                         },
                     imageVector = ImageVector.vectorResource(id = R.drawable.back),
                     contentDescription = ""

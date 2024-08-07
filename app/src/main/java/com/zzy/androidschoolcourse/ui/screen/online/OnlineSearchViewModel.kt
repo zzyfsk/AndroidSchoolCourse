@@ -41,7 +41,6 @@ class OnlineSearchViewModel : ScreenModel {
                 }
                 .collect {}
         }
-        deviceList.add("192.168.31.101")
     }
 
     fun connect(serverIP: String,onConfirm:()->Unit) {

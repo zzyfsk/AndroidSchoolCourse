@@ -94,18 +94,22 @@ class ServerGame {
                             when (msg.type) {
                                 GameSocketState.Function -> {
                                     if (msg.content == "Start") {
-                                        messageQueue.put(BeanSocketGame(
+                                        messageQueue.put(
+                                            BeanSocketGame(
                                                 GameSocketState.Function,
                                                 "Start",
                                                 GameRight.Command
-                                            ))
+                                            )
+                                        )
                                     }
                                     if (msg.content == "Win") {
-                                        messageQueue.put(BeanSocketGame(
+                                        messageQueue.put(
+                                            BeanSocketGame(
                                                 GameSocketState.Function,
                                                 "Win",
                                                 GameRight.All
-                                            ))
+                                            )
+                                        )
                                     }
                                 }
 
@@ -152,6 +156,15 @@ class ServerGame {
                                     }
                                 }
 
+                                GameSocketState.Chat -> {
+                                    messageQueue.put(
+                                        BeanSocketGame(
+                                            GameSocketState.Chat,
+                                            msg.content,
+                                            GameRight.All
+                                        )
+                                    )
+                                }
                             }
                         }
                     } catch (e: SocketException) {

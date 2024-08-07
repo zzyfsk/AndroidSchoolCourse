@@ -59,8 +59,9 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
         val context = LocalContext.current
         val viewModel: FuTaRiViewModel =
             rememberScreenModel { FuTaRiViewModel(ip, port, right, context) }
-        TwentyFourGame(win = { viewModel.gameWin() }, click = {
+        TwentyFourGame(win = { viewModel.gameWin() }, click = { gameState ->
             viewModel.sendGameState()
+            viewModel.recordState(1, gameState)
         }, gameState = viewModel.gameState)
     }
 

@@ -25,12 +25,13 @@ class ServiceGame {
         onSet: (String) -> Unit = {},
         onGet: () -> String,
         onMessage: (String) -> Unit,
-        onWin: () -> Unit = {}
+        onWin: () -> Unit = {},
+        getChat: (String) -> Unit = {}
     ) {
         controller = ClientGame()
         val right = GameRight.Command
         controller.start(ip, port) { type, message ->
-            Log.e("tag", "controllerStart: $type $message" )
+            Log.e("tag", "controllerStart: $type $message")
             when (type) {
                 GameSocketState.Function -> {
                     if (message == "init") {
@@ -42,7 +43,7 @@ class ServiceGame {
                             )
                         )
                     }
-                    if (message == "Win"){
+                    if (message == "Win") {
                         onWin()
                     }
                 }
@@ -57,6 +58,8 @@ class ServiceGame {
                     onSet(message)
 
                 }
+
+                GameSocketState.Chat -> TODO()
             }
         }
         controller.setRight(GameRight.Command)
@@ -67,13 +70,14 @@ class ServiceGame {
         port: Int,
         onSet: (String) -> Unit = {},
         onMessage: (String) -> Unit,
-        onWin: () -> Unit = {}
+        onWin: () -> Unit = {},
+        getChat: (String) -> Unit = {}
     ) {
         client = ClientGame()
         client.start(ip, port) { type, message ->
             when (type) {
                 GameSocketState.Function -> {
-                    if (message == "Win"){
+                    if (message == "Win") {
                         onWin()
                     }
                 }
@@ -87,6 +91,8 @@ class ServiceGame {
                 GameSocketState.Set -> {
                     onSet(message)
                 }
+
+                GameSocketState.Chat -> TODO()
             }
         }
         client.setRight(GameRight.Client)
@@ -143,5 +149,29 @@ class ServiceGame {
                 )
             )
         }
+    }
+
+    fun clientChat(message: String) {
+        client.sendMessage(
+            BeanSocketGame(
+                GameSocketState.Chat,
+                message,
+                GameRight.Client
+            )
+        )
+    }
+
+    fun controllerSendChat(message: String) {
+        controller.sendMessage(
+            BeanSocketGame(
+                GameSocketState.Chat,
+                message,
+                GameRight.Command
+            )
+        )
+    }
+
+    companion object {
+        val service = ServiceGame()
     }
 }

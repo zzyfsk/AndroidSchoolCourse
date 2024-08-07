@@ -10,7 +10,10 @@ import com.zzy.androidschoolcourse.net.QuestionService
 import com.zzy.androidschoolcourse.net.socket.bean.BeanGameState
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
 import com.zzy.androidschoolcourse.net.socket.game.ServiceGame
+import com.zzy.androidschoolcourse.ui.component.GameMode
+import com.zzy.androidschoolcourse.ui.component.TwentyFourGameRecord
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGameState
+import com.zzy.base.util.FileUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,21 +27,43 @@ class FuTaRiViewModel(
 ) :
     ScreenModel {
     private val tag = "FuTaRiViewModel"
-    private val serviceGame = ServiceGame()
+    private val serviceGame = ServiceGame.service
     var opposeState by mutableStateOf(TwentyFourGameState(numbers = "1234"))
     var gameState by mutableStateOf(TwentyFourGameState(numbers = "4321"))
     var showWin by mutableStateOf(false)
     private var winState by mutableStateOf(false)
 
+    private val fileUtil = FileUtil(context)
+    private val record = TwentyFourGameRecord(gameMode = GameMode.HiToRi)
+
+    /**
+     * @param recordPosition 1 or 2 自己或对面
+     */
+    fun recordState(recordPosition: Int, gameState: TwentyFourGameState) {
+        record.record(recordPosition, gameState)
+    }
+
+    private fun saveState() {
+        record.save(fileUtil = fileUtil)
+    }
+
     fun sendGameState() {
         serviceGame.sendGameState(gameState, right)
     }
 
-    private fun set(){
-        opposeState.numbers[0].digitToInt().let { num->opposeState.numberStateList[0].fraction.numerator = if (num==0) 10 else num }
-        opposeState.numbers[1].digitToInt().let { num->opposeState.numberStateList[1].fraction.numerator = if (num==0) 10 else num }
-        opposeState.numbers[2].digitToInt().let { num->opposeState.numberStateList[2].fraction.numerator = if (num==0) 10 else num }
-        opposeState.numbers[3].digitToInt().let { num->opposeState.numberStateList[3].fraction.numerator = if (num==0) 10 else num }
+    private fun set() {
+        opposeState.numbers[0].digitToInt().let { num ->
+            opposeState.numberStateList[0].fraction.numerator = if (num == 0) 10 else num
+        }
+        opposeState.numbers[1].digitToInt().let { num ->
+            opposeState.numberStateList[1].fraction.numerator = if (num == 0) 10 else num
+        }
+        opposeState.numbers[2].digitToInt().let { num ->
+            opposeState.numberStateList[2].fraction.numerator = if (num == 0) 10 else num
+        }
+        opposeState.numbers[3].digitToInt().let { num ->
+            opposeState.numberStateList[3].fraction.numerator = if (num == 0) 10 else num
+        }
         showWin = false
         winState = false
     }
@@ -50,7 +75,7 @@ class FuTaRiViewModel(
         )
     }
 
-    fun gameWin(){
+    fun gameWin() {
         winState = true
         serviceGame.sendWin(right)
     }
@@ -69,10 +94,12 @@ class FuTaRiViewModel(
                 }, onMessage = { opposeState ->
                     this@FuTaRiViewModel.opposeState =
                         Json.decodeFromString<TwentyFourGameState>(opposeState)
+                    recordState(2, this@FuTaRiViewModel.opposeState)
                 },
                     onWin = {
                         showWin = true
-                        // TODO
+                        saveState()
+
                     })
             } else if (right == GameRight.Client) {
                 var bool = true
@@ -89,6 +116,7 @@ class FuTaRiViewModel(
                                 Json.decodeFromString<TwentyFourGameState>(opposeState)
                         }, onWin = {
                             showWin = true
+                            saveState()
                         })
                         bool = false
                     } catch (e: Exception) {
@@ -99,6 +127,8 @@ class FuTaRiViewModel(
             }
         }
     }
+
+
 
     init {
         Log.d(tag, "ip:$ip port:$port right:$right ")

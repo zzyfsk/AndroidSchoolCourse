@@ -13,6 +13,7 @@ enum class GameSocketState{
     Message,  // ゲーム　メッセージ
     Right,
     Set,
+    Chat,
     Exit
 }
 
