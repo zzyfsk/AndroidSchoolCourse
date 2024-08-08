@@ -6,6 +6,9 @@ import com.zzy.androidschoolcourse.net.socket.bean.BeanSocketGame
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
 import com.zzy.androidschoolcourse.net.socket.bean.GameSocketState
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGameState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -16,7 +19,9 @@ class ServiceGame {
 
     fun serverStart() {
         server = ServerGame()
-        server.start()
+        CoroutineScope(Dispatchers.IO).launch {
+            server.start()
+        }
     }
 
     fun controllerStart(
@@ -28,9 +33,9 @@ class ServiceGame {
         onWin: () -> Unit = {},
         getChat: (String) -> Unit = {}
     ) {
-        controller = ClientGame()
+        controller = ClientGame(ip, port)
         val right = GameRight.Command
-        controller.start(ip, port) { type, message ->
+        controller.start { type, message ->
             Log.e("tag", "controllerStart: $type $message")
             when (type) {
                 GameSocketState.Function -> {
@@ -73,8 +78,8 @@ class ServiceGame {
         onWin: () -> Unit = {},
         getChat: (String) -> Unit = {}
     ) {
-        client = ClientGame()
-        client.start(ip, port) { type, message ->
+        client = ClientGame(ip, port)
+        client.start { type, message ->
             when (type) {
                 GameSocketState.Function -> {
                     if (message == "Win") {
@@ -110,8 +115,8 @@ class ServiceGame {
     }
 
     fun sendGameState(gameState: TwentyFourGameState, right: GameRight) {
+        println(Json.encodeToString(gameState))
         if (right == GameRight.Client) {
-            Log.d("tag", "sendGameState: client")
             client.sendMessage(
                 BeanSocketGame(
                     GameSocketState.Message,

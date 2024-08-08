@@ -17,6 +17,7 @@ import com.zzy.base.util.FileUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class FuTaRiViewModel(
@@ -32,6 +33,7 @@ class FuTaRiViewModel(
     var gameState by mutableStateOf(TwentyFourGameState(numbers = "4321"))
     var showWin by mutableStateOf(false)
     private var winState by mutableStateOf(false)
+    var huTaRiState by mutableStateOf(FuTaRiState.Socket)
 
     private val fileUtil = FileUtil(context)
     private val record = TwentyFourGameRecord(gameMode = GameMode.HiToRi)
@@ -47,7 +49,8 @@ class FuTaRiViewModel(
         record.save(fileUtil = fileUtil)
     }
 
-    fun sendGameState() {
+    fun sendGameState(gameState: TwentyFourGameState) {
+        println(Json.encodeToString(gameState))
         serviceGame.sendGameState(gameState, right)
     }
 
@@ -64,6 +67,7 @@ class FuTaRiViewModel(
         opposeState.numbers[3].digitToInt().let { num ->
             opposeState.numberStateList[3].fraction.numerator = if (num == 0) 10 else num
         }
+        opposeState = opposeState.copy()
         showWin = false
         winState = false
     }
@@ -81,9 +85,9 @@ class FuTaRiViewModel(
     }
 
     fun init() {
+        serviceGame.serverStart()
         CoroutineScope(Dispatchers.IO).launch {
             if (right == GameRight.Command) {
-                serviceGame.serverStart()
                 serviceGame.controllerStart(ip = ip, port = port, onSet = { message ->
                     val state = Json.decodeFromString<BeanGameState>(message)
                     gameState = TwentyFourGameState(numbers = state.initNumber)
@@ -94,6 +98,7 @@ class FuTaRiViewModel(
                 }, onMessage = { opposeState ->
                     this@FuTaRiViewModel.opposeState =
                         Json.decodeFromString<TwentyFourGameState>(opposeState)
+                    println(opposeState)
                     recordState(2, this@FuTaRiViewModel.opposeState)
                 },
                     onWin = {
@@ -106,6 +111,7 @@ class FuTaRiViewModel(
                 while (bool) {
                     try {
                         Thread.sleep(200)
+                        println("sleep:200")
                         serviceGame.clientStart(ip = ip, port = port, onSet = { message ->
                             val state = Json.decodeFromString<BeanGameState>(message)
                             gameState = TwentyFourGameState(numbers = state.initNumber)
@@ -133,4 +139,9 @@ class FuTaRiViewModel(
     init {
         Log.d(tag, "ip:$ip port:$port right:$right ")
     }
+}
+
+enum class FuTaRiState {
+    Socket,
+    UI
 }

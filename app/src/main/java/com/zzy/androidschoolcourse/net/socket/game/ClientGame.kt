@@ -1,6 +1,5 @@
 package com.zzy.androidschoolcourse.net.socket.game
 
-import android.util.Log
 import com.zzy.androidschoolcourse.net.socket.bean.BeanSocketGame
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
 import com.zzy.androidschoolcourse.net.socket.bean.GameSocketState
@@ -15,21 +14,20 @@ import java.io.PrintWriter
 import java.net.Socket
 import java.net.SocketException
 
-class ClientGame {
-    private lateinit var socket: Socket
-    private lateinit var input: BufferedReader
-    private lateinit var output: PrintWriter
+class ClientGame(
+    ip: String,
+    port: Int = 5123,
+) {
+    private var socket: Socket = Socket(ip, port)
+    private var input: BufferedReader = BufferedReader(InputStreamReader(socket.getInputStream()))
+    private var output: PrintWriter = PrintWriter(socket.getOutputStream(), true)
     private var right = GameRight.Client
+    private var socketState = SocketState.Uninitialized
 
     fun start(
-        ip: String,
-        port: Int = 5123,
         onEvent: (GameSocketState, String) -> Unit = { _, _ -> }
     ) {
-        socket = Socket(ip, port)
-        input = BufferedReader(InputStreamReader(socket.getInputStream()))
-        output = PrintWriter(socket.getOutputStream(), true)
-
+        socketState = SocketState.Start
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 while (true) {
@@ -39,10 +37,10 @@ class ClientGame {
                         when (msg.type) {
                             GameSocketState.Function -> {
                                 if (msg.content == "Start") {
-                                    onEvent(GameSocketState.Function,"init")
+                                    onEvent(GameSocketState.Function, "init")
                                 }
-                                if(msg.content == "Win"){
-                                    onEvent(GameSocketState.Function,"Win")
+                                if (msg.content == "Win") {
+                                    onEvent(GameSocketState.Function, "Win")
                                 }
                             }
 
@@ -64,6 +62,7 @@ class ClientGame {
                                 onEvent(GameSocketState.Exit, "")
                             }
 
+                            GameSocketState.Chat -> TODO()
                         }
                     }
                 }
@@ -80,8 +79,14 @@ class ClientGame {
 
     fun sendMessage(message: BeanSocketGame) {
         CoroutineScope(Dispatchers.IO).launch {
+//            while (socketState == SocketState.Uninitialized) Thread.sleep(100)
             output.println(Json.encodeToString(message))
         }
     }
 
+
+    enum class SocketState {
+        Uninitialized,
+        Start
+    }
 }

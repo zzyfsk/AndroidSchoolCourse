@@ -29,15 +29,23 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
             rememberScreenModel { FuTaRiViewModel(ip, port, right, context) }
         LaunchedEffect(key1 = Unit) {
             viewModel.init()
+            viewModel.huTaRiState = FuTaRiState.UI
         }
-        Column(modifier = Modifier.fillMaxSize()) {
-            Text(text = "多人游戏界面 ${viewModel.gameState.numbers}")
-            BarTop()
-            GameOppose(opposeState = viewModel.opposeState)
-            HorizontalDivider(thickness = 1.dp)
-            GameMe()
-        }
+        when (viewModel.huTaRiState) {
+            FuTaRiState.Socket -> {
+                // TODO load
+            }
 
+            FuTaRiState.UI -> {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Text(text = "多人游戏界面 ${viewModel.gameState.numbers}")
+                    BarTop()
+                    GameOppose(opposeState = viewModel.opposeState)
+                    HorizontalDivider(thickness = 1.dp)
+                    GameMe(viewModel = viewModel)
+                }
+            }
+        }
         if (viewModel.showWin) {
             WinComponent()
         }
@@ -55,12 +63,10 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
     }
 
     @Composable
-    fun GameMe() {
+    fun GameMe(viewModel: FuTaRiViewModel) {
         val context = LocalContext.current
-        val viewModel: FuTaRiViewModel =
-            rememberScreenModel { FuTaRiViewModel(ip, port, right, context) }
         TwentyFourGame(win = { viewModel.gameWin() }, click = { gameState ->
-            viewModel.sendGameState()
+            viewModel.sendGameState(gameState)
             viewModel.recordState(1, gameState)
         }, gameState = viewModel.gameState)
     }

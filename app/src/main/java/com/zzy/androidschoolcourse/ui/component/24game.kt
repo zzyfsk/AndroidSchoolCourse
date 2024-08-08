@@ -452,17 +452,6 @@ data class TwentyFourGameState(
         return "$firstNumber,$secondNumber,$currentSymbol,$addCount"
     }
 
-//    fun copy(
-//        firstNumber: Int = this.firstNumber,
-//        secondNumber: Int = this.secondNumber,
-//        currentSymbol: Int = this.currentSymbol,
-//        addCount: Int = this.addCount,
-//        numberStateList: MutableList<TwentyFourGameButtonState> = this.numberStateList,
-//        numbers: String = this.numbers
-//    ){
-//
-//    }
-
     init {
         while (numberStateList.size<4){
             numberStateList.add(TwentyFourGameButtonState())
