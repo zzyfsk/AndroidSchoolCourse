@@ -13,7 +13,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class ServiceGame {
-    private lateinit var server: ServerGame
+private lateinit var server: ServerGame
     private lateinit var controller: ClientGame
     private lateinit var client: ClientGame
 
@@ -140,7 +140,7 @@ class ServiceGame {
             Log.d("tag", "sendGameState: client")
             client.sendMessage(
                 BeanSocketGame(
-                    GameSocketState.Message,
+                    GameSocketState.Function,
                     "Win",
                     GameRight.Client
                 )
@@ -148,7 +148,7 @@ class ServiceGame {
         } else if (right == GameRight.Command) {
             controller.sendMessage(
                 BeanSocketGame(
-                    GameSocketState.Message,
+                    GameSocketState.Function,
                     "Win",
                     GameRight.Command
                 )

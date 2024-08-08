@@ -79,7 +79,6 @@ class ClientGame(
 
     fun sendMessage(message: BeanSocketGame) {
         CoroutineScope(Dispatchers.IO).launch {
-//            while (socketState == SocketState.Uninitialized) Thread.sleep(100)
             output.println(Json.encodeToString(message))
         }
     }

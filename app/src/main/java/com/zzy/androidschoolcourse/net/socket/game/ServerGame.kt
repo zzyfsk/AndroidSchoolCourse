@@ -121,14 +121,10 @@ class ServerGame {
                                             if (msg.right == GameRight.Client) GameRight.Command else GameRight.Client
                                         )
                                     )
-                                    users.forEach {
-                                        Log.d("tag", "start: ${right[it]}")
-                                    }
                                 }
 
                                 GameSocketState.Right -> {
                                     right[this@GameTask] = msg.right
-                                    Log.e("tag", "right:${right[this@GameTask]} ")
                                 }
 
                                 GameSocketState.Set -> {
@@ -152,7 +148,7 @@ class ServerGame {
                                         )
                                         while (messageQueue.isNotEmpty()) Thread.sleep(100)
                                         socket.close()
-                                        finish
+                                        finish()
                                     }
                                 }
 

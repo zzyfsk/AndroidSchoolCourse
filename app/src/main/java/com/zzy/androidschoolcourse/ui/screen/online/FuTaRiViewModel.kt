@@ -84,6 +84,11 @@ class FuTaRiViewModel(
         serviceGame.sendWin(right)
     }
 
+    fun onWin(){
+        showWin = true
+        saveState()
+    }
+
     fun init() {
         serviceGame.serverStart()
         CoroutineScope(Dispatchers.IO).launch {
@@ -102,9 +107,7 @@ class FuTaRiViewModel(
                     recordState(2, this@FuTaRiViewModel.opposeState)
                 },
                     onWin = {
-                        showWin = true
-                        saveState()
-
+                        onWin()
                     })
             } else if (right == GameRight.Client) {
                 var bool = true
@@ -121,8 +124,7 @@ class FuTaRiViewModel(
                             this@FuTaRiViewModel.opposeState =
                                 Json.decodeFromString<TwentyFourGameState>(opposeState)
                         }, onWin = {
-                            showWin = true
-                            saveState()
+                            onWin()
                         })
                         bool = false
                     } catch (e: Exception) {
