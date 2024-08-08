@@ -29,6 +29,7 @@ class FuTaRiViewModel(
     ScreenModel {
     private val tag = "FuTaRiViewModel"
     private val serviceGame = ServiceGame.service
+//    var numbers by mutableStateOf("1111")
     var opposeState by mutableStateOf(TwentyFourGameState(numbers = "1234"))
     var gameState by mutableStateOf(TwentyFourGameState(numbers = "4321"))
     var showWin by mutableStateOf(false)
@@ -36,7 +37,7 @@ class FuTaRiViewModel(
     var huTaRiState by mutableStateOf(FuTaRiState.Socket)
 
     private val fileUtil = FileUtil(context)
-    private val record = TwentyFourGameRecord(gameMode = GameMode.HiToRi)
+    private val record = TwentyFourGameRecord(gameMode = GameMode.HuTaRi)
 
     /**
      * @param recordPosition 1 or 2 自己或对面

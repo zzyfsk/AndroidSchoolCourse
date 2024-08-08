@@ -21,7 +21,6 @@ import com.zzy.androidschoolcourse.ui.component.TwentyFourGameView
 
 class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: GameRight) : Screen {
 
-
     @Composable
     override fun Content() {
         val context = LocalContext.current
@@ -64,7 +63,6 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
 
     @Composable
     fun GameMe(viewModel: FuTaRiViewModel) {
-        val context = LocalContext.current
         TwentyFourGame(win = { viewModel.gameWin() }, click = { gameState ->
             viewModel.sendGameState(gameState)
             viewModel.recordState(1, gameState)

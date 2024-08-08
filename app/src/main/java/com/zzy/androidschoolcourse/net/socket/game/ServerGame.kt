@@ -1,6 +1,5 @@
 package com.zzy.androidschoolcourse.net.socket.game
 
-import android.util.Log
 import com.zzy.androidschoolcourse.net.socket.bean.BeanSocketGame
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
 import com.zzy.androidschoolcourse.net.socket.bean.GameSocketState

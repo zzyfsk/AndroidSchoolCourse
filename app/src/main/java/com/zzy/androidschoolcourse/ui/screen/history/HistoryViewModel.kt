@@ -15,6 +15,11 @@ import kotlinx.serialization.json.Json
 class HistoryViewModel(context: Context) : ScreenModel {
     private val fileUtil = FileUtil(context)
 
+    /**
+     * @see 1为单人2为多人
+     */
+    var showType by mutableIntStateOf(0)
+
     private var currentRecord by mutableStateOf(TwentyFourGameRecord(GameMode.NULL))
     var current1 by mutableIntStateOf(0)
     var current2 by mutableIntStateOf(0)
@@ -23,6 +28,7 @@ class HistoryViewModel(context: Context) : ScreenModel {
 
     private fun readFile(fileName: String) {
         val file = fileUtil.readFile(fileName)
+        showType = fileName[0].digitToInt()
         val content = file.readText()
         currentRecord = Json.decodeFromString(content)
 

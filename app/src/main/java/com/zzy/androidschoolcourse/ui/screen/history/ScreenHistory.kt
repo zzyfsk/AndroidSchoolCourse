@@ -27,14 +27,37 @@ class ScreenHistory(private val fileName: String) : Screen {
             viewModel.init(fileName)
         }
         Surface {
-            Column {
-                ViewMine(
-                    modifier = Modifier.fillMaxWidth(),
-                    gameState = viewModel.currentState1,
-                    current = viewModel.current1,
-                    previous = { viewModel.previous1() },
-                    next = { viewModel.next1() }
-                )
+            when (viewModel.showType) {
+                1 -> {
+                    Column {
+                        ViewMine(
+                            modifier = Modifier.fillMaxWidth(),
+                            gameState = viewModel.currentState1,
+                            current = viewModel.current1,
+                            previous = { viewModel.previous1() },
+                            next = { viewModel.next1() }
+                        )
+                    }
+                }
+
+                2 -> {
+                    Column {
+                        ViewMine(
+                            modifier = Modifier.fillMaxWidth(),
+                            gameState = viewModel.currentState2,
+                            current = viewModel.current2,
+                            previous = { viewModel.previous2() },
+                            next = { viewModel.next2() }
+                        )
+                        ViewOppose(
+                            modifier = Modifier.fillMaxWidth(),
+                            gameState = viewModel.currentState1,
+                            current = viewModel.current1,
+                            previous = { viewModel.previous1() },
+                            next = { viewModel.next1() }
+                        )
+                    }
+                }
             }
         }
     }
@@ -43,7 +66,27 @@ class ScreenHistory(private val fileName: String) : Screen {
     fun ViewMine(
         modifier: Modifier = Modifier,
         gameState: TwentyFourGameState,
-        current:Int,
+        current: Int,
+        previous: () -> Unit = {},
+        next: () -> Unit = {},
+    ) {
+        TwentyFourGameView(gameViewModel = gameState)
+        Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Button(onClick = { previous() }) {
+                Text(text = "上一步")
+            }
+            Text(text = current.toString())
+            Button(onClick = { next() }) {
+                Text(text = ("下一步"))
+            }
+        }
+    }
+
+    @Composable
+    fun ViewOppose(
+        modifier: Modifier = Modifier,
+        gameState: TwentyFourGameState,
+        current: Int,
         previous: () -> Unit = {},
         next: () -> Unit = {},
     ) {
