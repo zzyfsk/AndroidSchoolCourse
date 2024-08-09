@@ -6,6 +6,7 @@ import com.zzy.androidschoolcourse.net.socket.bean.BeanSocketGame
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
 import com.zzy.androidschoolcourse.net.socket.bean.GameSocketState
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGameState
+import com.zzy.androidschoolcourse.ui.screen.online.ChatContent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,7 +32,7 @@ private lateinit var server: ServerGame
         onGet: () -> String,
         onMessage: (String) -> Unit,
         onWin: () -> Unit = {},
-        getChat: (String) -> Unit = {}
+        getChat: (ChatContent) -> Unit = {}
     ) {
         controller = ClientGame(ip, port)
         val right = GameRight.Command
@@ -61,10 +62,11 @@ private lateinit var server: ServerGame
                 GameSocketState.Exit -> {}
                 GameSocketState.Set -> {
                     onSet(message)
-
                 }
 
-                GameSocketState.Chat -> TODO()
+                GameSocketState.Chat -> {
+                    getChat(Json.decodeFromString(message))
+                }
             }
         }
         controller.setRight(GameRight.Command)
@@ -76,7 +78,7 @@ private lateinit var server: ServerGame
         onSet: (String) -> Unit = {},
         onMessage: (String) -> Unit,
         onWin: () -> Unit = {},
-        getChat: (String) -> Unit = {}
+        getChat: (ChatContent) -> Unit = {}
     ) {
         client = ClientGame(ip, port)
         client.start { type, message ->
@@ -97,7 +99,9 @@ private lateinit var server: ServerGame
                     onSet(message)
                 }
 
-                GameSocketState.Chat -> TODO()
+                GameSocketState.Chat -> {
+                    getChat(Json.decodeFromString(message))
+                }
             }
         }
         client.setRight(GameRight.Client)

@@ -156,7 +156,7 @@ class ServerGame {
                                         BeanSocketGame(
                                             GameSocketState.Chat,
                                             msg.content,
-                                            GameRight.All
+                                            if (msg.right == GameRight.Command) GameRight.Client else GameRight.Command
                                         )
                                     )
                                 }

@@ -62,7 +62,9 @@ class ClientGame(
                                 onEvent(GameSocketState.Exit, "")
                             }
 
-                            GameSocketState.Chat -> TODO()
+                            GameSocketState.Chat -> {
+                                onEvent(GameSocketState.Chat,msg.content)
+                            }
                         }
                     }
                 }

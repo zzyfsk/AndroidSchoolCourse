@@ -3,6 +3,7 @@ package com.zzy.androidschoolcourse.ui.screen.online
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -29,11 +30,15 @@ class FuTaRiViewModel(
     ScreenModel {
     private val tag = "FuTaRiViewModel"
     private val serviceGame = ServiceGame.service
-//    var numbers by mutableStateOf("1111")
+
+    //    var numbers by mutableStateOf("1111")
     var opposeState by mutableStateOf(TwentyFourGameState(numbers = "1234"))
     var gameState by mutableStateOf(TwentyFourGameState(numbers = "4321"))
     var showWin by mutableStateOf(false)
+    var showChat by mutableStateOf(false)
     private var winState by mutableStateOf(false)
+    var chatContent by mutableStateOf("")
+    val chatList = mutableStateListOf<ChatContent>()
     var huTaRiState by mutableStateOf(FuTaRiState.Socket)
 
     private val fileUtil = FileUtil(context)
@@ -85,7 +90,7 @@ class FuTaRiViewModel(
         serviceGame.sendWin(right)
     }
 
-    fun onWin(){
+    private fun onWin() {
         showWin = true
         saveState()
     }
@@ -94,21 +99,27 @@ class FuTaRiViewModel(
         serviceGame.serverStart()
         CoroutineScope(Dispatchers.IO).launch {
             if (right == GameRight.Command) {
-                serviceGame.controllerStart(ip = ip, port = port, onSet = { message ->
-                    val state = Json.decodeFromString<BeanGameState>(message)
-                    gameState = TwentyFourGameState(numbers = state.initNumber)
-                    opposeState = TwentyFourGameState(numbers = state.initNumber)
-                    set()
-                }, onGet = {
-                    return@controllerStart readInitNumber(context)
-                }, onMessage = { opposeState ->
-                    this@FuTaRiViewModel.opposeState =
-                        Json.decodeFromString<TwentyFourGameState>(opposeState)
-                    println(opposeState)
-                    recordState(2, this@FuTaRiViewModel.opposeState)
-                },
+                serviceGame.controllerStart(ip = ip, port = port,
+                    onSet = { message ->
+                        val state = Json.decodeFromString<BeanGameState>(message)
+                        gameState = TwentyFourGameState(numbers = state.initNumber)
+                        opposeState = TwentyFourGameState(numbers = state.initNumber)
+                        set()
+                    },
+                    onGet = {
+                        return@controllerStart readInitNumber(context)
+                    },
+                    onMessage = { opposeState ->
+                        this@FuTaRiViewModel.opposeState =
+                            Json.decodeFromString<TwentyFourGameState>(opposeState)
+                        println(opposeState)
+                        recordState(2, this@FuTaRiViewModel.opposeState)
+                    },
                     onWin = {
                         onWin()
+                    },
+                    getChat = { chatContent->
+                        getChat(chatContent)
                     })
             } else if (right == GameRight.Client) {
                 var bool = true
@@ -116,17 +127,20 @@ class FuTaRiViewModel(
                     try {
                         Thread.sleep(200)
                         println("sleep:200")
-                        serviceGame.clientStart(ip = ip, port = port, onSet = { message ->
-                            val state = Json.decodeFromString<BeanGameState>(message)
-                            gameState = TwentyFourGameState(numbers = state.initNumber)
-                            opposeState = TwentyFourGameState(numbers = state.initNumber)
-                            set()
-                        }, onMessage = { opposeState ->
-                            this@FuTaRiViewModel.opposeState =
-                                Json.decodeFromString<TwentyFourGameState>(opposeState)
-                        }, onWin = {
-                            onWin()
-                        })
+                        serviceGame.clientStart(ip = ip, port = port,
+                            onSet = { message ->
+                                val state = Json.decodeFromString<BeanGameState>(message)
+                                gameState = TwentyFourGameState(numbers = state.initNumber)
+                                opposeState = TwentyFourGameState(numbers = state.initNumber)
+                                set()
+                            },
+                            onMessage = { opposeState ->
+                                this@FuTaRiViewModel.opposeState =
+                                    Json.decodeFromString<TwentyFourGameState>(opposeState)
+                            },
+                            onWin = {
+                                onWin()
+                            })
                         bool = false
                     } catch (e: Exception) {
                         e.localizedMessage
@@ -137,7 +151,32 @@ class FuTaRiViewModel(
         }
     }
 
+    fun sendMessage(name: String) {
+        val chat = Json.encodeToString(
+            ChatContent(
+                chatRole = ChatRole.Oppose,
+                name = name,
+                content = chatContent
+            )
+        )
+        chatList.add(ChatContent(chatRole = ChatRole.Me, name = name, content = chatContent))
+        chatContent = ""
+        when (right) {
+            GameRight.Command -> {
+                serviceGame.controllerSendChat(chat)
+            }
 
+            GameRight.Client -> {
+                serviceGame.clientChat(chat)
+            }
+
+            GameRight.All -> TODO()
+        }
+    }
+
+    private fun getChat(chatContent: ChatContent){
+        chatList.add(chatContent)
+    }
 
     init {
         Log.d(tag, "ip:$ip port:$port right:$right ")

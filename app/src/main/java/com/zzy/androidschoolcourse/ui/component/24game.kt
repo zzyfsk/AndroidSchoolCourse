@@ -60,7 +60,7 @@ fun TwentyFourGame(
     }
 
     val winCheck: () -> Unit = {
-        if (addCount == 3) {
+        if (addCount >= 3) {
             getNumberState().forEach {
                 if (it.numberVisible && it.fraction.getInteger() == 24 && it.fraction.getRemainder() == 0) {
                     win()
@@ -499,12 +499,6 @@ data class TwentyFourGameRecord(
                 GameMode.NULL -> "0"
             }
         }_$timeStamp"
-        recordList.forEach { it ->
-            it.numberStateList.forEach {
-                print("${it.fraction.numerator} ")
-            }
-            println()
-        }
         fileUtil.saveFile(FileName(fileName = fileName), Json.encodeToString(this@TwentyFourGameRecord))
     }
 }
