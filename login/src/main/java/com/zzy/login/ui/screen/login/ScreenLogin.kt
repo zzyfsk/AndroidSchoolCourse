@@ -105,6 +105,7 @@ class ScreenLogin : Screen {
             value = viewModel.account,
             onValueChange = viewModel.onAccountChange,
             leadingIcon = { Text("账号") },
+            placeholder = { Text(text = accountViewModel.getAccount()) },
             maxLines = 1
         )
         TextField(
@@ -121,11 +122,12 @@ class ScreenLogin : Screen {
             Button(modifier = Modifier
                 .padding(10.dp)
                 .weight(1f),
-                onClick = { accountViewModel.login(viewModel.account, viewModel.password).let {
-                    if (it){
-                        navigator.pop()
-                    }
-                } }) {
+                onClick = {
+                    accountViewModel.login(
+                        viewModel.account.ifEmpty { accountViewModel.getAccount() },
+                        viewModel.password
+                    )
+                }) {
                 Text(text = "登录")
             }
             Button(modifier = Modifier

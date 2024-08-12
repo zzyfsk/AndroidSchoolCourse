@@ -1,5 +1,6 @@
 package com.zzy.base.util
 
+import com.zzy.base.http.bean.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
@@ -13,7 +14,7 @@ import kotlinx.serialization.json.Json
 
 class HttpUtil {
 
-    suspend inline fun <reified T> get(url: String, params: Map<String, String>): T? {
+    suspend inline fun <reified T> get(url: String, params: Map<String, String>): Result<T> {
         CoroutineScope(Dispatchers.Default).launch {
             try {
                 val client = HttpClient(CIO)
@@ -28,25 +29,25 @@ class HttpUtil {
                 e.localizedMessage
             }
         }
-        return null
+        return Result.error("-1", "请求失败")
     }
 
-    inline fun <reified T> post(url: String, params: Map<String, String>): T? {
-        CoroutineScope(Dispatchers.Default).launch {
-            try {
-                val client = HttpClient(CIO)
-                val response = client.post(url) {
-                    params.forEach {
-                        parameter(it.key, it.value)
-                    }
+    suspend inline fun <reified T> post(url: String, params: Map<String, String>): Result<T> {
+        try {
+            val client = HttpClient(CIO)
+            val response = client.post(url) {
+                params.forEach {
+                    parameter(it.key, it.value)
                 }
-                client.close()
-                return@launch Json.decodeFromString(response.bodyAsText())
-            } catch (e: Exception) {
-                e.localizedMessage
             }
+            client.close()
+            println(response.bodyAsText())
+            return Json.decodeFromString(response.bodyAsText())
+        } catch (e: Exception) {
+//            e.localizedMessage
+            println(e.message)
+            return Result.error("-1", "请求失败")
         }
-        return null
     }
 
     companion object {

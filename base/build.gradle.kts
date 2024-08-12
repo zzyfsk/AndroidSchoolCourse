@@ -52,6 +52,9 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
+    api("org.slf4j:slf4j-android:1.7.36")
+
+
     // http
     api (libs.kotlinx.serialization.json)
 
