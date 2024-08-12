@@ -27,9 +27,9 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.zzy.base.koin.account.AccountViewModel
+import com.zzy.base.koin.account.LoginHttpState
 import com.zzy.base.koin.theme.Theme
 import com.zzy.base.koin.theme.ThemeViewModel
 import com.zzy.component.box.MaskAnimModel
@@ -44,6 +44,10 @@ class ScreenLogin : Screen {
         val scope = rememberCoroutineScope()
         val themeViewModel: ThemeViewModel = koinViewModel()
         val navigator = LocalNavigator.currentOrThrow
+        val viewModel = rememberScreenModel {
+            LoginViewModel()
+        }
+        val accountViewModel: AccountViewModel = koinViewModel()
         MaskBox(
             modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
             maskComplete = {
@@ -59,8 +63,23 @@ class ScreenLogin : Screen {
             ) {
                 TopBar(theme = themeViewModel.getTheme(), maskAnimActive = maskAnimActive)
                 Logo()
-                TextFields(navigator = navigator)
+                TextFields(viewModel,accountViewModel)
             }
+        }
+        when(accountViewModel.httpState){
+            LoginHttpState.None -> {
+
+            }
+            LoginHttpState.Loading -> {
+
+            }
+            LoginHttpState.LoginSuccess -> {
+                accountViewModel.httpState = LoginHttpState.None
+                navigator.pop()
+            }
+            LoginHttpState.LoginFail -> TODO()
+            LoginHttpState.RegisterSuccess -> TODO()
+            LoginHttpState.RegisterFai -> TODO()
         }
     }
 
@@ -96,11 +115,7 @@ class ScreenLogin : Screen {
     }
 
     @Composable
-    fun TextFields(navigator: Navigator) {
-        val viewModel = rememberScreenModel {
-            LoginViewModel()
-        }
-        val accountViewModel: AccountViewModel = koinViewModel()
+    fun TextFields(viewModel: LoginViewModel,accountViewModel: AccountViewModel) {
         TextField(
             value = viewModel.account,
             onValueChange = viewModel.onAccountChange,
@@ -114,6 +129,13 @@ class ScreenLogin : Screen {
             leadingIcon = { Text("密码") },
             maxLines = 1
         )
+        if (viewModel.state == StateLogin.Register) {
+            TextField(
+                value = viewModel.password2,
+                onValueChange = viewModel.onPassword2Change,
+                leadingIcon = { Text(text = "确认") }
+            )
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -123,16 +145,28 @@ class ScreenLogin : Screen {
                 .padding(10.dp)
                 .weight(1f),
                 onClick = {
-                    accountViewModel.login(
-                        viewModel.account.ifEmpty { accountViewModel.getAccount() },
-                        viewModel.password
-                    )
+                    if (viewModel.state == StateLogin.Register) {
+                        viewModel.state = StateLogin.Login
+                    } else {
+                        accountViewModel.login(
+                            viewModel.account.ifEmpty { accountViewModel.getAccount() },
+                            viewModel.password
+                        )
+                    }
                 }) {
                 Text(text = "登录")
             }
             Button(modifier = Modifier
                 .padding(10.dp)
-                .weight(1f), onClick = { }) {
+                .weight(1f), onClick = {
+                    if (viewModel.state == StateLogin.Login) {
+                        viewModel.state = StateLogin.Register
+                    }else{
+                        if (viewModel.checkPassword()){
+                            accountViewModel
+                        }
+                    }
+            }) {
                 Text(text = "注册")
             }
         }

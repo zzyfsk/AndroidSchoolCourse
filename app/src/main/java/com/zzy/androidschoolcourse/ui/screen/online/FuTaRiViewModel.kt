@@ -113,7 +113,7 @@ class FuTaRiViewModel(
                         this@FuTaRiViewModel.opposeState =
                             Json.decodeFromString<TwentyFourGameState>(opposeState)
                         println(opposeState)
-                        recordState(2, this@FuTaRiViewModel.opposeState)
+                        recordState(2, Json.decodeFromString(opposeState))
                     },
                     onWin = {
                         onWin()

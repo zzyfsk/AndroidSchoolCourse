@@ -54,10 +54,12 @@ object ScreenTabFriend : Tab {
     override fun Content() {
         val accountViewModel: AccountViewModel = koinViewModel()
         val tabNavigator = LocalTabNavigator.current
-        LaunchedEffect(key1 = accountViewModel.user()) {
+        LaunchedEffect(key1 = accountViewModel.user().name) {
+            println(accountViewModel.user().name)
+            println("???????")
             if (accountViewModel.user().token.isNotEmpty()) accountViewModel.getFriendList()
         }
-        if (accountViewModel.friendList().isNotEmpty()) {
+        if (accountViewModel.user().token.isNotEmpty()) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(accountViewModel.friendList()) { friend ->
                     FriendItem(friend = friend)

@@ -1,7 +1,6 @@
 package com.zzy.component.box
 
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.PorterDuff
