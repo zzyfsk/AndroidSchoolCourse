@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.delay
@@ -34,7 +35,9 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun Toast(message: String, duration: SnackbarDuration = SnackbarDuration.Short) {
-    Box (modifier = Modifier.zIndex(1f).fillMaxSize()){
+    Box (modifier = Modifier
+        .zIndex(1f)
+        .fillMaxSize()){
         val hostState = SnackbarHostState()
         SnackbarHost(hostState = hostState, modifier = Modifier.align(BiasAlignment(0f, 0.9f)))
         LaunchedEffect(key1 = "Toast") {
@@ -68,14 +71,21 @@ fun ToastWait(){
                     mutableStateOf(false)
                 }
                 val progress = animateFloatAsState(
-                    targetValue = if (isStop) 1f else 0f,
+                    targetValue = if (isStop) 0.75f else 0.2f,
                     animationSpec = infiniteRepeatable(
                         animation = tween(1000, easing = LinearEasing),
-                        repeatMode = RepeatMode.Restart
+                        repeatMode = RepeatMode.Reverse
                     ),
                     label = "progress"
                 )
-
+                val rotate = animateFloatAsState(
+                    targetValue = if (isStop) 360f else 0f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(800, easing =  LinearEasing),
+                        repeatMode = RepeatMode.Restart
+                    ),
+                    label = "rotate"
+                )
                 Box(Modifier.fillMaxSize()) {
                     CircularProgressIndicator(
                         progress = { progress.value },
@@ -84,17 +94,12 @@ fun ToastWait(){
                             .align(
                                 Alignment.Center
                             )
-                            .rotate(360 * progress.value),
+                            .rotate(rotate.value),
                         color = Color.Yellow,
                         strokeWidth = 4.dp,
                         trackColor = Color.Transparent,
                         strokeCap = StrokeCap.Round,
                     )
-//                    Icon(
-//                        imageVector = Icons.Default.Refresh,
-//                        contentDescription = "progress",
-//                        modifier = Modifier.scale(2.0f).rotate(360 * progress.value).align(Alignment.Center)
-//                    )
                 }
                 LaunchedEffect(key1 = "progress", block = {
                     isStop = true

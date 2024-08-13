@@ -31,6 +31,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.zzy.androidschoolcourse.R
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
+import com.zzy.component.toast.ToastWait
 
 class ScreenOnline : Screen {
     @Composable
@@ -122,6 +123,9 @@ class ScreenOnline : Screen {
             finish()
         }
 
+        if (viewModel.state == OnlineSearchState.Search){
+            ToastWait()
+        }
 
     }
 

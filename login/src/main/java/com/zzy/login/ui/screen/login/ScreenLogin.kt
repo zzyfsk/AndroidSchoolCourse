@@ -1,5 +1,10 @@
 package com.zzy.login.ui.screen.login
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
@@ -15,14 +21,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,9 +57,6 @@ class ScreenLogin : Screen {
             LoginViewModel()
         }
         val accountViewModel: AccountViewModel = koinViewModel()
-        val snackBarHostState = remember {
-            SnackbarHostState()
-        }
 
         MaskBox(
             modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
@@ -73,22 +73,26 @@ class ScreenLogin : Screen {
             ) {
                 TopBar(theme = themeViewModel.getTheme(), maskAnimActive = maskAnimActive)
                 Logo()
-                TextFields(viewModel,accountViewModel)
+                TextFields(viewModel, accountViewModel)
             }
         }
-        when(accountViewModel.httpState){
+        when (accountViewModel.httpState) {
             LoginHttpState.None -> {
 
             }
+
             LoginHttpState.Loading -> {
                 ToastWait()
             }
+
             LoginHttpState.LoginSuccess -> {
                 navigator.pop()
             }
+
             LoginHttpState.LoginFail -> {
                 Toast(message = "登录失败")
             }
+
             LoginHttpState.RegisterSuccess -> TODO()
             LoginHttpState.RegisterFai -> TODO()
         }
@@ -129,7 +133,7 @@ class ScreenLogin : Screen {
     }
 
     @Composable
-    fun TextFields(viewModel: LoginViewModel,accountViewModel: AccountViewModel) {
+    fun TextFields(viewModel: LoginViewModel, accountViewModel: AccountViewModel) {
         TextField(
             value = viewModel.account,
             onValueChange = viewModel.onAccountChange,
@@ -143,7 +147,10 @@ class ScreenLogin : Screen {
             leadingIcon = { Text("密码") },
             maxLines = 1
         )
-        if (viewModel.state == StateLogin.Register) {
+        AnimatedVisibility(visible = viewModel.state == StateLogin.Register,
+            enter = slideInVertically() + fadeIn(),
+            exit = slideOutVertically() + fadeOut()
+            ) {
             TextField(
                 value = viewModel.password2,
                 onValueChange = viewModel.onPassword2Change,
@@ -154,6 +161,7 @@ class ScreenLogin : Screen {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp)
+                .offset()
         ) {
             Button(modifier = Modifier
                 .padding(10.dp)
@@ -173,13 +181,13 @@ class ScreenLogin : Screen {
             Button(modifier = Modifier
                 .padding(10.dp)
                 .weight(1f), onClick = {
-                    if (viewModel.state == StateLogin.Login) {
-                        viewModel.state = StateLogin.Register
-                    }else{
-                        if (viewModel.checkPassword()){
-                            accountViewModel
-                        }
+                if (viewModel.state == StateLogin.Login) {
+                    viewModel.state = StateLogin.Register
+                } else {
+                    if (viewModel.checkPassword()) {
+                        accountViewModel
                     }
+                }
             }) {
                 Text(text = "注册")
             }

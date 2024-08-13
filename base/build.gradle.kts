@@ -64,7 +64,6 @@ dependencies {
 
     api(libs.androidx.core.ktx)
     api(libs.androidx.appcompat)
-    api(libs.androidx.core.ktx)
     api(libs.androidx.lifecycle.runtime.ktx)
     api(libs.androidx.activity.compose)
     api(platform(libs.androidx.compose.bom))

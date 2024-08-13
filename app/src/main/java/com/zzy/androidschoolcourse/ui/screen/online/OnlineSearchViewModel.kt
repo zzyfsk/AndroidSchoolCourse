@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 
 class OnlineSearchViewModel : ScreenModel {
     var showDialog by mutableStateOf(false)
+    var state by mutableStateOf(OnlineSearchState.None)
 
     val deviceList = mutableStateListOf<String>()
 
@@ -33,6 +34,7 @@ class OnlineSearchViewModel : ScreenModel {
 
     fun find() {
         deviceList.clear()
+        state = OnlineSearchState.Search
         CoroutineScope(Dispatchers.IO).launch {
             serviceFind.findDevices(ip)
                 .onEach {
@@ -40,6 +42,7 @@ class OnlineSearchViewModel : ScreenModel {
                     Log.e("tag", "fun find: $it")
                 }
                 .collect {}
+            state = OnlineSearchState.None
         }
     }
 
@@ -61,4 +64,9 @@ class OnlineSearchViewModel : ScreenModel {
     fun finish() {
         serviceFind.finish()
     }
+}
+
+enum class OnlineSearchState{
+    None,
+    Search,
 }
