@@ -24,6 +24,8 @@ import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.zzy.androidschoolcourse.ui.component.TabNavigationItem
 import com.zzy.androidschoolcourse.ui.theme.AndroidSchoolCourseTheme
+import com.zzy.base.koin.account.AccountViewModel
+import com.zzy.base.koin.account.LoginHttpState
 import com.zzy.base.koin.theme.Theme
 import com.zzy.base.koin.theme.ThemeViewModel
 import com.zzy.component.box.MaskAnimModel
@@ -41,6 +43,8 @@ class ScreenTab : Screen {
             Theme.Normal -> com.zzy.base.R.drawable.light_mode
             Theme.Dark -> com.zzy.base.R.drawable.dark_mode
         }
+        val accountViewModel:AccountViewModel = koinViewModel()
+        Toast(accountViewModel = accountViewModel)
         MaskBox(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
             ,maskComplete = {
             scope.launch {
@@ -60,7 +64,6 @@ class ScreenTab : Screen {
                         )
                     )
                 }) {
-
                 AndroidSchoolCourseTheme (theme = themeViewModel.getTheme()){
                     Scaffold(
                         topBar = {
@@ -85,11 +88,27 @@ class ScreenTab : Screen {
                                 TabNavigationItem(tab = ScreenTabHistory)
                                 TabNavigationItem(tab = ScreenTabMine)
                             }
-                        }
+                        },
                     )
-
                 }
             }
+        }
+    }
+
+    @Composable
+    fun Toast(accountViewModel: AccountViewModel){
+        when(accountViewModel.httpState){
+            LoginHttpState.None -> {
+
+            }
+            LoginHttpState.Loading -> TODO()
+            LoginHttpState.LoginSuccess -> {
+                com.zzy.component.toast.Toast(message = "登录成功")
+                accountViewModel.httpState = LoginHttpState.None
+            }
+            LoginHttpState.LoginFail -> TODO()
+            LoginHttpState.RegisterSuccess -> TODO()
+            LoginHttpState.RegisterFai -> TODO()
         }
     }
 }

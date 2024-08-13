@@ -15,10 +15,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +38,8 @@ import com.zzy.base.koin.theme.Theme
 import com.zzy.base.koin.theme.ThemeViewModel
 import com.zzy.component.box.MaskAnimModel
 import com.zzy.component.box.MaskBox
+import com.zzy.component.toast.Toast
+import com.zzy.component.toast.ToastWait
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -48,6 +54,10 @@ class ScreenLogin : Screen {
             LoginViewModel()
         }
         val accountViewModel: AccountViewModel = koinViewModel()
+        val snackBarHostState = remember {
+            SnackbarHostState()
+        }
+
         MaskBox(
             modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
             maskComplete = {
@@ -71,15 +81,19 @@ class ScreenLogin : Screen {
 
             }
             LoginHttpState.Loading -> {
-
+                ToastWait()
             }
             LoginHttpState.LoginSuccess -> {
-                accountViewModel.httpState = LoginHttpState.None
                 navigator.pop()
             }
-            LoginHttpState.LoginFail -> TODO()
+            LoginHttpState.LoginFail -> {
+                Toast(message = "登录失败")
+            }
             LoginHttpState.RegisterSuccess -> TODO()
             LoginHttpState.RegisterFai -> TODO()
+        }
+        LaunchedEffect(key1 = accountViewModel.httpState) {
+            println(accountViewModel.httpState)
         }
     }
 
