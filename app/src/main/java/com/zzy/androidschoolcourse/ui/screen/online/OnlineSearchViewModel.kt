@@ -11,6 +11,7 @@ import com.zzy.androidschoolcourse.net.socket.find.ServiceFind
 import com.zzy.androidschoolcourse.util.IPUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
@@ -42,7 +43,7 @@ class OnlineSearchViewModel : ScreenModel {
                     Log.e("tag", "fun find: $it")
                 }
                 .collect {}
-            state = OnlineSearchState.None
+            state = OnlineSearchState.Finish
         }
     }
 
@@ -64,9 +65,14 @@ class OnlineSearchViewModel : ScreenModel {
     fun finish() {
         serviceFind.finish()
     }
+
+    fun stateFinish(){
+        state = OnlineSearchState.None
+    }
 }
 
 enum class OnlineSearchState{
     None,
     Search,
+    Finish
 }

@@ -35,9 +35,11 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun Toast(message: String, duration: SnackbarDuration = SnackbarDuration.Short) {
-    Box (modifier = Modifier
-        .zIndex(1f)
-        .fillMaxSize()){
+    Box(
+        modifier = Modifier
+            .zIndex(1f)
+            .fillMaxSize()
+    ) {
         val hostState = SnackbarHostState()
         SnackbarHost(hostState = hostState, modifier = Modifier.align(BiasAlignment(0f, 0.9f)))
         LaunchedEffect(key1 = "Toast") {
@@ -52,8 +54,8 @@ fun Toast(message: String, duration: SnackbarDuration = SnackbarDuration.Short) 
 }
 
 @Composable
-fun ToastWait(){
-    Box (modifier = Modifier.fillMaxSize()){
+fun ToastWait() {
+    Box(modifier = Modifier.fillMaxSize()) {
         val hostState = SnackbarHostState()
 
         SnackbarHost(hostState = hostState, modifier = Modifier.align(Alignment.Center)) {
@@ -81,7 +83,7 @@ fun ToastWait(){
                 val rotate = animateFloatAsState(
                     targetValue = if (isStop) 360f else 0f,
                     animationSpec = infiniteRepeatable(
-                        animation = tween(800, easing =  LinearEasing),
+                        animation = tween(800, easing = LinearEasing),
                         repeatMode = RepeatMode.Restart
                     ),
                     label = "rotate"

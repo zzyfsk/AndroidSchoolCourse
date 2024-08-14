@@ -26,7 +26,7 @@ class ScreenHistory(private val fileName: String) : Screen {
         LaunchedEffect(key1 = fileName) {
             viewModel.init(fileName)
         }
-        Surface {
+        Surface (modifier = Modifier.fillMaxWidth()){
             when (viewModel.showType) {
                 1 -> {
                     Column {

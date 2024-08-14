@@ -1,5 +1,6 @@
 package com.zzy.androidschoolcourse
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,7 +12,6 @@ import com.zzy.androidschoolcourse.ui.theme.AndroidSchoolCourseTheme
 import com.zzy.base.koin.account.appModule
 import com.zzy.base.koin.theme.ThemeViewModel
 import com.zzy.base.koin.theme.themeModule
-import com.zzy.component.toast.Toast
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.compose.koinViewModel
@@ -29,7 +29,6 @@ class MainActivity : ComponentActivity() {
                 Navigator(screen = ScreenTab()){
                     SlideTransition(navigator = it,disposeScreenAfterTransitionEnd = true)
                 }
-//                Toast(message = "aaadadadada")
             }
         }
     }

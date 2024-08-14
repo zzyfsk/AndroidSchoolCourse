@@ -26,9 +26,16 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -107,15 +114,28 @@ class ScreenLogin : Screen {
         theme: Theme,
         maskAnimActive: (MaskAnimModel, Float, Float) -> Unit
     ) {
+        var componentPosition by remember { mutableStateOf(Pair(0f, 0f)) }
+
         val icon = when (theme) {
             Theme.Normal -> com.zzy.base.R.drawable.light_mode
             Theme.Dark -> com.zzy.base.R.drawable.dark_mode
         }
         TopAppBar(title = { Text(text = "登录") }, actions = {
             Icon(
-                modifier = Modifier.clickable {
-                    maskAnimActive(MaskAnimModel.SHRINK, 0f, 0f)
-                },
+                modifier = Modifier
+                    .clickable {
+                        maskAnimActive(
+                            MaskAnimModel.SHRINK,
+                            componentPosition.first,
+                            componentPosition.second
+                        )
+                    }
+                    .onGloballyPositioned { coordinates ->
+                        componentPosition = Pair(
+                            coordinates.positionInRoot().x + coordinates.size.width / 2,
+                            coordinates.positionInRoot().y + coordinates.size.height / 2
+                        )
+                    },// 试试做成拓展函数
                 painter = painterResource(id = icon),
                 contentDescription = ""
             )
@@ -147,10 +167,11 @@ class ScreenLogin : Screen {
             leadingIcon = { Text("密码") },
             maxLines = 1
         )
-        AnimatedVisibility(visible = viewModel.state == StateLogin.Register,
+        AnimatedVisibility(
+            visible = viewModel.state == StateLogin.Register,
             enter = slideInVertically() + fadeIn(),
             exit = slideOutVertically() + fadeOut()
-            ) {
+        ) {
             TextField(
                 value = viewModel.password2,
                 onValueChange = viewModel.onPassword2Change,

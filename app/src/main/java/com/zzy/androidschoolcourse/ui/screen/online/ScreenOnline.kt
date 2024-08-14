@@ -31,6 +31,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.zzy.androidschoolcourse.R
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
+import com.zzy.component.toast.Toast
 import com.zzy.component.toast.ToastWait
 
 class ScreenOnline : Screen {
@@ -120,11 +121,15 @@ class ScreenOnline : Screen {
 
 
         BackHandler {
-            finish()
+            if (viewModel.state == OnlineSearchState.None) finish()
         }
 
         if (viewModel.state == OnlineSearchState.Search){
             ToastWait()
+        }
+        if (viewModel.state == OnlineSearchState.Finish){
+            viewModel.stateFinish()
+            Toast(message = "搜索完成")
         }
 
     }

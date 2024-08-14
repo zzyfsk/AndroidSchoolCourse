@@ -14,8 +14,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -43,14 +49,16 @@ class ScreenTab : Screen {
             Theme.Normal -> com.zzy.base.R.drawable.light_mode
             Theme.Dark -> com.zzy.base.R.drawable.dark_mode
         }
-        val accountViewModel:AccountViewModel = koinViewModel()
+        val accountViewModel: AccountViewModel = koinViewModel()
+        var componentPosition by remember { mutableStateOf(Pair(0f, 0f)) }
         Toast(accountViewModel = accountViewModel)
-        MaskBox(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
-            ,maskComplete = {
-            scope.launch {
-                themeViewModel.changeTheme()
-            }
-        }, animFinish = {}) { maskAnimActive ->
+        MaskBox(modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+            maskComplete = {
+                scope.launch {
+                    themeViewModel.changeTheme()
+                }
+            },
+            animFinish = {}) { maskAnimActive ->
             println("recompose")
             TabNavigator(
                 tab = ScreenTabMain,
@@ -64,24 +72,41 @@ class ScreenTab : Screen {
                         )
                     )
                 }) {
-                AndroidSchoolCourseTheme (theme = themeViewModel.getTheme()){
+                AndroidSchoolCourseTheme(theme = themeViewModel.getTheme()) {
                     Scaffold(
                         topBar = {
                             TopAppBar(title = { Text(text = "Main") }, actions = {
                                 Icon(
-                                    modifier = Modifier.clickable {
-                                        maskAnimActive(MaskAnimModel.SHRINK, 0f, 0f)
-                                    },
+                                    modifier = Modifier
+                                        .clickable {
+                                            maskAnimActive(
+                                                MaskAnimModel.SHRINK,
+                                                componentPosition.first,
+                                                componentPosition.second
+                                            )
+                                        }
+                                        .getNaKa {
+                                            componentPosition = it
+                                        }
+//                                        .onGloballyPositioned { coordinates ->
+//                                            componentPosition = Pair(
+//                                                coordinates.positionInRoot().x + coordinates.size.width / 2,
+//                                                coordinates.positionInRoot().y + coordinates.size.height / 2
+//                                            )
+//                                        }
+                                    ,
                                     painter = painterResource(id = icon),
                                     contentDescription = ""
                                 )
                                 Spacer(modifier = Modifier.requiredWidth(5.dp))
                             })
-                        }, content = { paddingValues ->
+                        },
+                        content = { paddingValues ->
                             Box(modifier = Modifier.padding(paddingValues)) {
                                 CurrentTab()
                             }
-                        }, bottomBar = {
+                        },
+                        bottomBar = {
                             NavigationBar {
                                 TabNavigationItem(tab = ScreenTabMain)
                                 TabNavigationItem(tab = ScreenTabFriend)
@@ -96,19 +121,27 @@ class ScreenTab : Screen {
     }
 
     @Composable
-    fun Toast(accountViewModel: AccountViewModel){
-        when(accountViewModel.httpState){
+    fun Toast(accountViewModel: AccountViewModel) {
+        when (accountViewModel.httpState) {
             LoginHttpState.None -> {
 
             }
+
             LoginHttpState.Loading -> TODO()
             LoginHttpState.LoginSuccess -> {
                 com.zzy.component.toast.Toast(message = "登录成功")
                 accountViewModel.httpState = LoginHttpState.None
             }
+
             LoginHttpState.LoginFail -> TODO()
             LoginHttpState.RegisterSuccess -> TODO()
             LoginHttpState.RegisterFai -> TODO()
         }
+    }
+}
+
+fun Modifier.getNaKa(result: (Pair<Float, Float>) -> Unit): Modifier {
+    return this.onGloballyPositioned {
+        result(Pair(it.positionInRoot().x+it.size.width/2, it.positionInRoot().y+it.size.height/2))
     }
 }
