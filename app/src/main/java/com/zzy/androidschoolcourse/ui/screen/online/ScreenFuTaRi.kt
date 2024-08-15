@@ -25,6 +25,7 @@ import com.zzy.androidschoolcourse.ui.component.TwentyFourGame
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGameState
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGameView
 import com.zzy.component.box.AlphaBox
+import com.zzy.component.toast.ToastWait
 
 class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: GameRight) : Screen {
 
@@ -35,7 +36,7 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
             rememberScreenModel { FuTaRiViewModel(ip, port, right, context) }
         LaunchedEffect(key1 = Unit) {
             viewModel.init()
-            viewModel.huTaRiState = FuTaRiState.UI
+//            viewModel.huTaRiState = FuTaRiState.UI
         }
         BackHandler {
             if(viewModel.showChat){ viewModel.showChat = false }
@@ -43,11 +44,13 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
                 // TODO finish
             }
         }
-        when (viewModel.huTaRiState) {
-            FuTaRiState.Socket -> {
-                // TODO load
-            }
+        if (viewModel.huTaRiState == FuTaRiState.Socket||viewModel.huTaRiState == FuTaRiState.Socket){
+            ToastWait()
+        }
 
+        when (viewModel.huTaRiState) {
+            FuTaRiState.Socket -> {}
+            FuTaRiState.Data -> {}
             FuTaRiState.UI -> {
                 Column(modifier = Modifier.fillMaxSize()) {
                     Row {
@@ -62,6 +65,7 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
                     GameMe(viewModel = viewModel)
                 }
             }
+
         }
         if (viewModel.showWin) {
             WinComponent()
@@ -115,7 +119,7 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
                     OutlinedTextField(value = viewModel.chatContent, onValueChange = {
                         viewModel.chatContent = it
                     })
-                    Button(onClick = { viewModel.sendMessage("") }) {
+                    Button(onClick = { viewModel.sendChat("") }) {
                         Text(text = "发送")
                     }
                 }

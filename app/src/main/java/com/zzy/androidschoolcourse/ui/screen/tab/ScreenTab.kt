@@ -88,12 +88,6 @@ class ScreenTab : Screen {
                                         .getNaKa {
                                             componentPosition = it
                                         }
-//                                        .onGloballyPositioned { coordinates ->
-//                                            componentPosition = Pair(
-//                                                coordinates.positionInRoot().x + coordinates.size.width / 2,
-//                                                coordinates.positionInRoot().y + coordinates.size.height / 2
-//                                            )
-//                                        }
                                     ,
                                     painter = painterResource(id = icon),
                                     contentDescription = ""

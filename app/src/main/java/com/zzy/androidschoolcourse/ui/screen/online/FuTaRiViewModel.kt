@@ -1,7 +1,6 @@
 package com.zzy.androidschoolcourse.ui.screen.online
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -76,6 +75,8 @@ class FuTaRiViewModel(
         opposeState = opposeState.copy()
         showWin = false
         winState = false
+
+        initFinish()
     }
 
     private fun readInitNumber(context: Context): String {
@@ -137,6 +138,7 @@ class FuTaRiViewModel(
                             onMessage = { opposeState ->
                                 this@FuTaRiViewModel.opposeState =
                                     Json.decodeFromString<TwentyFourGameState>(opposeState)
+                                recordState(2, Json.decodeFromString(opposeState))
                             },
                             onWin = {
                                 onWin()
@@ -151,7 +153,7 @@ class FuTaRiViewModel(
         }
     }
 
-    fun sendMessage(name: String) {
+    fun sendChat(name: String) {
         val chat = Json.encodeToString(
             ChatContent(
                 chatRole = ChatRole.Oppose,
@@ -174,16 +176,17 @@ class FuTaRiViewModel(
         }
     }
 
-    private fun getChat(chatContent: ChatContent){
-        chatList.add(chatContent)
+    private fun initFinish(){
+        huTaRiState = FuTaRiState.UI
     }
 
-    init {
-        Log.d(tag, "ip:$ip port:$port right:$right ")
+    private fun getChat(chatContent: ChatContent){
+        chatList.add(chatContent)
     }
 }
 
 enum class FuTaRiState {
     Socket,
+    Data,
     UI
 }
