@@ -27,7 +27,6 @@ class FuTaRiViewModel(
     private val context: Context
 ) :
     ScreenModel {
-    private val tag = "FuTaRiViewModel"
     private val serviceGame = ServiceGame.service
 
     //    var numbers by mutableStateOf("1111")
