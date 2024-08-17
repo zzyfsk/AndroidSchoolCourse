@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.zzy.androidschoolcourse.R
 import com.zzy.androidschoolcourse.bean.Fraction
+import com.zzy.androidschoolcourse.ui.screen.online.ChatContent
 import com.zzy.androidschoolcourse.ui.theme.MainColor
 import com.zzy.base.util.FileName
 import com.zzy.base.util.FileUtil
@@ -463,11 +464,13 @@ data class TwentyFourGameState(
 data class TwentyFourGameRecord(
     val gameMode: GameMode = GameMode.HiToRi,
     val recordList: MutableList<TwentyFourGameState> = mutableListOf(),
-    val recordList2: MutableList<TwentyFourGameState> = mutableListOf()
+    val recordList2: MutableList<TwentyFourGameState> = mutableListOf(),
+    val recordChat:MutableList<ChatContent> = mutableListOf()
 ) {
     fun reset() {
         recordList.clear()
         recordList2.clear()
+        recordChat.clear()
     }
 
     /**
@@ -500,6 +503,14 @@ data class TwentyFourGameRecord(
             }
         }_$timeStamp"
         fileUtil.saveFile(FileName(fileName = fileName), Json.encodeToString(this@TwentyFourGameRecord))
+    }
+
+    fun recordChat(chat:ChatContent){
+        recordChat.add(chat)
+    }
+
+   fun recordChats(chatList: List<ChatContent>){
+        recordChat.addAll(chatList)
     }
 }
 

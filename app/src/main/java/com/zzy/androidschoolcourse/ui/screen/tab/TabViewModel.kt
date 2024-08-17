@@ -15,4 +15,11 @@ class TabViewModel(val context:Context):ScreenModel {
         fileList.clear()
         fileList.addAll(fileUtil.readFiles())
     }
+
+    fun delete(fileName: FileName){
+        fileList.find { it.fileName == fileName.fileName }?.let {
+            fileList.remove(fileName)
+            fileUtil.deleteFile(fileName)
+        }
+    }
 }

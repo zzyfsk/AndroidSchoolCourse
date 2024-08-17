@@ -29,7 +29,6 @@ class FuTaRiViewModel(
     ScreenModel {
     private val serviceGame = ServiceGame.service
 
-    //    var numbers by mutableStateOf("1111")
     var opposeState by mutableStateOf(TwentyFourGameState(numbers = "1234"))
     var gameState by mutableStateOf(TwentyFourGameState(numbers = "4321"))
     var showWin by mutableStateOf(false)
@@ -50,6 +49,7 @@ class FuTaRiViewModel(
     }
 
     private fun saveState() {
+        record.recordChats(chatList)
         record.save(fileUtil = fileUtil)
     }
 

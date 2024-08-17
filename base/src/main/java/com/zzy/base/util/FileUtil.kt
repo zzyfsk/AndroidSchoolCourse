@@ -23,6 +23,11 @@ class FileUtil (val context: Context){
          }
         return fileList
     }
+
+    fun deleteFile(fileName: FileName){
+        val file = File(context.getDir("history", Context.MODE_PRIVATE),fileName.fileName)
+        file.delete()
+    }
 }
 
 data class FileName (val fileName:String){

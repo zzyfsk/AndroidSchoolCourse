@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -62,7 +63,8 @@ object ScreenTabHistory : Tab {
                 HistoryItem(
                     modifier = Modifier.height(40.dp),
                     fileName = file,
-                    navigator = navigator
+                    navigator = navigator,
+                    viewModel = viewModel
                 )
                 HorizontalDivider()
             }
@@ -70,17 +72,30 @@ object ScreenTabHistory : Tab {
     }
 
     @Composable
-    fun HistoryItem(modifier: Modifier, fileName: FileName, navigator: Navigator) {
+    fun HistoryItem(
+        modifier: Modifier,
+        fileName: FileName,
+        navigator: Navigator,
+        viewModel: TabViewModel
+    ) {
         val icon = if (fileName.fileName[0].digitToInt() == 1)
             R.drawable.person else R.drawable.group
 
         Row(modifier = modifier
             .fillMaxWidth()
             .clickable {
-            navigator.push(ScreenHistory(fileName.fileName))
-        }, verticalAlignment = Alignment.CenterVertically) {
-            Icon(modifier = Modifier.padding(horizontal = 5.dp),painter = painterResource(id = icon), contentDescription = "history")
+                navigator.push(ScreenHistory(fileName.fileName))
+            }, verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                modifier = Modifier.padding(horizontal = 5.dp),
+                painter = painterResource(id = icon),
+                contentDescription = "history"
+            )
             Text(text = fileName.fileName)
+            Button(onClick = { viewModel.delete(fileName) }) {
+                Text(text = "删除记录")
+            }
         }
     }
 
