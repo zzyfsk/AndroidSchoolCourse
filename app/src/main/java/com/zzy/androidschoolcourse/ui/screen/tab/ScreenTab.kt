@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.CurrentTab
@@ -59,7 +60,7 @@ class ScreenTab : Screen {
                 }
             },
             animFinish = {}) { maskAnimActive ->
-            println("recompose")
+//            println("recompose")
             TabNavigator(
                 tab = ScreenTabMain,
                 tabDisposable = {
@@ -85,7 +86,7 @@ class ScreenTab : Screen {
                                                 componentPosition.second
                                             )
                                         }
-                                        .getNaKa {
+                                        .getMiddlePosition {
                                             componentPosition = it
                                         }
                                     ,
@@ -134,7 +135,7 @@ class ScreenTab : Screen {
     }
 }
 
-fun Modifier.getNaKa(result: (Pair<Float, Float>) -> Unit): Modifier {
+fun Modifier.getMiddlePosition(result: (Pair<Float, Float>) -> Unit): Modifier {
     return this.onGloballyPositioned {
         result(Pair(it.positionInRoot().x+it.size.width/2, it.positionInRoot().y+it.size.height/2))
     }
