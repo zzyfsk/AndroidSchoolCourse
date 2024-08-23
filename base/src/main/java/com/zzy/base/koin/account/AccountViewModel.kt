@@ -5,8 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.zzy.base.http.bean.Http
-import com.zzy.base.util.HttpUtil
+import com.zzy.base.http.bean.UserDetailHttp
 import com.zzy.base.http.bean.UserHttp
+import com.zzy.base.util.HttpUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,7 +17,7 @@ class AccountViewModel(private val userRepository: UserRepository) : ViewModel()
     private val deviceName = android.os.Build.DEVICE
     private val modelName = android.os.Build.MODEL
 
-    val friendList: () -> List<Friend> = { userRepository.getFriendList() }
+    val friendList: () -> List<UserDetailHttp> = { userRepository.getFriendList() }
 
     var httpState by mutableStateOf(LoginHttpState.None)
 
@@ -46,7 +47,7 @@ class AccountViewModel(private val userRepository: UserRepository) : ViewModel()
             } else {
                 val user = result.getData() as UserHttp
                 println(user.username)
-                userRepository.loginUser(user.username, "1")
+                userRepository.loginUser(user.username, user.id ,user.token)
                 httpState = LoginHttpState.LoginSuccess
             }
         }
@@ -62,6 +63,9 @@ class AccountViewModel(private val userRepository: UserRepository) : ViewModel()
                 when (result.code) {
                     "-1" -> {
                         // TODO 展示错误信息
+                    }
+                    "102"-> {
+                        httpState = LoginHttpState.RegisterFail
                     }
                 }
             }else{
@@ -84,21 +88,25 @@ class AccountViewModel(private val userRepository: UserRepository) : ViewModel()
     fun getFriendList() {
         userRepository.removeAll()
         CoroutineScope(Dispatchers.Default).launch {
-            val result = HttpUtil.instance.post<UserHttp>(
-                url = "${Http.HTTP}/friendList",
-                params = mapOf("account" to user().name, "token" to user().token)
-            ) // no server
-            addFriendAll(
-                listOf(
-                    Friend("test User", "test"),
-                    Friend("test User", "test"),
-                    Friend("test User", "test")
-                )
+            val result = HttpUtil.instance.post<List<UserDetailHttp>>(
+                url = "${Http.HTTP}/user/getFriends",
+                params = mapOf("account" to user().id.toString())
             )
+            if(result.code!="0"){
+                addFriendAll(
+                    listOf(
+                        UserDetailHttp(1,"test User"),
+                        UserDetailHttp(2,"test User"),
+                        UserDetailHttp(3,"test User")
+                    )
+                )
+            }else{
+                result.getData()?.let { addFriendAll(it) }
+            }
         }
     }
 
-    private fun addFriendAll(list: List<Friend>) {
+    private fun addFriendAll(list: List<UserDetailHttp>) {
         userRepository.addFriendAll(list)
     }
 
@@ -113,5 +121,5 @@ enum class LoginHttpState{
     LoginSuccess,
     LoginFail,
     RegisterSuccess,
-    RegisterFai
+    RegisterFail
 }

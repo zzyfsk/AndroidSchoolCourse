@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.CurrentTab
@@ -52,7 +51,6 @@ class ScreenTab : Screen {
         }
         val accountViewModel: AccountViewModel = koinViewModel()
         var componentPosition by remember { mutableStateOf(Pair(0f, 0f)) }
-        Toast(accountViewModel = accountViewModel)
         MaskBox(modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
             maskComplete = {
                 scope.launch {
@@ -99,6 +97,7 @@ class ScreenTab : Screen {
                         content = { paddingValues ->
                             Box(modifier = Modifier.padding(paddingValues)) {
                                 CurrentTab()
+                                Toast(accountViewModel = accountViewModel)
                             }
                         },
                         bottomBar = {
@@ -130,7 +129,9 @@ class ScreenTab : Screen {
 
             LoginHttpState.LoginFail -> TODO()
             LoginHttpState.RegisterSuccess -> TODO()
-            LoginHttpState.RegisterFai -> TODO()
+            LoginHttpState.RegisterFail -> {
+
+            }
         }
     }
 }

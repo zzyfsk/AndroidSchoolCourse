@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
@@ -35,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
@@ -98,10 +96,14 @@ class ScreenLogin : Screen {
 
             LoginHttpState.LoginFail -> {
                 Toast(message = "登录失败")
+//                accountViewModel.httpState = LoginHttpState.None
             }
 
             LoginHttpState.RegisterSuccess -> TODO()
-            LoginHttpState.RegisterFai -> TODO()
+            LoginHttpState.RegisterFail -> {
+                Toast(message = "注册失败")
+//                accountViewModel.httpState = LoginHttpState.None
+            }
         }
         LaunchedEffect(key1 = accountViewModel.httpState) {
             println(accountViewModel.httpState)
@@ -182,7 +184,6 @@ class ScreenLogin : Screen {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp)
-                .offset()
         ) {
             Button(modifier = Modifier
                 .padding(10.dp)
@@ -206,7 +207,10 @@ class ScreenLogin : Screen {
                     viewModel.state = StateLogin.Register
                 } else {
                     if (viewModel.checkPassword()) {
-                        accountViewModel
+                        accountViewModel.register(
+                            viewModel.account.ifEmpty { accountViewModel.getAccount() },
+                            viewModel.password
+                        )
                     }
                 }
             }) {
