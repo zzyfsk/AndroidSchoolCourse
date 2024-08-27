@@ -15,7 +15,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.zzy.androidschoolcourse.R
-import com.zzy.androidschoolcourse.ui.screen.ScreenText2
+import com.zzy.androidschoolcourse.ui.screen.ScreenTest
 import com.zzy.androidschoolcourse.ui.screen.ScreenZlh
 import com.zzy.androidschoolcourse.ui.screen.game.ScreenGameHiToRi
 import com.zzy.androidschoolcourse.ui.screen.online.ScreenOnline
@@ -51,7 +51,7 @@ object ScreenTabMain: Tab{
                 Button(onClick = { navigator.push(ScreenOnline()) }) {
                     Text(text = "多人游戏")
                 }
-                Button(onClick = { navigator.push(ScreenText2()) }) {
+                Button(onClick = { navigator.push(ScreenTest()) }) {
                     Text(text = "test Screen")
                 }
                 Button(onClick = { navigator.push(ScreenZlh()) }) {

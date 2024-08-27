@@ -3,10 +3,13 @@ package com.zzy.androidschoolcourse.ui.screen.tab
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -17,6 +20,7 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.zzy.androidschoolcourse.R
 import com.zzy.base.koin.account.AccountViewModel
+import com.zzy.component.background.CanvasWave
 import com.zzy.login.ui.screen.login.ScreenLogin
 import org.koin.androidx.compose.koinViewModel
 
@@ -45,13 +49,18 @@ object ScreenTabMine : Tab {
 
         Box(modifier = Modifier.fillMaxSize()) {
             Column {
-
+                
                 if (!accountViewModel.isLogin()) {
                     Text(text = "This is Mine Screen")
                     Button(onClick = { navigator.push(ScreenLogin()) }) {
                         Text(text = "login")
                     }
                 } else {
+                    Surface {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+                        }
+                    }
                     Text(text = "你好 ${accountViewModel.user().name}")
                     Button(onClick = { accountViewModel.logout() }) {
                         Text(text = "logout")

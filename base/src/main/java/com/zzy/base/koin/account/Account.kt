@@ -9,7 +9,6 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 data class User(val name: String,val id:Long, val token: String)
-data class Friend(val name: String, val signature:String)
 
 interface UserRepository {
     fun loginUser(name: String,id: Long, token: String): User?

@@ -47,7 +47,7 @@ class AccountViewModel(private val userRepository: UserRepository) : ViewModel()
             } else {
                 val user = result.getData() as UserHttp
                 println(user.username)
-                userRepository.loginUser(user.username, user.id ,user.token)
+                userRepository.loginUser(user.username, user.id, "-1")
                 httpState = LoginHttpState.LoginSuccess
             }
         }
@@ -64,12 +64,13 @@ class AccountViewModel(private val userRepository: UserRepository) : ViewModel()
                     "-1" -> {
                         // TODO 展示错误信息
                     }
-                    "102"-> {
+
+                    "102" -> {
                         httpState = LoginHttpState.RegisterFail
                     }
                 }
-            }else{
-                login(account,password)
+            } else {
+                login(account, password)
             }
             println("result ${result.code}")
         }
@@ -90,17 +91,18 @@ class AccountViewModel(private val userRepository: UserRepository) : ViewModel()
         CoroutineScope(Dispatchers.Default).launch {
             val result = HttpUtil.instance.post<List<UserDetailHttp>>(
                 url = "${Http.HTTP}/user/getFriends",
-                params = mapOf("account" to user().id.toString())
+                params = mapOf("id" to user().id.toString())
             )
-            if(result.code!="0"){
+            if (result.code != "0") {
                 addFriendAll(
                     listOf(
-                        UserDetailHttp(1,"test User"),
-                        UserDetailHttp(2,"test User"),
-                        UserDetailHttp(3,"test User")
+                        UserDetailHttp(1, "test User"),
+                        UserDetailHttp(2, "test User"),
+                        UserDetailHttp(3, "test User")
                     )
                 )
-            }else{
+            } else {
+                println(result.getData())
                 result.getData()?.let { addFriendAll(it) }
             }
         }
@@ -115,7 +117,7 @@ class AccountViewModel(private val userRepository: UserRepository) : ViewModel()
     }
 }
 
-enum class LoginHttpState{
+enum class LoginHttpState {
     None,
     Loading,
     LoginSuccess,

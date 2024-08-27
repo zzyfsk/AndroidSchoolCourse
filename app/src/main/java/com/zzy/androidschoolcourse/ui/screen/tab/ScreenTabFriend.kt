@@ -30,7 +30,6 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.zzy.androidschoolcourse.R
 import com.zzy.base.http.bean.UserDetailHttp
 import com.zzy.base.koin.account.AccountViewModel
-import com.zzy.base.koin.account.Friend
 import org.koin.androidx.compose.koinViewModel
 
 object ScreenTabFriend : Tab {
@@ -57,7 +56,7 @@ object ScreenTabFriend : Tab {
         val tabNavigator = LocalTabNavigator.current
         LaunchedEffect(key1 = accountViewModel.user().name) {
             println(accountViewModel.user().name)
-            if (accountViewModel.user().token.isNotEmpty()) accountViewModel.getFriendList()
+            if (accountViewModel.user().id != 0L) accountViewModel.getFriendList()
         }
         if (accountViewModel.user().token.isNotEmpty()) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -72,9 +71,11 @@ object ScreenTabFriend : Tab {
 
     @Composable
     fun FriendItem(avatar: Int = com.zzy.base.R.drawable.logo, friend: UserDetailHttp) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp), verticalAlignment = Alignment.CenterVertically
+        ) {
             Image(painter = painterResource(id = avatar), contentDescription = friend.name)
             Spacer(modifier = Modifier.requiredWidth(10.dp))
             Text(text = friend.name)
