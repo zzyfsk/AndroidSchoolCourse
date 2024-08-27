@@ -1,14 +1,11 @@
 package com.zzy.component.background
 
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,12 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.draw
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import kotlin.math.sin
 
 
@@ -35,10 +27,6 @@ fun CanvasWave(
     modifier: Modifier,
     width: Float
 ) {
-    var isStop by remember {
-        mutableStateOf(true)
-    }
-//    val width = LocalConfiguration.current.screenWidthDp * LocalDensity.current.density
     val deltaXAnim = rememberInfiniteTransition(label = "anime")
     val dx by deltaXAnim.animateFloat(
         initialValue = 0f,
@@ -50,14 +38,12 @@ fun CanvasWave(
 
     Canvas(modifier = modifier,
         onDraw = {
-            translate (left = -dx){
                 drawWaveGraph(
                     width=width,
                     centerY = 100f,
                     amplitude = 100f,
-                    frequency = 1f
+                    dx = dx
                 )
-            }
         })
 }
 
@@ -65,12 +51,11 @@ fun DrawScope.drawWaveGraph(
     width: Float,
     centerY: Float,
     amplitude: Float,
-    offset: Float = 0f,
-    frequency: Float = 1f
+    dx:Float
 ) {
     val path = Path()
     for (x in 0..width.toInt()*2) {
-        val y = (centerY - amplitude * sin((x/width)*(2*Math.PI))).toFloat()
+        val y = (centerY - amplitude * sin(((x-dx)/width)*(2*Math.PI))).toFloat()
         if (x == 0) {
             path.moveTo(0f, y)
         } else {
