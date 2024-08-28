@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AccountViewModel(private val userRepository: UserRepository) : ViewModel() {
-    val user: () -> User = { userRepository.getUser() }
+    val user: () -> UserDetailHttp = { userRepository.getUser() }
     private val deviceName = android.os.Build.DEVICE
     private val modelName = android.os.Build.MODEL
 
@@ -28,7 +28,7 @@ class AccountViewModel(private val userRepository: UserRepository) : ViewModel()
     fun login(account: String, password: String) {
         httpState = LoginHttpState.Loading
         CoroutineScope(Dispatchers.Default).launch {
-            val result = HttpUtil.instance.post<UserHttp>(
+            val result = HttpUtil.instance.post<UserDetailHttp>(
                 url = "${Http.HTTP}/user/login",
                 params = mapOf("name" to account, "password" to password)
             )
@@ -45,9 +45,9 @@ class AccountViewModel(private val userRepository: UserRepository) : ViewModel()
                 }
                 httpState = LoginHttpState.LoginFail
             } else {
-                val user = result.getData() as UserHttp
-                println(user.username)
-                userRepository.loginUser(user.username, user.id, "-1")
+                val user = result.getData() as UserDetailHttp
+                println(user.name)
+                userRepository.loginUser(id = user.id, name = user.name, score = user.score, signature = user.signature, token = "-1")
                 httpState = LoginHttpState.LoginSuccess
             }
         }
@@ -114,6 +114,12 @@ class AccountViewModel(private val userRepository: UserRepository) : ViewModel()
 
     fun getAccount(): String {
         return "${deviceName}_$modelName"
+    }
+
+    fun devAccount(){
+        userRepository.loginUser(
+            UserDetailHttp.testUser
+        )
     }
 }
 

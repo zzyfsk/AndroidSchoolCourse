@@ -27,9 +27,6 @@ class ScreenZlh : Screen {
 
     @Composable
     override fun Content() {
-        val fontfamily = FontFamily(
-            Font(R.font.poetsenone_regular, FontWeight.Normal)
-        )
         Column(
             modifier = Modifier
                 .fillMaxSize()

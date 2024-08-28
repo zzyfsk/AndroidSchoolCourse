@@ -45,9 +45,8 @@ fun DrawCircleWithImage(
     Box(modifier = modifier) {
         Image(
             painter = imagePainter,
-            contentDescription = null,
-            modifier = modifier.size(size = size),
-            contentScale = ContentScale.Fit
+            contentDescription = "image",
+            modifier = modifier.size(size = size)
         )
     }
 }

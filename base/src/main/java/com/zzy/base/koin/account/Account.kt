@@ -11,9 +11,10 @@ import org.koin.dsl.module
 data class User(val name: String,val id:Long, val token: String)
 
 interface UserRepository {
-    fun loginUser(name: String,id: Long, token: String): User?
+    fun loginUser(name: String,id: Long, token: String,score:Int,signature:String): UserDetailHttp
+    fun loginUser(userDetailHttp: UserDetailHttp): UserDetailHttp
     fun logOut()
-    fun getUser(): User
+    fun getUser(): UserDetailHttp
     fun addFriendAll(list: List<UserDetailHttp>)
     fun getFriendList(): List<UserDetailHttp>
     fun addFriend(friend: UserDetailHttp)
@@ -21,19 +22,30 @@ interface UserRepository {
 }
 
 class AccountRepositoryImpl : UserRepository {
-    private var _user by mutableStateOf(User("", 0,""))
+    private var _user by mutableStateOf(UserDetailHttp())
     private var _friendList = mutableStateListOf<UserDetailHttp>()
 
-    override fun loginUser(name: String,id:Long, token: String): User {
-        _user = User(name,id, token)
+    override fun loginUser(
+        name: String,
+        id: Long,
+        token: String,
+        score: Int,
+        signature: String
+    ): UserDetailHttp {
+        _user = UserDetailHttp(id, name, score, signature,token)
         return _user
     }
 
-    override fun logOut() {
-        _user = User("", 0,"")
+    override fun loginUser(userDetailHttp: UserDetailHttp): UserDetailHttp {
+        _user = userDetailHttp
+        return  userDetailHttp
     }
 
-    override fun getUser(): User {
+    override fun logOut() {
+        _user = UserDetailHttp()
+    }
+
+    override fun getUser(): UserDetailHttp {
         return _user
     }
 
