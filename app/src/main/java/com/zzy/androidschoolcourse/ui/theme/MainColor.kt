@@ -20,4 +20,6 @@ object MainColor {
 
     val SymbolButtonPress = Color(0xffFF8384)
     val SymbolButtonUnPress = Color(0xffffffff)
+
+    val title = Color( 55,107,213)
 }

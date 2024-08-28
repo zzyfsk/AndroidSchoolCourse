@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,23 +15,28 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.CurrentTab
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.TabDisposable
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.zzy.androidschoolcourse.ui.component.TabNavigationItem
 import com.zzy.androidschoolcourse.ui.theme.AndroidSchoolCourseTheme
+import com.zzy.androidschoolcourse.ui.theme.MainColor
 import com.zzy.base.koin.account.AccountViewModel
 import com.zzy.base.koin.account.LoginHttpState
 import com.zzy.base.koin.theme.Theme
@@ -58,7 +65,6 @@ class ScreenTab : Screen {
                 }
             },
             animFinish = {}) { maskAnimActive ->
-//            println("recompose")
             TabNavigator(
                 tab = ScreenTabMain,
                 tabDisposable = {
@@ -71,28 +77,44 @@ class ScreenTab : Screen {
                         )
                     )
                 }) {
+                val tabNavigator = LocalTabNavigator.current
+
                 AndroidSchoolCourseTheme(theme = themeViewModel.getTheme()) {
                     Scaffold(
                         topBar = {
-                            TopAppBar(title = { Text(text = "Main") }, actions = {
-                                Icon(
-                                    modifier = Modifier
-                                        .clickable {
-                                            maskAnimActive(
-                                                MaskAnimModel.SHRINK,
-                                                componentPosition.first,
-                                                componentPosition.second
-                                            )
-                                        }
-                                        .getMiddlePosition {
-                                            componentPosition = it
-                                        }
-                                    ,
-                                    painter = painterResource(id = icon),
-                                    contentDescription = ""
-                                )
-                                Spacer(modifier = Modifier.requiredWidth(5.dp))
-                            })
+                            TopAppBar(modifier = Modifier.height(56.dp),
+                                title = { Box(Modifier.fillMaxHeight(), contentAlignment = Alignment.Center){
+                                        Text(text = tabNavigator.current.options.title, color = Color.White )
+                                    } }, actions = {
+                                    Box(Modifier.fillMaxHeight(), contentAlignment = Alignment.Center){
+                                        Icon(
+                                            modifier = Modifier
+                                                .clickable {
+                                                    maskAnimActive(
+                                                        MaskAnimModel.SHRINK,
+                                                        componentPosition.first,
+                                                        componentPosition.second
+                                                    )
+                                                }
+                                                .getMiddlePosition {
+                                                    componentPosition = it
+                                                }
+                                            ,
+                                            painter = painterResource(id = icon),
+                                            contentDescription = "change theme",
+                                            tint = Color.White
+                                        )
+                                        Spacer(modifier = Modifier.requiredWidth(5.dp))
+                                    }
+                            },
+                                colors = TopAppBarColors(
+                                containerColor = MainColor.title,
+                                scrolledContainerColor = MaterialTheme.colorScheme.background,
+                                titleContentColor = MaterialTheme.colorScheme.onBackground,
+                                actionIconContentColor = MaterialTheme.colorScheme.onBackground,
+                                navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+                            )
+                            )
                         },
                         content = { paddingValues ->
                             Box(modifier = Modifier.padding(paddingValues)) {
