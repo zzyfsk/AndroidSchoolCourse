@@ -39,6 +39,7 @@ android {
 dependencies {
     implementation(project(":base"))
     implementation(project(":component"))
+    implementation(project(":B_koin"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

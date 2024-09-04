@@ -20,8 +20,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,8 +40,8 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.zzy.base.koin.account.AccountViewModel
-import com.zzy.base.koin.account.LoginHttpState
+import com.zzy.b_koin.user.AccountHttpState
+import com.zzy.b_koin.user.UserKoinViewModel
 import com.zzy.base.koin.theme.Theme
 import com.zzy.base.koin.theme.ThemeViewModel
 import com.zzy.component.box.MaskAnimModel
@@ -61,7 +61,7 @@ class ScreenLogin : Screen {
         val viewModel = rememberScreenModel {
             LoginViewModel()
         }
-        val accountViewModel: AccountViewModel = koinViewModel()
+        val accountViewModel: UserKoinViewModel = koinViewModel()
 
         MaskBox(
             modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
@@ -78,34 +78,38 @@ class ScreenLogin : Screen {
             ) {
                 TopBar(theme = themeViewModel.getTheme(), maskAnimActive = maskAnimActive)
                 Logo()
-                TextFields(viewModel, accountViewModel)
+                TextFields(
+                    viewModel,
+                    getAccount = { accountViewModel.getAccount() },
+                    login = { account, password ->
+                        accountViewModel.login(account, password)
+                    },
+                    register = { account,password->
+                        accountViewModel.register(account, password)
+                    }
+                )
+            }
+            when (accountViewModel.httpState) {
+                AccountHttpState.None -> {}
+                AccountHttpState.Success -> {
+                    Toast(message = "登录成功")
+                    accountViewModel.stateReset()
+                }
+                AccountHttpState.Connecting -> {
+                    ToastWait()
+                }
+                AccountHttpState.Fail -> {
+                    Toast(message = "登录失败")
+                    accountViewModel.stateReset()
+                }
+                AccountHttpState.Wrong -> {
+                    Toast(message = "发生错误")
+                    accountViewModel.stateReset()
+                }
             }
         }
-        when (accountViewModel.httpState) {
-            LoginHttpState.None -> {
-
-            }
-
-            LoginHttpState.Loading -> {
-                ToastWait()
-            }
-
-            LoginHttpState.LoginSuccess -> {
-                navigator.pop()
-            }
-
-            LoginHttpState.LoginFail -> {
-                Toast(message = "登录失败")
-//                accountViewModel.httpState = LoginHttpState.None
-            }
-
-            LoginHttpState.RegisterSuccess -> TODO()
-            LoginHttpState.RegisterFail -> {
-                Toast(message = "注册失败")
-//                accountViewModel.httpState = LoginHttpState.None
-            }
-        }
-        LaunchedEffect(key1 = accountViewModel.httpState) {
+        LaunchedEffect(key1 = accountViewModel.httpState.name) {
+            println("xxxxx")
             println(accountViewModel.httpState)
         }
     }
@@ -155,15 +159,22 @@ class ScreenLogin : Screen {
     }
 
     @Composable
-    fun TextFields(viewModel: LoginViewModel, accountViewModel: AccountViewModel) {
-        TextField(
+    fun TextFields(
+        viewModel: LoginViewModel,
+        getAccount: () -> String,
+        login: (String, String) -> Unit,
+        register: (String, String) -> Unit
+    ) {
+        OutlinedTextField(
+            modifier = Modifier.padding(bottom = 5.dp),
             value = viewModel.account,
             onValueChange = viewModel.onAccountChange,
             leadingIcon = { Text("账号") },
-            placeholder = { Text(text = accountViewModel.getAccount()) },
+            placeholder = { Text(text = getAccount()) },
             maxLines = 1
         )
-        TextField(
+        OutlinedTextField(
+            modifier = Modifier.padding(bottom = 5.dp),
             value = viewModel.password,
             onValueChange = viewModel.onPasswordChange,
             leadingIcon = { Text("密码") },
@@ -174,7 +185,8 @@ class ScreenLogin : Screen {
             enter = slideInVertically() + fadeIn(),
             exit = slideOutVertically() + fadeOut()
         ) {
-            TextField(
+            OutlinedTextField(
+                modifier = Modifier.padding(bottom = 5.dp),
                 value = viewModel.password2,
                 onValueChange = viewModel.onPassword2Change,
                 leadingIcon = { Text(text = "确认") }
@@ -192,8 +204,8 @@ class ScreenLogin : Screen {
                     if (viewModel.state == StateLogin.Register) {
                         viewModel.state = StateLogin.Login
                     } else {
-                        accountViewModel.login(
-                            viewModel.account.ifEmpty { accountViewModel.getAccount() },
+                        login(
+                            viewModel.account.ifEmpty { getAccount() },
                             viewModel.password
                         )
                     }
@@ -207,8 +219,8 @@ class ScreenLogin : Screen {
                     viewModel.state = StateLogin.Register
                 } else {
                     if (viewModel.checkPassword()) {
-                        accountViewModel.register(
-                            viewModel.account.ifEmpty { accountViewModel.getAccount() },
+                        register(
+                            viewModel.account.ifEmpty { getAccount() },
                             viewModel.password
                         )
                     }

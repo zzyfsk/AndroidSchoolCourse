@@ -22,5 +22,8 @@ dependencyResolutionManagement {
 rootProject.name = "AndroidSchoolCourse"
 include(":app")
 include(":base")
-include(":login")
+include(":C_account")
 include(":component")
+include(":B_bean")
+include(":A_Http")
+include(":B_koin")

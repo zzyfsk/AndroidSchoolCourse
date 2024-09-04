@@ -6,3 +6,8 @@ object Http {
     const val HTTP = "http://$ip:$port"
     const val HTTPS = "https://$ip:$port"
 }
+
+object HttpInformation{
+    const val `101` = "账号或密码错误"
+    const val `102` = ""
+}

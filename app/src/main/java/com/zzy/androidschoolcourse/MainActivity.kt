@@ -9,6 +9,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
 import com.zzy.androidschoolcourse.ui.screen.tab.ScreenTab
 import com.zzy.androidschoolcourse.ui.theme.AndroidSchoolCourseTheme
+import com.zzy.b_koin.user.userModule
 import com.zzy.base.koin.account.appModule
 import com.zzy.base.koin.theme.ThemeViewModel
 import com.zzy.base.koin.theme.themeModule
@@ -43,7 +44,7 @@ class MainActivity : ComponentActivity() {
             androidContext(this@MainActivity)
             modules(appModule)
             modules(themeModule)
-
+            modules(userModule)
         }
     }
 }

@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -67,12 +68,16 @@ object ScreenTabMine : Tab {
 
         Box(modifier = Modifier.fillMaxSize()) {
             Column {
-                TopInformation(
-                    modifier = Modifier.fillMaxWidth(),
-                    navigator = navigator,
-                    isLogin = accountViewModel.isLogin(),
-                    accountViewModel = accountViewModel
-                )
+                Column(modifier = Modifier.requiredHeight(80.dp)) {
+                    TopInformation(
+                        modifier = Modifier.fillMaxWidth(),
+                        navigator = navigator,
+                        isLogin = accountViewModel.isLogin(),
+                        accountViewModel = accountViewModel
+                    )
+                }
+                Spacer(modifier = Modifier.requiredHeight(80.dp))
+                MiddleInformation(modifier = Modifier.fillMaxWidth())
             }
 
         }
@@ -100,8 +105,7 @@ object ScreenTabMine : Tab {
                         } else {
                             navigator.push(ScreenLogin())
                         }
-                    }
-                , user = accountViewModel.user()
+                    }, user = accountViewModel.user()
             )
         }
     }
@@ -122,27 +126,73 @@ object ScreenTabMine : Tab {
                 ), imagePainter = painterResource(id = avatar)
             )
             Column(Modifier.weight(1f)) {
-                Text(text = user.name.ifBlank { "未登录" }, color = Color.White, fontWeight = FontWeight.Bold)
+                Text(
+                    text = user.name.ifBlank { "未登录" },
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
                 Spacer(modifier = Modifier.requiredHeight(1.dp))
                 Text(text = user.signature.ifBlank { "使用账号功能，请先登录" }, color = Color.White)
             }
-            Icon(painter = painterResource(ResIcon.chevronRight), contentDescription = "right", tint = Color.White)
+            Icon(
+                painter = painterResource(ResIcon.chevronRight),
+                contentDescription = "right",
+                tint = Color.White
+            )
         }
     }
 
     @Composable
-    fun TestFloatButton(accountViewModel: AccountViewModel){
+    fun TestFloatButton(accountViewModel: AccountViewModel) {
         var isExpand by remember { mutableStateOf(false) }
         FloatButton(
             isExpand = isExpand,
-            expandContent1 = { Button(onClick = {
-                accountViewModel.devAccount()
-            }) {
-                Text(text = "使用测试用户")
-            } },
+            expandContent1 = {
+                Button(onClick = {
+                    accountViewModel.devAccount()
+                }) {
+                    Text(text = "使用测试用户")
+                }
+            },
             expandContent2 = { Text(text = "2") },
             expandContent3 = { Text(text = "3") },
             onClick = { isExpand = !isExpand }
         )
+    }
+
+    @Composable
+    fun MiddleInformation(modifier: Modifier = Modifier) {
+        Row(modifier = modifier) {
+            MiddleInformationItem(
+                modifier = Modifier
+                    .weight(1f), number = 1, information = "好友"
+            )
+            MiddleInformationItem(
+                modifier = Modifier
+                    .weight(1f), number = 1, information = "申请"
+            )
+            MiddleInformationItem(
+                modifier = Modifier
+                    .weight(1f), number = 1, information = "不会"
+            )
+            MiddleInformationItem(
+                modifier = Modifier
+                    .weight(1f), number = 1, information = "积分"
+            )
+        }
+    }
+
+    @Composable
+    fun MiddleInformationItem(
+        modifier: Modifier = Modifier,
+        number: Int,
+        information: String
+    ) {
+        Box(modifier = modifier, contentAlignment = Alignment.Center) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = number.toString(), fontWeight = FontWeight.Bold, fontSize = 20.sp, maxLines = 1)
+                Text(text = information, fontSize = 18.sp)
+            }
+        }
     }
 }

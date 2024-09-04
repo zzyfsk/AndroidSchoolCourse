@@ -86,7 +86,7 @@ class AccountViewModel(private val userRepository: UserRepository) : ViewModel()
         }
     }
 
-    fun getFriendList() {
+    fun getFriends() {
         userRepository.removeAll()
         CoroutineScope(Dispatchers.Default).launch {
             val result = HttpUtil.instance.post<List<UserDetailHttp>>(
@@ -108,6 +108,22 @@ class AccountViewModel(private val userRepository: UserRepository) : ViewModel()
         }
     }
 
+    fun getFriend(id: Long) : UserDetailHttp? {
+        var userDetailHttp:UserDetailHttp? = null
+        CoroutineScope(Dispatchers.Default).launch {
+            val result = HttpUtil.instance.post<UserDetailHttp>(
+                url = "${Http.HTTP}/user/getFriend",
+                params = mapOf("id" to id.toString())
+            )
+            if (result.code != "0") {
+                return@launch
+            } else{
+                userDetailHttp = result.getData()
+            }
+        }
+        return userDetailHttp
+    }
+
     private fun addFriendAll(list: List<UserDetailHttp>) {
         userRepository.addFriendAll(list)
     }
@@ -121,6 +137,7 @@ class AccountViewModel(private val userRepository: UserRepository) : ViewModel()
             UserDetailHttp.testUser
         )
     }
+
 }
 
 enum class LoginHttpState {

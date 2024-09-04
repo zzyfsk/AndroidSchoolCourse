@@ -43,7 +43,6 @@ object ScreenTabMain: Tab{
         val navigator = LocalNavigator.currentOrThrow.parent!!
 
         Column (modifier = Modifier.fillMaxSize()){
-            Text(text = "This is Login Screen")
             Column {
                 Button(onClick = { navigator.push(ScreenGameHiToRi()) }) {
                     Text(text = "单人游戏")

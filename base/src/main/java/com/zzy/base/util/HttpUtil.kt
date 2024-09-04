@@ -3,6 +3,7 @@ package com.zzy.base.util
 import com.zzy.base.http.bean.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.network.sockets.ConnectTimeoutException
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
@@ -43,10 +44,8 @@ class HttpUtil {
             client.close()
             println(response.bodyAsText())
             return Json.decodeFromString(response.bodyAsText())
-        } catch (e: Exception) {
-//            e.localizedMessage
-            println(e.message)
-            return Result.error("-1", "请求失败")
+        } catch (e: ConnectTimeoutException){
+            return Result.error("-1", "请求超时")
         }
     }
 

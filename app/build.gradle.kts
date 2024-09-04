@@ -52,7 +52,8 @@ android {
 
 dependencies {
     implementation(project(":base"))
-    implementation(project(":login"))
+    implementation(project(":B_koin"))
+    implementation(project(":C_account"))
     implementation(project(":component"))
     implementation(libs.androidx.material3)
     testImplementation(libs.junit)

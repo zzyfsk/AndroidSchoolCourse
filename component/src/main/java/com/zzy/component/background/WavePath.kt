@@ -49,7 +49,7 @@ fun CanvasWave(
                 drawWaveGraph(
                     width = widthF,
                     centerY = 100f,
-                    amplitude = 50f,
+                    amplitude = 30f,
                     dx = dx,
                     color = color
                 )

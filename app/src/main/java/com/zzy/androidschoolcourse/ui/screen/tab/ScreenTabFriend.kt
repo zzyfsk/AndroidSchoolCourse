@@ -56,7 +56,7 @@ object ScreenTabFriend : Tab {
         val tabNavigator = LocalTabNavigator.current
         LaunchedEffect(key1 = accountViewModel.user().name) {
             println(accountViewModel.user().name)
-            if (accountViewModel.user().id != 0L) accountViewModel.getFriendList()
+            if (accountViewModel.user().id != 0L) accountViewModel.getFriends()
         }
         if (accountViewModel.user().token.isNotEmpty()) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
