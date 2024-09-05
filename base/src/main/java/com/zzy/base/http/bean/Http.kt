@@ -8,6 +8,7 @@ object Http {
 }
 
 object HttpInformation{
+    const val `-1` = "连接超时"
     const val `101` = "账号或密码错误"
     const val `102` = ""
 }

@@ -38,8 +38,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.zzy.b_koin.user.AccountHttpState
 import com.zzy.b_koin.user.UserKoinViewModel
 import com.zzy.base.koin.theme.Theme
@@ -48,6 +46,8 @@ import com.zzy.component.box.MaskAnimModel
 import com.zzy.component.box.MaskBox
 import com.zzy.component.toast.Toast
 import com.zzy.component.toast.ToastWait
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -57,7 +57,6 @@ class ScreenLogin : Screen {
     override fun Content() {
         val scope = rememberCoroutineScope()
         val themeViewModel: ThemeViewModel = koinViewModel()
-        val navigator = LocalNavigator.currentOrThrow
         val viewModel = rememberScreenModel {
             LoginViewModel()
         }
@@ -82,35 +81,17 @@ class ScreenLogin : Screen {
                     viewModel,
                     getAccount = { accountViewModel.getAccount() },
                     login = { account, password ->
-                        accountViewModel.login(account, password)
+                        accountViewModel.login(account, password,viewModel.onHttpStateChange)
                     },
                     register = { account,password->
                         accountViewModel.register(account, password)
                     }
                 )
             }
-            when (accountViewModel.httpState) {
-                AccountHttpState.None -> {}
-                AccountHttpState.Success -> {
-                    Toast(message = "登录成功")
-                    accountViewModel.stateReset()
-                }
-                AccountHttpState.Connecting -> {
-                    ToastWait()
-                }
-                AccountHttpState.Fail -> {
-                    Toast(message = "登录失败")
-                    accountViewModel.stateReset()
-                }
-                AccountHttpState.Wrong -> {
-                    Toast(message = "发生错误")
-                    accountViewModel.stateReset()
-                }
-            }
         }
-        LaunchedEffect(key1 = accountViewModel.httpState.name) {
-            println("xxxxx")
-            println(accountViewModel.httpState)
+        Toast(httpState = viewModel.httpState, stateReset = {viewModel.stateReset()})
+        LaunchedEffect(key1 = viewModel.httpState) {
+            println(viewModel.httpState)
         }
     }
 
@@ -152,7 +133,9 @@ class ScreenLogin : Screen {
     @Composable
     fun Logo(modifier: Modifier = Modifier) {
         Image(
-            modifier = modifier.size(200.dp),
+            modifier = modifier
+                .size(200.dp)
+                .padding(top = 5.dp),
             painter = painterResource(id = com.zzy.base.R.drawable.logo),
             contentDescription = "logo"
         )
@@ -181,7 +164,7 @@ class ScreenLogin : Screen {
             maxLines = 1
         )
         AnimatedVisibility(
-            visible = viewModel.state == StateLogin.Register,
+            visible = viewModel.pageState == StateLogin.Register,
             enter = slideInVertically() + fadeIn(),
             exit = slideOutVertically() + fadeOut()
         ) {
@@ -201,8 +184,8 @@ class ScreenLogin : Screen {
                 .padding(10.dp)
                 .weight(1f),
                 onClick = {
-                    if (viewModel.state == StateLogin.Register) {
-                        viewModel.state = StateLogin.Login
+                    if (viewModel.pageState == StateLogin.Register) {
+                        viewModel.pageState = StateLogin.Login
                     } else {
                         login(
                             viewModel.account.ifEmpty { getAccount() },
@@ -215,8 +198,8 @@ class ScreenLogin : Screen {
             Button(modifier = Modifier
                 .padding(10.dp)
                 .weight(1f), onClick = {
-                if (viewModel.state == StateLogin.Login) {
-                    viewModel.state = StateLogin.Register
+                if (viewModel.pageState == StateLogin.Login) {
+                    viewModel.pageState = StateLogin.Register
                 } else {
                     if (viewModel.checkPassword()) {
                         register(
@@ -227,6 +210,29 @@ class ScreenLogin : Screen {
                 }
             }) {
                 Text(text = "注册")
+            }
+        }
+    }
+
+    @Composable
+    fun Toast(httpState: AccountHttpState,stateReset:()->Unit){
+        val message = when(httpState){
+            AccountHttpState.None -> null
+            AccountHttpState.Success -> "登录成功"
+            AccountHttpState.Connecting -> null
+            AccountHttpState.Fail -> "登录失败"
+            AccountHttpState.Wrong -> "服务器错误"
+        }
+        if (httpState == AccountHttpState.Connecting){
+            ToastWait()
+        }else{
+            Toast(message = message)
+            stateReset()
+
+        }
+        LaunchedEffect(key1 = httpState) {
+            CoroutineScope(Dispatchers.Default).launch {
+//                Thread.sleep(1000)
             }
         }
     }

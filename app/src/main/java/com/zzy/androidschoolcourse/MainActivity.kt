@@ -1,6 +1,5 @@
 package com.zzy.androidschoolcourse
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,6 +19,8 @@ import org.koin.core.context.startKoin
 
 class MainActivity : ComponentActivity() {
 
+    var start = false
+
     @OptIn(ExperimentalVoyagerApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,10 +36,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun init(){
-        setupKoin()
+        if (!start) setupKoin()
     }
 
     private fun setupKoin(){
+        start = true
         startKoin {
             androidLogger()
             androidContext(this@MainActivity)

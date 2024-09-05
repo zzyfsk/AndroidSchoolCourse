@@ -4,15 +4,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
-import com.zzy.base.koin.account.LoginHttpState
+import com.zzy.b_koin.user.AccountHttpState
 
-class LoginViewModel: ScreenModel {
-    var state by mutableStateOf(StateLogin.Login)
-    var httpState by mutableStateOf(LoginHttpState.None)
+class LoginViewModel : ScreenModel {
+    var pageState by mutableStateOf(StateLogin.Login)
+    var httpState by mutableStateOf(AccountHttpState.None)
 
     var account by mutableStateOf("")
     var password by mutableStateOf("")
     var password2 by mutableStateOf("")
+
+    val onHttpStateChange: (AccountHttpState) -> Unit = {
+        httpState = it
+    }
 
     val onAccountChange: (String) -> Unit = {
         account = it
@@ -26,18 +30,22 @@ class LoginViewModel: ScreenModel {
         password2 = it
     }
 
-    fun checkPassword():Boolean{
-        return if (password != password2){
+    fun checkPassword(): Boolean {
+        return if (password != password2) {
             false
-        }else if (password.isBlank()){
+        } else if (password.isBlank()) {
             false
-        } else{
+        } else {
             true
         }
     }
+
+    fun stateReset() {
+        httpState = AccountHttpState.None
+    }
 }
 
-enum class StateLogin{
+enum class StateLogin {
     Login,
     Register
 }

@@ -51,7 +51,7 @@ class ScreenGameHiToRi : Screen {
         Column(modifier = Modifier.fillMaxSize()) {
             BarTitle()
             Spacer(modifier = Modifier.requiredHeight(10.dp))
-            Text(text = screenModel.gameState.numbers)
+//            Text(text = screenModel.gameState.numbers)
             Timer(modifier = Modifier, time = screenModel.time)
             Spacer(modifier = Modifier.requiredHeight(10.dp))
             TwentyFourGame(

@@ -20,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
@@ -27,28 +28,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun Toast(message: String, duration: SnackbarDuration = SnackbarDuration.Short) {
+fun Toast(
+    message: String?,
+    duration: SnackbarDuration = SnackbarDuration.Short
+) {
     Box(
         modifier = Modifier
             .zIndex(1f)
             .fillMaxSize()
     ) {
-        val hostState = SnackbarHostState()
+        val scope = rememberCoroutineScope()
+        val hostState = remember { SnackbarHostState() }
         SnackbarHost(hostState = hostState, modifier = Modifier.align(BiasAlignment(0f, 0.9f)))
-        LaunchedEffect(key1 = "Toast") {
-            hostState.showSnackbar(
-                message = message,
-                actionLabel = "",
-                withDismissAction = true,
-                duration = duration
-            )
+        LaunchedEffect(key1 = message) {
+            if (message != null) {
+                scope.launch {
+                    hostState.showSnackbar(
+                        message = message,
+                        actionLabel = "",
+                        withDismissAction = true,
+                        duration = duration
+                    )
+                }
+            }
+
         }
     }
 }

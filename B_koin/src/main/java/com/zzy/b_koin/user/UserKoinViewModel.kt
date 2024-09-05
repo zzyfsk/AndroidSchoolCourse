@@ -7,22 +7,18 @@ import androidx.lifecycle.ViewModel
 import exception.HttpNullException
 
 class UserKoinViewModel(private val userRes: UserRes) : ViewModel() {
-
-    var httpState by mutableStateOf(AccountHttpState.None)
     var wrongInformation by mutableStateOf("")
 
-    fun login(account: String, password: String) {
-        httpState = AccountHttpState.Connecting
+    fun login(account: String, password: String,httpStateChange:(AccountHttpState)->Unit) {
+        httpStateChange(AccountHttpState.Connecting)
         try {
+            wrongInformation = ""
             userRes.login(account, password)
-//            httpState = AccountHttpState.Success
+            httpStateChange(AccountHttpState.Success)
         } catch (e:HttpNullException){
-            httpState = AccountHttpState.Fail
+            httpStateChange(AccountHttpState.Fail)
             wrongInformation = e.information
         }
-//        catch (e:TimeoutCancellationException){
-//            httpState = AccountHttpState.Wrong
-//        }
     }
 
     fun getAccount():String{
@@ -33,7 +29,11 @@ class UserKoinViewModel(private val userRes: UserRes) : ViewModel() {
         // TODO 注册
     }
 
-    fun stateReset() = run { httpState = AccountHttpState.None }
+    fun stateReset() = userRes.setHttpState(AccountHttpState.None)
+
+    fun setState(state: AccountHttpState) = userRes.setHttpState(state)
+
+    fun getState() = userRes.getHttpState()
 
 }
 
