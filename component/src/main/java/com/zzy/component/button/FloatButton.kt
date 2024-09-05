@@ -184,7 +184,7 @@ fun FloatButton(
                     //处理透明度
                     .alpha(expandContentAlpha)
                 ) {
-                    expandContent1()
+                    if (isExpand) expandContent1()
                 }
 
             if (expandContent2 != null)
@@ -193,7 +193,7 @@ fun FloatButton(
                     .offset { expandContent2Offset + mainButtonBorderOffset }
                     .alpha(expandContentAlpha)
                 ) {
-                    expandContent2()
+                    if (isExpand) expandContent2()
                 }
 
             if (expandContent3 != null)
@@ -202,7 +202,7 @@ fun FloatButton(
                     .offset { expandContent3Offset + mainButtonBorderOffset }
                     .alpha(expandContentAlpha)
                 ) {
-                    expandContent3()
+                    if (isExpand) expandContent3()
                 }
         }
     }
