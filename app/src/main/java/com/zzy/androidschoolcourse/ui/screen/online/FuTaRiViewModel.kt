@@ -98,6 +98,7 @@ class FuTaRiViewModel(
     fun init() {
         serviceGame.serverStart()
         CoroutineScope(Dispatchers.IO).launch {
+            Thread.sleep(100)
             if (right == GameRight.Command) {
                 serviceGame.controllerStart(ip = ip, port = port,
                     onSet = { message ->

@@ -28,7 +28,9 @@ class UserKoinViewModel(private val userRes: UserRes) : ViewModel() {
         }
     }
 
-
+    fun getAccount():String{
+        return userRes.getDeviceName()
+    }
 
     fun register(account: String, password: String){
         // TODO 注册

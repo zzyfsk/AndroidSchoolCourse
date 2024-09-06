@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -33,11 +34,16 @@ import com.zzy.androidschoolcourse.R
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
 import com.zzy.component.toast.Toast
 import com.zzy.component.toast.ToastWait
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ScreenOnline : Screen {
     @Composable
     override fun Content() {
         val context = LocalContext.current
+        val scope = rememberCoroutineScope()
+
         val viewModel = rememberScreenModel {
             OnlineSearchViewModel()
         }
@@ -112,9 +118,14 @@ class ScreenOnline : Screen {
             }
         }
         if (viewModel.showDialog) DialogOnline(onConfirm = {
-            viewModel.sendResult(true)
-            viewModel.finish()
-            navigator?.replace(ScreenFuTaRi(ip = viewModel.ip, right = GameRight.Command))
+            CoroutineScope(Dispatchers.Default).launch {
+                viewModel.sendResult(true)
+                viewModel.finish()
+            }
+            scope.launch {
+                Thread.sleep(500)
+                navigator?.replace(ScreenFuTaRi(ip = viewModel.ip, right = GameRight.Command))
+            }
         }, onDismiss = {
             viewModel.sendResult(false)
         })

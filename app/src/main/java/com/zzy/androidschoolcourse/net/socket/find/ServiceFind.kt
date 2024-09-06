@@ -59,6 +59,7 @@ class ServiceFind {
     }
 
     fun controllerSendResult(boolean: Boolean) {
+        println(boolean)
         controller.sendMessage(
             BeanSocketFind(
                 SocketMessage.Result,

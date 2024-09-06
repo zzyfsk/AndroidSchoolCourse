@@ -103,7 +103,6 @@ class ServerFind {
                                         )
                                     }
                                     if (right[this@FindTask] == "command" && msg.content == "exit") {
-                                        Log.d(tag, "start: exit")
                                         messageQueue.put(BeanSocketFind(SocketMessage.Exit, "exit"))
                                         socket.close()
                                     }

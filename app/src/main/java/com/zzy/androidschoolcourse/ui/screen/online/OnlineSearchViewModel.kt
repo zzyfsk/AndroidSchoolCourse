@@ -49,6 +49,7 @@ class OnlineSearchViewModel : ScreenModel {
 
     fun connect(serverIP: String,onConfirm:()->Unit) {
         serviceFind.clientConnect(serverIP, onConnect = { showDialog = true }, onConfirm = {
+            println("connectttttttt")
             serviceFind.finish()
             onConfirm()
         }, onDisConfirm = {})
