@@ -11,10 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.zzy.androidschoolcourse.ui.theme.ResIcon
-import com.zzy.base.koin.account.User
+import com.zzy.base.http.bean.UserDetailHttp
 
 @Composable
-fun PersonalPage(modifier: Modifier = Modifier,user: User,score:Int) {
+fun PersonalPage(modifier: Modifier = Modifier,user: UserDetailHttp,score:Int) {
     Surface(modifier = modifier) {
         Column(
             modifier = Modifier

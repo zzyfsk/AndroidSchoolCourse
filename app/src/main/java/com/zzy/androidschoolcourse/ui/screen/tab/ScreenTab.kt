@@ -37,8 +37,6 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.zzy.androidschoolcourse.ui.component.TabNavigationItem
 import com.zzy.androidschoolcourse.ui.theme.AndroidSchoolCourseTheme
 import com.zzy.androidschoolcourse.ui.theme.MainColor
-import com.zzy.base.koin.account.AccountViewModel
-import com.zzy.base.koin.account.LoginHttpState
 import com.zzy.base.koin.theme.Theme
 import com.zzy.base.koin.theme.ThemeViewModel
 import com.zzy.component.box.MaskAnimModel
@@ -56,7 +54,6 @@ class ScreenTab : Screen {
             Theme.Normal -> com.zzy.base.R.drawable.light_mode
             Theme.Dark -> com.zzy.base.R.drawable.dark_mode
         }
-        val accountViewModel: AccountViewModel = koinViewModel()
         var componentPosition by remember { mutableStateOf(Pair(0f, 0f)) }
         MaskBox(modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
             maskComplete = {
@@ -119,7 +116,7 @@ class ScreenTab : Screen {
                         content = { paddingValues ->
                             Box(modifier = Modifier.padding(paddingValues)) {
                                 CurrentTab()
-                                Toast(accountViewModel = accountViewModel)
+                                Toast()
                             }
                         },
                         bottomBar = {
@@ -137,24 +134,8 @@ class ScreenTab : Screen {
     }
 
     @Composable
-    fun Toast(accountViewModel: AccountViewModel) {
-        when (accountViewModel.httpState) {
-            LoginHttpState.None -> {
+    fun Toast() {
 
-            }
-
-            LoginHttpState.Loading -> TODO()
-            LoginHttpState.LoginSuccess -> {
-                com.zzy.component.toast.Toast(message = "登录成功")
-                accountViewModel.httpState = LoginHttpState.None
-            }
-
-            LoginHttpState.LoginFail -> TODO()
-            LoginHttpState.RegisterSuccess -> TODO()
-            LoginHttpState.RegisterFail -> {
-
-            }
-        }
     }
 }
 

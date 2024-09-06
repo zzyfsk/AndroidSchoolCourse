@@ -8,8 +8,6 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.zzy.base.http.bean.UserDetailHttp
-import com.zzy.base.koin.account.AccountViewModel
-import org.koin.androidx.compose.koinViewModel
 
 class ScreenDetail(val id: Long) : Screen {
     @Composable
@@ -17,10 +15,8 @@ class ScreenDetail(val id: Long) : Screen {
         val viewModel = rememberScreenModel {
             DetailViewModel()
         }
-        val accountViewModel: AccountViewModel = koinViewModel()
-
         LaunchedEffect(key1 = id) {
-            viewModel.init(accountViewModel = accountViewModel, id = id)
+//            viewModel.init(accountViewModel = accountViewModel, id = id)
         }
         Column(modifier = Modifier.fillMaxSize()) {
             UserInformation(user = viewModel.user)

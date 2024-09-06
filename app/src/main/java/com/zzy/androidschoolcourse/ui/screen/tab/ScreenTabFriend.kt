@@ -28,8 +28,8 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.zzy.androidschoolcourse.R
+import com.zzy.b_koin.user.UserOnlyKoinViewModel
 import com.zzy.base.http.bean.UserDetailHttp
-import com.zzy.base.koin.account.AccountViewModel
 import org.koin.androidx.compose.koinViewModel
 
 object ScreenTabFriend : Tab {
@@ -52,15 +52,14 @@ object ScreenTabFriend : Tab {
 
     @Composable
     override fun Content() {
-        val accountViewModel: AccountViewModel = koinViewModel()
+        val accountViewModel:UserOnlyKoinViewModel = koinViewModel()
         val tabNavigator = LocalTabNavigator.current
-        LaunchedEffect(key1 = accountViewModel.user().name) {
-            println(accountViewModel.user().name)
-            if (accountViewModel.user().id != 0L) accountViewModel.getFriends()
+        LaunchedEffect(key1 = accountViewModel.user.name) {
+            if (accountViewModel.user.id != 0L) accountViewModel.getAccount()
         }
-        if (accountViewModel.user().token.isNotEmpty()) {
+        if (accountViewModel.user.token.isNotEmpty()) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(accountViewModel.friendList()) { friend ->
+                items(accountViewModel.friendList) { friend ->
                     FriendItem(friend = friend)
                 }
             }

@@ -253,7 +253,6 @@ fun TwentyFourGame(
                     initNumber
                 )
             )
-//            click(gameState)
         }
 
         BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
@@ -301,12 +300,12 @@ fun TwentyFourGame(
             }
         }
         if (style == 1){
-            Row {
-                IconButton(modifier = Modifier.weight(1f),onClick = { resetGame() }) {
-                    Icon(modifier = Modifier.size(40.dp).shadow(1.dp, shape = RoundedCornerShape(1f)),painter = painterResource(id = R.drawable.refresh), contentDescription = "refresh")
+            Row (modifier = Modifier){
+                IconButton(modifier = Modifier.weight(1f).padding(5.dp).height(50.dp),onClick = { resetGame() }) {
+                    Icon(modifier = Modifier.size(60.dp).clip(RoundedCornerShape(1f)),painter = painterResource(id = R.drawable.refresh), contentDescription = "refresh")
                 }
-                IconButton(modifier = Modifier.weight(1f),onClick = { resetGame() }) {
-                    Icon(modifier = Modifier.size(40.dp).clip(RoundedCornerShape(1f)).shadow(1.dp, shape = RoundedCornerShape(40.dp)),painter = painterResource(id = R.drawable.refresh), contentDescription = "refresh")
+                IconButton(modifier = Modifier.weight(1f).padding(5.dp).height(50.dp),onClick = { resetGame() }) {
+                    Icon(modifier = Modifier.size(60.dp).clip(RoundedCornerShape(1f)),painter = painterResource(id = R.drawable.refresh), contentDescription = "refresh")
                 }
             }
         }

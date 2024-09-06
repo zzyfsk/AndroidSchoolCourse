@@ -37,8 +37,8 @@ import com.zzy.androidschoolcourse.ui.screen.BoxWave
 import com.zzy.androidschoolcourse.ui.screen.DrawCircleWithImage
 import com.zzy.androidschoolcourse.ui.theme.MainColor
 import com.zzy.androidschoolcourse.ui.theme.ResIcon
+import com.zzy.b_koin.user.UserOnlyKoinViewModel
 import com.zzy.base.http.bean.UserDetailHttp
-import com.zzy.base.koin.account.AccountViewModel
 import com.zzy.component.button.FloatButton
 import com.zzy.login.ui.screen.login.ScreenLogin
 import org.koin.androidx.compose.koinViewModel
@@ -64,8 +64,7 @@ object ScreenTabMine : Tab {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow.parent!!
-        val accountViewModel: AccountViewModel = koinViewModel()
-
+        val accountViewModel:UserOnlyKoinViewModel = koinViewModel()
         Box(modifier = Modifier.fillMaxSize()) {
             Column {
                 Column(modifier = Modifier.requiredHeight(80.dp)) {
@@ -73,7 +72,7 @@ object ScreenTabMine : Tab {
                         modifier = Modifier.fillMaxWidth(),
                         navigator = navigator,
                         isLogin = accountViewModel.isLogin(),
-                        accountViewModel = accountViewModel
+                        user = accountViewModel.user
                     )
                 }
                 Spacer(modifier = Modifier.requiredHeight(80.dp))
@@ -81,7 +80,7 @@ object ScreenTabMine : Tab {
             }
 
         }
-        TestFloatButton(accountViewModel)
+        TestFloatButton(devLogin = { accountViewModel.devLogin() })
     }
 
     @Composable
@@ -89,7 +88,7 @@ object ScreenTabMine : Tab {
         modifier: Modifier = Modifier,
         navigator: Navigator,
         isLogin: Boolean = false,
-        accountViewModel: AccountViewModel
+        user:UserDetailHttp
     ) {
         BoxWave(
             modifier = modifier.fillMaxWidth(),
@@ -105,7 +104,7 @@ object ScreenTabMine : Tab {
                         } else {
                             navigator.push(ScreenLogin())
                         }
-                    }, user = accountViewModel.user()
+                    }, user = user
             )
         }
     }
@@ -143,13 +142,13 @@ object ScreenTabMine : Tab {
     }
 
     @Composable
-    fun TestFloatButton(accountViewModel: AccountViewModel) {
+    fun TestFloatButton(devLogin:()->Unit) {
         var isExpand by remember { mutableStateOf(false) }
         FloatButton(
             isExpand = isExpand,
             expandContent1 = {
                 Button(onClick = {
-                    accountViewModel.devAccount()
+                    devLogin()
                 }) {
                     Text(text = "使用测试用户")
                 }

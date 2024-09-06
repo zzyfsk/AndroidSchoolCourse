@@ -38,6 +38,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.zzy.b_koin.user.AccountHttpState
 import com.zzy.b_koin.user.UserKoinViewModel
 import com.zzy.base.koin.theme.Theme
@@ -223,17 +225,30 @@ class ScreenLogin : Screen {
             AccountHttpState.Fail -> "登录失败"
             AccountHttpState.Wrong -> "服务器错误"
         }
-        if (httpState == AccountHttpState.Connecting){
+        val navigator = LocalNavigator.currentOrThrow
+        when(httpState){
+            AccountHttpState.Connecting->{
+                ToastWait()
+            }
+            AccountHttpState.Success->{
+                Toast(message = message)
+                stateReset()
+                navigator.pop()
+            }
+            else->{
+                Toast(message = message)
+                stateReset()
+            }
+        }
+        if (httpState == AccountHttpState.Connecting) {
             ToastWait()
-        }else{
+        }
+        else{
             Toast(message = message)
             stateReset()
-
         }
         LaunchedEffect(key1 = httpState) {
-            CoroutineScope(Dispatchers.Default).launch {
-//                Thread.sleep(1000)
-            }
+            println(httpState)
         }
     }
 }

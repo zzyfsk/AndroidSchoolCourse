@@ -9,7 +9,6 @@ import cafe.adriel.voyager.transitions.SlideTransition
 import com.zzy.androidschoolcourse.ui.screen.tab.ScreenTab
 import com.zzy.androidschoolcourse.ui.theme.AndroidSchoolCourseTheme
 import com.zzy.b_koin.user.userModule
-import com.zzy.base.koin.account.appModule
 import com.zzy.base.koin.theme.ThemeViewModel
 import com.zzy.base.koin.theme.themeModule
 import org.koin.android.ext.koin.androidContext
@@ -44,7 +43,6 @@ class MainActivity : ComponentActivity() {
         startKoin {
             androidLogger()
             androidContext(this@MainActivity)
-            modules(appModule)
             modules(themeModule)
             modules(userModule)
         }
