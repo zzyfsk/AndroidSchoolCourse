@@ -55,7 +55,7 @@ object ScreenTabFriend : Tab {
         val accountViewModel:UserOnlyKoinViewModel = koinViewModel()
         val tabNavigator = LocalTabNavigator.current
         LaunchedEffect(key1 = accountViewModel.user.name) {
-            if (accountViewModel.user.id != 0L) accountViewModel.getAccount()
+            if (accountViewModel.user.id != 0L) accountViewModel.getAccountName()
         }
         if (accountViewModel.user.token.isNotEmpty()) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {

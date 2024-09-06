@@ -43,22 +43,7 @@ class UserKoinViewModel(private val userRes: UserRes) : ViewModel() {
     fun getState() = userRes.getHttpState()
 }
 
-class UserOnlyKoinViewModel(private val userRes: UserRes):ViewModel(){
-    val user = userRes.user
-    val friendList = userRes.friendList
 
-    fun isLogin():Boolean{
-        return user.token.isNotEmpty()
-    }
-
-    fun devLogin()  {
-        userRes.user = UserDetailHttp.testUser
-    }
-
-    fun getAccount():String{
-        return userRes.getDeviceName()
-    }
-}
 
 enum class AccountHttpState {
     None,

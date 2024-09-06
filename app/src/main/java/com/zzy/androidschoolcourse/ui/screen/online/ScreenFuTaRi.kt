@@ -20,32 +20,39 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
-import com.zzy.androidschoolcourse.ui.component.TwentyFourGame
+import com.zzy.androidschoolcourse.ui.component.TwentyFourGameSmall
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGameSmallView
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGameState
-import com.zzy.androidschoolcourse.ui.component.TwentyFourGameView
+import com.zzy.b_koin.user.UserOnlyKoinViewModel
 import com.zzy.component.box.AlphaBox
 import com.zzy.component.toast.ToastWait
+import org.koin.androidx.compose.koinViewModel
 
 class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: GameRight) : Screen {
 
     @Composable
     override fun Content() {
         val context = LocalContext.current
+        val navigator = LocalNavigator.currentOrThrow
         val viewModel: FuTaRiViewModel =
             rememberScreenModel { FuTaRiViewModel(ip, port, right, context) }
+        val accountViewModel: UserOnlyKoinViewModel = koinViewModel()
         LaunchedEffect(key1 = Unit) {
             viewModel.init()
 //            viewModel.huTaRiState = FuTaRiState.UI
         }
         BackHandler {
-            if(viewModel.showChat){ viewModel.showChat = false }
-            else{
-                // TODO finish
+            if (viewModel.showChat) {
+                viewModel.showChat = false
+            } else {
+                viewModel.finish()
+                navigator.pop()
             }
         }
-        if (viewModel.huTaRiState == FuTaRiState.Socket||viewModel.huTaRiState == FuTaRiState.Socket){
+        if (viewModel.huTaRiState == FuTaRiState.Socket || viewModel.huTaRiState == FuTaRiState.Socket) {
             ToastWait()
         }
 
@@ -75,7 +82,8 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
             ChatComponent(
                 modifier = Modifier.fillMaxSize(),
                 chatList = viewModel.chatList,
-                viewModel = viewModel
+                viewModel = viewModel,
+                name = accountViewModel.getAccountName()
             )
         }
 
@@ -93,16 +101,17 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
 
     @Composable
     fun GameMe(viewModel: FuTaRiViewModel) {
-        TwentyFourGame(win = { viewModel.gameWin() }, click = { gameState ->
+        TwentyFourGameSmall(win = { viewModel.gameWin() }, click = { gameState ->
             viewModel.sendGameState(gameState)
             viewModel.recordState(1, gameState)
-        }, gameState = viewModel.gameState)
+        }, gameState = viewModel.gameState, onChat = { viewModel.showChat = true })
     }
 
     @Composable
     fun WinComponent(modifier: Modifier = Modifier) {
         AlphaBox(modifier = modifier, alpha = 0.8f) {
             Column {
+                Text(modifier = Modifier.weight(0.5f), text = "游戏结束")
 
             }
         }
@@ -112,7 +121,8 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
     fun ChatComponent(
         modifier: Modifier = Modifier,
         chatList: List<ChatContent> = listOf(),
-        viewModel: FuTaRiViewModel
+        viewModel: FuTaRiViewModel,
+        name: String
     ) {
         AlphaBox(modifier = modifier, alpha = 0.8f) {
             Column {
@@ -120,7 +130,7 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
                     OutlinedTextField(value = viewModel.chatContent, onValueChange = {
                         viewModel.chatContent = it
                     })
-                    Button(onClick = { viewModel.sendChat("") }) {
+                    Button(onClick = { viewModel.sendChat(name) }) {
                         Text(text = "发送")
                     }
                 }

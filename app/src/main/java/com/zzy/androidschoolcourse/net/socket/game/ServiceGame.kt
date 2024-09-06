@@ -180,6 +180,16 @@ private lateinit var server: ServerGame
         )
     }
 
+    fun finish(){
+        controller.sendMessage(
+            BeanSocketGame(
+                GameSocketState.Function,
+                "exit",
+                GameRight.Command
+            )
+        )
+    }
+
     companion object {
         val service = ServiceGame()
     }

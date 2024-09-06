@@ -183,6 +183,10 @@ class FuTaRiViewModel(
     private fun getChat(chatContent: ChatContent){
         chatList.add(chatContent)
     }
+
+    fun finish() {
+        if (right == GameRight.Command) serviceGame.finish()
+    }
 }
 
 enum class FuTaRiState {

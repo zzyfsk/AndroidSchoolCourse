@@ -15,7 +15,8 @@ data class UserDetailHttp(
             id = 1,
             name = "zzy_dada",
             score = 1000,
-            signature = "这是一个测试用户"
+            signature = "这是一个测试用户",
+            token = "xx"
         )
     }
 }

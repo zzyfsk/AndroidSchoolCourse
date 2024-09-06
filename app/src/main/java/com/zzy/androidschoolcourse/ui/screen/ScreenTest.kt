@@ -44,22 +44,22 @@ class ScreenTest : Screen {
     @Composable
     fun MiddleInformation(modifier: Modifier = Modifier) {
         Row(modifier = modifier) {
-            ScreenTabMine.MiddleInformationItem(
+            MiddleInformationItem(
                 modifier = Modifier
                     .weight(1f)
                     .height(20.dp), number = 1, information = "好友"
             )
-            ScreenTabMine.MiddleInformationItem(
+            MiddleInformationItem(
                 modifier = Modifier
                     .weight(1f)
                     .height(20.dp), number = 1, information = "申请"
             )
-            ScreenTabMine.MiddleInformationItem(
+            MiddleInformationItem(
                 modifier = Modifier
                     .weight(1f)
                     .height(20.dp), number = 1, information = "不会"
             )
-            ScreenTabMine.MiddleInformationItem(
+            MiddleInformationItem(
                 modifier = Modifier
                     .weight(1f)
                     .height(20.dp), number = 1, information = "积分"

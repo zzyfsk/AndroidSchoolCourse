@@ -313,6 +313,284 @@ fun TwentyFourGame(
 }
 
 @Composable
+fun TwentyFourGameSmall(
+    modifier: Modifier = Modifier,
+    style:Int= 1,
+    win: () -> Unit = {},
+    click: (TwentyFourGameState) -> Unit = {},
+    gameState: TwentyFourGameState,
+    onChat:()->Unit = {}
+) {
+    var firstNumber by remember { mutableIntStateOf(0) }
+    var secondNumber by remember { mutableIntStateOf(0) }
+    var currentSymbol by remember { mutableIntStateOf(0) }
+    var addCount by remember { mutableIntStateOf(0) }
+    val numberStateList = remember { gameState.numberStateList }
+    var initNumber by remember { mutableStateOf("0000") }
+
+    fun getNumberState(): MutableList<TwentyFourGameButtonState> {
+        if (numberStateList.isEmpty()) {
+            while (numberStateList.size < 4) {
+                numberStateList.add(TwentyFourGameButtonState())
+            }
+        }
+        return numberStateList
+    }
+
+    fun initNumber() {
+        initNumber.forEachIndexed { index, c ->
+            getNumberState()[index].fraction.numerator = if (c == '0') 10 else c.digitToInt()
+            getNumberState()[index].fraction.denominator = 1
+        }
+    }
+
+    val winCheck: () -> Unit = {
+        if (addCount >= 3) {
+            getNumberState().forEach {
+                if (it.numberVisible && it.fraction.getInteger() == 24 && it.fraction.getRemainder() == 0) {
+                    win()
+                }
+            }
+        }
+    }
+
+    val clickFirstNumber: (Int) -> Unit = { number ->
+        firstNumber = number
+        currentSymbol = 0
+    }
+
+    val clickSecondNumber: (Int) -> Unit = { number ->
+        if (number != firstNumber) {
+            addCount++
+            secondNumber = number
+
+            getNumberState()[firstNumber - 1].numberVisible = false
+
+            when (currentSymbol) {
+                1 -> numberStateList[secondNumber - 1].fraction += numberStateList[firstNumber - 1].fraction
+                2 -> numberStateList[secondNumber - 1].fraction =
+                    numberStateList[firstNumber - 1].fraction - numberStateList[secondNumber - 1].fraction
+
+                3 -> numberStateList[secondNumber - 1].fraction *= numberStateList[firstNumber - 1].fraction
+                4 -> numberStateList[secondNumber - 1].fraction =
+                    numberStateList[firstNumber - 1].fraction / numberStateList[secondNumber - 1].fraction
+            }
+
+
+            firstNumber = 0
+            secondNumber = 0
+            currentSymbol = 0
+        }
+
+    }
+
+    val numberClick: (Int) -> Unit = {
+        if (currentSymbol != 0 && firstNumber != 0) {
+            clickSecondNumber(it)
+        } else {
+            clickFirstNumber(it)
+        }
+        click(
+            TwentyFourGameState(
+                firstNumber,
+                secondNumber,
+                currentSymbol,
+                addCount,
+                getNumberState(),
+                initNumber
+            )
+        )
+        winCheck()
+    }
+
+    fun resetGame() {
+        initNumber()
+        for (i in 0..3) getNumberState()[i].numberVisible = true
+        firstNumber = 0
+        secondNumber = 0
+        currentSymbol = 0
+        addCount = 0
+        numberStateList.add(TwentyFourGameButtonState())
+        numberStateList.removeLast()
+        click(
+            TwentyFourGameState(
+                firstNumber,
+                secondNumber,
+                currentSymbol,
+                addCount,
+                getNumberState(),
+                initNumber
+            )
+        )
+    }
+
+    val backgroundColor: (Int) -> Color = {
+        if (it == firstNumber) MainColor.GameButtonPress
+        else MainColor.GameButtonUnPress
+    }
+
+    LaunchedEffect(key1 = gameState.numbers) {
+        initNumber = gameState.numbers
+        resetGame()
+        addCount = 0
+        click(
+            TwentyFourGameState(
+                firstNumber,
+                secondNumber,
+                currentSymbol,
+                addCount,
+                getNumberState(),
+                initNumber
+            )
+        )
+    }
+
+    Column(modifier = Modifier) {
+        Column(
+            modifier = Modifier
+                .height(335.dp)
+                .padding(horizontal = 10.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                NumberButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    number = 1,
+                    numberUp = getNumberState()[0].fraction.numerator,
+                    numberDown = numberStateList[0].fraction.denominator,
+                    length = 145,
+                    fontSize = 50,
+                    backgroundColor = backgroundColor(1),
+                    visible = numberStateList[0].numberVisible,
+                    onClick = numberClick
+                )
+                NumberButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    number = 2,
+                    numberUp = numberStateList[1].fraction.numerator,
+                    numberDown = numberStateList[1].fraction.denominator,
+                    length = 145,
+                    fontSize = 50,
+                    backgroundColor = backgroundColor(2),
+                    visible = numberStateList[1].numberVisible,
+                    onClick = numberClick
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                NumberButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    number = 3,
+                    numberUp = numberStateList[2].fraction.numerator,
+                    numberDown = numberStateList[2].fraction.denominator,
+                    length = 145,
+                    fontSize = 50,
+                    backgroundColor = backgroundColor(3),
+                    visible = numberStateList[2].numberVisible,
+                    onClick = numberClick
+                )
+                NumberButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    number = 4,
+                    numberUp = numberStateList[3].fraction.numerator,
+                    numberDown = numberStateList[3].fraction.denominator,
+                    length = 145,
+                    fontSize = 50,
+                    backgroundColor = backgroundColor(4),
+                    visible = numberStateList[3].numberVisible,
+                    onClick = numberClick
+                )
+            }
+        }
+
+        val symbolBackgroundColor: (Int) -> Color = {
+            if (it == currentSymbol) MainColor.SymbolButtonPress else MainColor.SymbolButtonUnPress
+        }
+        val symbolColor: (Int) -> Color = {
+            if (it == currentSymbol) MainColor.SymbolButtonUnPress else MainColor.SymbolButtonPress
+        }
+        val symbolClick: (Int) -> Unit = {
+            currentSymbol = if (it == currentSymbol) 0 else it
+            click(
+                TwentyFourGameState(
+                    firstNumber,
+                    secondNumber,
+                    currentSymbol,
+                    addCount,
+                    getNumberState(),
+                    initNumber
+                )
+            )
+        }
+
+        BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
+            val eachSize by remember {
+                mutableStateOf(((maxWidth - 20.dp) / 4))
+            }
+            Row(modifier = Modifier) {
+                SymbolButton(
+                    modifier = modifier,
+                    number = 1,
+                    imageId = R.drawable.add,
+                    length = eachSize,
+                    backgroundColor = symbolBackgroundColor(1),
+                    symbolColor = symbolColor(1),
+                    onClick = symbolClick
+                )
+                SymbolButton(
+                    modifier = modifier,
+                    number = 2,
+                    imageId = R.drawable.del,
+                    length = eachSize,
+                    backgroundColor = symbolBackgroundColor(2),
+                    symbolColor = symbolColor(2),
+                    onClick = symbolClick
+                )
+                SymbolButton(
+                    modifier = modifier,
+                    number = 3,
+                    imageId = R.drawable.mul,
+                    length = eachSize,
+                    backgroundColor = symbolBackgroundColor(3),
+                    symbolColor = symbolColor(3),
+                    onClick = symbolClick
+                )
+                SymbolButton(
+                    modifier = modifier,
+                    number = 4,
+                    imageId = R.drawable.div,
+                    length = eachSize,
+                    backgroundColor = symbolBackgroundColor(4),
+                    symbolColor = symbolColor(4),
+                    onClick = symbolClick
+                )
+
+            }
+        }
+        if (style == 1){
+            Row (modifier = Modifier){
+                IconButton(modifier = Modifier.weight(1f).padding(5.dp).height(50.dp),onClick = { resetGame() }) {
+                    Icon(modifier = Modifier.size(60.dp).clip(RoundedCornerShape(1f)),painter = painterResource(id = R.drawable.refresh), contentDescription = "refresh")
+                }
+                IconButton(modifier = Modifier.weight(1f).padding(5.dp).height(50.dp),onClick = { onChat() }) {
+                    Icon(modifier = Modifier.size(60.dp).clip(RoundedCornerShape(1f)),painter = painterResource(id = com.zzy.base.R.drawable.chat2), contentDescription = "chat")
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun TwentyFourGameView(
     gameViewModel: TwentyFourGameState,
     modifier: Modifier = Modifier

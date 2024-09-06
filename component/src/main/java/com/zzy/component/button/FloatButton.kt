@@ -176,33 +176,35 @@ fun FloatButton(
                     y.roundToInt() + (buttonSize / 2).roundToPx()
                 )
             }
-            if (expandContent1 != null)
-            //展示内容 1
-                Box(modifier = Modifier
-                    //处理位置
-                    .offset { expandContent1Offset + mainButtonBorderOffset }
-                    //处理透明度
-                    .alpha(expandContentAlpha)
-                ) {
-                    if (isExpand) expandContent1()
-                }
+            if (isExpand){
+                if (expandContent1 != null)
+                //展示内容 1
+                    Box(modifier = Modifier
+                        //处理位置
+                        .offset { expandContent1Offset + mainButtonBorderOffset }
+                        //处理透明度
+                        .alpha(expandContentAlpha)
+                    ) {
+                        expandContent1()
+                    }
 
-            if (expandContent2 != null)
-            //同内容 1
-                Box(modifier = Modifier
-                    .offset { expandContent2Offset + mainButtonBorderOffset }
-                    .alpha(expandContentAlpha)
-                ) {
-                    if (isExpand) expandContent2()
-                }
+                if (expandContent2 != null)
+                //同内容 1
+                    Box(modifier = Modifier
+                        .offset { expandContent2Offset + mainButtonBorderOffset }
+                        .alpha(expandContentAlpha)
+                    ) {
+                        expandContent2()
+                    }
 
-            if (expandContent3 != null)
-            //同内容 1
-                Box(modifier = Modifier
-                    .offset { expandContent3Offset + mainButtonBorderOffset }
-                    .alpha(expandContentAlpha)
-                ) {
-                    if (isExpand) expandContent3()
-                }
+                if (expandContent3 != null)
+                //同内容 1
+                    Box(modifier = Modifier
+                        .offset { expandContent3Offset + mainButtonBorderOffset }
+                        .alpha(expandContentAlpha)
+                    ) {
+                        expandContent3()
+                    }
+            }
         }
     }

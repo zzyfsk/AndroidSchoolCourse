@@ -53,9 +53,8 @@ class UserKoin : UserRes {
                 }
             }
         } else {
-            user = result.getData()
+            user = result.getData()?.copy(token = "xx")
         }
-//        }
         return user ?: throw HttpNullException(wrongInformation)
     }
 
@@ -144,6 +143,8 @@ val userModule = module {
     single<UserRes> { UserKoin() }
     viewModel {
         UserKoinViewModel(get())
+    }
+    viewModel {
         UserOnlyKoinViewModel(get())
     }
 }
