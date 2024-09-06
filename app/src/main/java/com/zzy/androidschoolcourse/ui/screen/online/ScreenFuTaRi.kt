@@ -22,6 +22,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGame
+import com.zzy.androidschoolcourse.ui.component.TwentyFourGameSmallView
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGameState
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGameView
 import com.zzy.component.box.AlphaBox
@@ -68,7 +69,7 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
 
         }
         if (viewModel.showWin) {
-            WinComponent()
+            WinComponent(modifier = Modifier.fillMaxSize())
         }
         if (viewModel.showChat) {
             ChatComponent(
@@ -87,7 +88,7 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
 
     @Composable
     fun GameOppose(opposeState: TwentyFourGameState) {
-        TwentyFourGameView(opposeState)
+        TwentyFourGameSmallView(opposeState)
     }
 
     @Composable

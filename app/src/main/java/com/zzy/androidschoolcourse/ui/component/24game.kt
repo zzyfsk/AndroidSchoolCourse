@@ -439,10 +439,136 @@ fun TwentyFourGameView(
                 }
             }
         }
+    }
+}
 
-
+@Composable
+fun TwentyFourGameSmallView(
+    gameViewModel: TwentyFourGameState,
+    modifier: Modifier = Modifier
+) {
+    fun getNumberState(): MutableList<TwentyFourGameButtonState> {
+        return gameViewModel.numberStateList
     }
 
+    val backgroundColor: (Int) -> Color = {
+        if (it == gameViewModel.firstNumber) MainColor.GameButtonPress
+        else MainColor.GameButtonUnPress
+    }
+
+    val symbolBackgroundColor: (Int) -> Color = {
+        if (it == gameViewModel.currentSymbol) MainColor.SymbolButtonPress else MainColor.SymbolButtonUnPress
+    }
+    val symbolColor: (Int) -> Color = {
+        if (it == gameViewModel.currentSymbol) MainColor.SymbolButtonUnPress else MainColor.SymbolButtonPress
+    }
+
+    Column(modifier = Modifier) {
+        Row(
+            modifier = Modifier
+                .height(300.dp)
+                .padding(horizontal = 10.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                NumberButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    number = 1,
+                    numberUp = getNumberState()[0].fraction.numerator,
+                    numberDown = getNumberState()[0].fraction.denominator,
+                    length = 130,
+                    fontSize = 50,
+                    backgroundColor = backgroundColor(1),
+                    visible = getNumberState()[0].numberVisible,
+                )
+                NumberButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    number = 3,
+                    numberUp = getNumberState()[2].fraction.numerator,
+                    numberDown = getNumberState()[2].fraction.denominator,
+                    length = 130,
+                    fontSize = 50,
+                    backgroundColor = backgroundColor(3),
+                    visible = getNumberState()[2].numberVisible,
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                NumberButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    number = 2,
+                    numberUp = getNumberState()[1].fraction.numerator,
+                    numberDown = getNumberState()[1].fraction.denominator,
+                    length = 130,
+                    fontSize = 50,
+                    backgroundColor = backgroundColor(2),
+                    visible = getNumberState()[1].numberVisible,
+                )
+                NumberButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    number = 4,
+                    numberUp = getNumberState()[3].fraction.numerator,
+                    numberDown = getNumberState()[3].fraction.denominator,
+                    length = 130,
+                    fontSize = 50,
+                    backgroundColor = backgroundColor(4),
+                    visible = getNumberState()[3].numberVisible,
+                )
+            }
+            BoxWithConstraints(
+                modifier = modifier
+                    .fillMaxHeight()
+            ) {
+                val eachSize by remember {
+                    mutableStateOf(((maxHeight - 20.dp) / 4))
+                }
+                Column(modifier = Modifier) {
+                    SymbolButton(
+                        modifier = modifier,
+                        number = 1,
+                        imageId = R.drawable.add,
+                        length = eachSize,
+                        backgroundColor = symbolBackgroundColor(1),
+                        symbolColor = symbolColor(1)
+                    )
+                    SymbolButton(
+                        modifier = modifier,
+                        number = 2,
+                        imageId = R.drawable.del,
+                        length = eachSize,
+                        backgroundColor = symbolBackgroundColor(2),
+                        symbolColor = symbolColor(2)
+                    )
+                    SymbolButton(
+                        modifier = modifier,
+                        number = 3,
+                        imageId = R.drawable.mul,
+                        length = eachSize,
+                        backgroundColor = symbolBackgroundColor(3),
+                        symbolColor = symbolColor(3)
+                    )
+                    SymbolButton(
+                        modifier = modifier,
+                        number = 4,
+                        imageId = R.drawable.div,
+                        length = eachSize,
+                        backgroundColor = symbolBackgroundColor(4),
+                        symbolColor = symbolColor(4)
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Serializable
