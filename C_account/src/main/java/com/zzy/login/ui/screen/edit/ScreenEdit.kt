@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +43,9 @@ import org.koin.androidx.compose.koinViewModel
 class ScreenEdit : Screen {
     @Composable
     override fun Content() {
+        val viewModel = rememberScreenModel {
+            EditViewModel()
+        }
         val scope = rememberCoroutineScope()
         val theme:ThemeViewModel = koinViewModel()
         val accountViewModel:UserKoinViewModel = koinViewModel()
@@ -52,15 +56,25 @@ class ScreenEdit : Screen {
                 }
             },
             animFinish = {}){ maskAnimActive->
+            TopBar(theme = theme.getTheme(),maskAnimActive = maskAnimActive)
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                TopBar(theme = theme.getTheme(),maskAnimActive = maskAnimActive)
                 Logo()
                 Spacer(modifier = Modifier.requiredHeight(10.dp))
-                EditTexts()
+                EditTexts(
+                    onEdit = {
+                        accountViewModel.update(
+                            viewModel.account,
+                            viewModel.password,
+                            viewModel.password2,
+                            viewModel.name,
+                            viewModel.signature
+                        )
+                    }
+                )
             }
         }
     }
@@ -112,42 +126,50 @@ class ScreenEdit : Screen {
     }
 
     @Composable
-    fun EditTexts(){
+    fun EditTexts(
+        onEdit:()->Unit
+    ){
         val viewModel = rememberScreenModel {
             EditViewModel()
         }
+        val space = 10.dp
         OutlinedTextField(
-            modifier = Modifier.padding(bottom = 5.dp),
+            modifier = Modifier.padding(bottom = space),
             value = viewModel.account,
             onValueChange = viewModel.onAccountChange,
             leadingIcon = { Text("账号") },
             maxLines = 1
         )
         OutlinedTextField(
-            modifier = Modifier.padding(bottom = 5.dp),
+            modifier = Modifier.padding(bottom = space),
             value = viewModel.password,
             onValueChange = viewModel.onPasswordChange,
             leadingIcon = { Text("密码") },
             maxLines = 1
         )
         OutlinedTextField(
-            modifier = Modifier.padding(bottom = 5.dp),
+            modifier = Modifier.padding(bottom = space),
             value = viewModel.password2,
             onValueChange = viewModel.onPassword2Change,
             leadingIcon = { Text(text = "确认") }
         )
         OutlinedTextField(
-            modifier = Modifier.padding(bottom = 5.dp),
+            modifier = Modifier.padding(bottom = space),
             value = viewModel.name,
             onValueChange = viewModel.onNameChange,
             leadingIcon = { Text(text = "昵称") }
         )
         OutlinedTextField(
-            modifier = Modifier.padding(bottom = 5.dp),
+            modifier = Modifier.padding(bottom = space),
             value = viewModel.signature,
             onValueChange = viewModel.onSignatureChange,
             leadingIcon = { Text(text = "签名") }
         )
+        Spacer(modifier = Modifier.requiredHeight(space))
+        Button(onClick = { onEdit() }) {
+            Text(text = "修改")
+        }
+        Spacer(modifier = Modifier.requiredHeight(space))
         Text(text = "不更改请留空")
     }
 }
