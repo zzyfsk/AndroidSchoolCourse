@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -43,6 +45,7 @@ import com.zzy.androidschoolcourse.ui.theme.ResIcon
 import com.zzy.b_koin.user.UserOnlyKoinViewModel
 import com.zzy.base.http.bean.UserDetailHttp
 import com.zzy.component.button.FloatButton
+import com.zzy.login.ui.screen.edit.ScreenEdit
 import com.zzy.login.ui.screen.login.ScreenLogin
 import org.koin.androidx.compose.koinViewModel
 
@@ -87,6 +90,10 @@ object ScreenTabMine : Tab {
                     modifier = Modifier.fillMaxWidth(),
                     middleInformation = viewModel.information
                 )
+                Spacer(modifier = Modifier.requiredHeight(20.dp))
+//                if(accountViewModel.isLogin()){
+                    BottomButton(modifier = Modifier.fillMaxWidth())
+//                }
             }
 
         }
@@ -167,6 +174,7 @@ fun ComponentInformation(
             contentDescription = "right",
             tint = Color.White
         )
+
     }
 }
 
@@ -229,6 +237,37 @@ fun MiddleInformationItem(
     }
 }
 
+@Composable
+fun BottomButton(modifier: Modifier) {
+    val navigator = LocalNavigator.currentOrThrow.parent!!
+    BottomItem(
+        modifier = modifier,
+        icon = com.zzy.base.R.drawable.manage_accounts,
+        text = "管理账户"
+    ) {
+        navigator.push(ScreenEdit())
+    }
+}
+
+@Composable
+fun BottomItem(
+    modifier: Modifier,
+    icon: Int,
+    text: String,
+    onClick: () -> Unit
+) {
+    Row(modifier = modifier
+        .height(30.dp)
+        .fillMaxWidth()
+        .clickable { onClick() }, verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            modifier = Modifier.padding(horizontal = 10.dp),
+            painter = painterResource(id = icon),
+            contentDescription = text
+        )
+        Text(text = text, fontWeight = FontWeight.Bold)
+    }
+}
 
 data class MineMiddleInformation(
     val friendNumber: Int = 0,

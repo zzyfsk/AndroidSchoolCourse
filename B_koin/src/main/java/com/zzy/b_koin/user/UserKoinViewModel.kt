@@ -13,14 +13,14 @@ import kotlinx.coroutines.launch
 class UserKoinViewModel(private val userRes: UserRes) : ViewModel() {
     var wrongInformation by mutableStateOf("")
 
-    fun login(account: String, password: String,httpStateChange:(AccountHttpState)->Unit) {
+    fun login(account: String, password: String, httpStateChange: (AccountHttpState) -> Unit) {
         CoroutineScope(Dispatchers.Default).launch {
             httpStateChange(AccountHttpState.Connecting)
             try {
                 wrongInformation = ""
                 userRes.user = userRes.login(account, password)
                 httpStateChange(AccountHttpState.Success)
-            } catch (e:HttpNullException){
+            } catch (e: HttpNullException) {
                 httpStateChange(AccountHttpState.Fail)
                 wrongInformation = e.information
                 println(wrongInformation)
@@ -28,12 +28,30 @@ class UserKoinViewModel(private val userRes: UserRes) : ViewModel() {
         }
     }
 
-    fun getAccount():String{
+    fun getAccount(): String {
         return userRes.getDeviceName()
     }
 
-    fun register(account: String, password: String){
+    fun register(account: String, password: String) {
         // TODO 注册
+    }
+
+    fun update(
+        account: String,
+        password: String,
+        password2: String,
+        name: String,
+        signature: String,
+    ) {
+        // TODO 应该做输入合法性检测
+        if (password == password2){
+            CoroutineScope(Dispatchers.Default).launch {
+                userRes.update(
+                    account,
+                    password, name, signature
+                )
+            }
+        }
     }
 
     fun stateReset() = userRes.setHttpState(AccountHttpState.None)
@@ -42,7 +60,6 @@ class UserKoinViewModel(private val userRes: UserRes) : ViewModel() {
 
     fun getState() = userRes.getHttpState()
 }
-
 
 
 enum class AccountHttpState {

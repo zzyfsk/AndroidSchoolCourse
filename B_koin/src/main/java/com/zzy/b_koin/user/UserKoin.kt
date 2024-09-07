@@ -18,6 +18,7 @@ interface UserRes {
     val friendList: SnapshotStateList<UserDetailHttp>
     suspend fun login(account: String, password: String): UserDetailHttp
     suspend fun register(account: String, password: String): UserDetailHttp
+    suspend fun update(account: String, password: String, name: String, signature: String) :UserDetailHttp
     suspend fun getFriends(id: Long): List<UserDetailHttp>
     suspend fun getFriend(id: Long): UserDetailHttp
     fun logout()
@@ -74,6 +75,32 @@ class UserKoin : UserRes {
             }
         } else {
             user = result.getData()
+        }
+        return user ?: throw HttpNullException(wrongInformation)
+    }
+
+    override suspend fun update(
+        account: String,
+        password: String,
+        name: String,
+        signature: String
+    ): UserDetailHttp {
+        var wrongInformation = ""
+        var user: UserDetailHttp? = null
+
+        val result = HttpUtil.instance.post<UserDetailHttp>(
+            url = "${Http.HTTP}/user/update",
+            params = mapOf("account" to account, "password" to password, "name" to name, "signature" to signature)
+        )
+        if (result.code!= "0") {
+            when (result.code) {
+                "-1" -> {
+                    wrongInformation = HttpInformation.`-1`
+                }
+            }
+        }else{
+            user = result.getData()
+            this@UserKoin.user = user?: throw RuntimeException("Unknown Error")
         }
         return user ?: throw HttpNullException(wrongInformation)
     }
