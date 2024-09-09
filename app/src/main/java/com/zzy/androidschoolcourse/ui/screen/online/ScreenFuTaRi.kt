@@ -31,14 +31,14 @@ import com.zzy.component.box.AlphaBox
 import com.zzy.component.toast.ToastWait
 import org.koin.androidx.compose.koinViewModel
 
-class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: GameRight) : Screen {
+class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: GameRight,val name:String = "") : Screen {
 
     @Composable
     override fun Content() {
         val context = LocalContext.current
         val navigator = LocalNavigator.currentOrThrow
         val viewModel: FuTaRiViewModel =
-            rememberScreenModel { FuTaRiViewModel(ip, port, right, context) }
+            rememberScreenModel { FuTaRiViewModel(ip, port, right,name, context) }
         val accountViewModel: UserOnlyKoinViewModel = koinViewModel()
         LaunchedEffect(key1 = Unit) {
             viewModel.init()
@@ -130,7 +130,7 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
                     OutlinedTextField(value = viewModel.chatContent, onValueChange = {
                         viewModel.chatContent = it
                     })
-                    Button(onClick = { viewModel.sendChat(name) }) {
+                    Button(onClick = { viewModel.sendChat() }) {
                         Text(text = "发送")
                     }
                 }

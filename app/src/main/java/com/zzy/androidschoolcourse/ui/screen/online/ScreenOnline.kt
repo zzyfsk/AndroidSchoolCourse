@@ -32,11 +32,13 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.zzy.androidschoolcourse.R
 import com.zzy.androidschoolcourse.net.socket.bean.GameRight
+import com.zzy.b_koin.user.UserOnlyKoinViewModel
 import com.zzy.component.toast.Toast
 import com.zzy.component.toast.ToastWait
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 class ScreenOnline : Screen {
     @Composable
@@ -47,9 +49,10 @@ class ScreenOnline : Screen {
         val viewModel = rememberScreenModel {
             OnlineSearchViewModel()
         }
+        val accountViewModel: UserOnlyKoinViewModel = koinViewModel()
         val navigator = LocalNavigator.current
         LaunchedEffect(Unit) {
-            viewModel.start(context)
+            viewModel.start(context, deviceName = accountViewModel.getAccountName())
         }
 
         fun finish() {
@@ -59,9 +62,6 @@ class ScreenOnline : Screen {
 
         Column(modifier = Modifier.fillMaxSize()) {
             BarTitle(onFinish = { finish() })
-            Button(onClick = { viewModel.start(context) }) {
-                Text(text = "运行服务器（弃用）")
-            }
             Button(onClick = { viewModel.sendMessage() }) {
                 Text(text = "send message")
             }
@@ -100,18 +100,19 @@ class ScreenOnline : Screen {
                         verticalArrangement = Arrangement.Center
                     ) {
                         HorizontalDivider()
-                        Text(modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                viewModel.connect(it, onConfirm = {
-                                    navigator?.replace(
-                                        ScreenFuTaRi(
-                                            ip = it,
-                                            right = GameRight.Client
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    viewModel.connect(it.ip, onConfirm = {
+                                        navigator?.replace(
+                                            ScreenFuTaRi(
+                                                ip = it.ip,
+                                                right = GameRight.Client
+                                            )
                                         )
-                                    )
-                                })
-                            }, text = it
+                                    })
+                                }, text = it.toString()
                         )
                     }
                 }
@@ -124,7 +125,13 @@ class ScreenOnline : Screen {
             }
             scope.launch {
                 Thread.sleep(500)
-                navigator?.replace(ScreenFuTaRi(ip = viewModel.ip, right = GameRight.Command))
+                navigator?.replace(
+                    ScreenFuTaRi(
+                        ip = viewModel.ip,
+                        right = GameRight.Command,
+                        name = accountViewModel.getAccountName()
+                    )
+                )
             }
         }, onDismiss = {
             viewModel.sendResult(false)
@@ -135,14 +142,13 @@ class ScreenOnline : Screen {
             if (viewModel.state == OnlineSearchState.None) finish()
         }
 
-        if (viewModel.state == OnlineSearchState.Search){
+        if (viewModel.state == OnlineSearchState.Search) {
             ToastWait()
         }
-        if (viewModel.state == OnlineSearchState.Finish){
+        if (viewModel.state == OnlineSearchState.Finish) {
             viewModel.stateFinish()
             Toast(message = "搜索完成")
         }
-
     }
 
     @OptIn(ExperimentalMaterial3Api::class)

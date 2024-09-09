@@ -17,9 +17,9 @@ class ServiceFind {
     private lateinit var controller: ClientFind
     private lateinit var client: ClientFind
 
-    fun serverStart(ip: String) {
+    fun serverStart(ip: String,deviceName:String) {
         server = ServerFind()
-        server.start(ip)
+        server.start(ip, deviceName = deviceName)
     }
 
     fun controllerStart(ip: String, onConnect: () -> Unit) {

@@ -27,7 +27,7 @@ class ServerFind {
     private var ip: String = ""
 
 
-    fun start(ip: String = "0.0.0.0") {
+    fun start(ip: String = "0.0.0.0",deviceName: String) {
         this@ServerFind.ip = ip
         serverSocket = ServerSocket(port)
         CoroutineScope(Dispatchers.IO).launch {
@@ -40,7 +40,7 @@ class ServerFind {
                     CoroutineScope(Dispatchers.IO).launch {
                         val findTask = FindTask(socket!!)
                         users.add(findTask)
-                        findTask.start()
+                        findTask.start(deviceName = deviceName)
                     }
                 }
             } catch (e: SocketException) {
@@ -83,7 +83,7 @@ class ServerFind {
 
         private val tag = "FindSocket"
 
-        fun start() {
+        fun start(deviceName:String) {
             CoroutineScope(Dispatchers.IO).launch {
                 var message: String?
                 while (true) {
@@ -98,7 +98,7 @@ class ServerFind {
                                         this@FindTask.sendMessage(
                                             BeanSocketFind(
                                                 SocketMessage.Function,
-                                                ip
+                                                "$ip:$deviceName"
                                             )
                                         )
                                     }

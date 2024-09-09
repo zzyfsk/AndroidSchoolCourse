@@ -90,7 +90,7 @@ object ScreenTabMine : Tab {
                     modifier = Modifier.fillMaxWidth(),
                     middleInformation = viewModel.information
                 )
-                Spacer(modifier = Modifier.requiredHeight(20.dp))
+                Spacer(modifier = Modifier.requiredHeight(30.dp))
 //                if(accountViewModel.isLogin()){
                     BottomButton(modifier = Modifier.fillMaxWidth())
 //                }
@@ -243,6 +243,7 @@ fun BottomButton(modifier: Modifier) {
     BottomItem(
         modifier = modifier,
         icon = com.zzy.base.R.drawable.manage_accounts,
+        color = Color.Gray,
         text = "管理账户"
     ) {
         navigator.push(ScreenEdit())
@@ -253,6 +254,7 @@ fun BottomButton(modifier: Modifier) {
 fun BottomItem(
     modifier: Modifier,
     icon: Int,
+    color:Color,
     text: String,
     onClick: () -> Unit
 ) {
@@ -263,7 +265,8 @@ fun BottomItem(
         Icon(
             modifier = Modifier.padding(horizontal = 10.dp),
             painter = painterResource(id = icon),
-            contentDescription = text
+            contentDescription = text,
+            tint = color
         )
         Text(text = text, fontWeight = FontWeight.Bold)
     }

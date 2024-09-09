@@ -24,6 +24,7 @@ class FuTaRiViewModel(
     private val ip: String,
     private val port: Int,
     private val right: GameRight,
+    private val name: String,
     private val context: Context
 ) :
     ScreenModel {
@@ -153,7 +154,7 @@ class FuTaRiViewModel(
         }
     }
 
-    fun sendChat(name: String) {
+    fun sendChat() {
         val chat = Json.encodeToString(
             ChatContent(
                 chatRole = ChatRole.Oppose,

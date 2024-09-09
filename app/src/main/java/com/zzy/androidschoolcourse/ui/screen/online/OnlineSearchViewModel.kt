@@ -19,15 +19,15 @@ class OnlineSearchViewModel : ScreenModel {
     var showDialog by mutableStateOf(false)
     var state by mutableStateOf(OnlineSearchState.None)
 
-    val deviceList = mutableStateListOf<String>()
+    val deviceList = mutableStateListOf<DeviceItem>()
 
     var ip: String = "0.0.0.0"
 
     private val serviceFind = ServiceFind()
 
-    fun start(context: Context) {
+    fun start(context: Context, deviceName: String) {
         ip = IPUtil.ipUtil.getWifiIP(context)
-        serviceFind.serverStart(ip)
+        serviceFind.serverStart(ip, deviceName = deviceName)
         serviceFind.controllerStart(ip, onConnect = {
             showDialog = true
         })
@@ -39,15 +39,15 @@ class OnlineSearchViewModel : ScreenModel {
         CoroutineScope(Dispatchers.IO).launch {
             serviceFind.findDevices(ip)
                 .onEach {
-                    deviceList.add(it)
-                    Log.e("tag", "fun find: $it")
+                    deviceList.add(DeviceItem(it))
+                    println("find:$it")
                 }
                 .collect {}
             state = OnlineSearchState.Finish
         }
     }
 
-    fun connect(serverIP: String,onConfirm:()->Unit) {
+    fun connect(serverIP: String, onConfirm: () -> Unit) {
         serviceFind.clientConnect(serverIP, onConnect = { showDialog = true }, onConfirm = {
             println("connectttttttt")
             serviceFind.finish()
@@ -67,13 +67,24 @@ class OnlineSearchViewModel : ScreenModel {
         serviceFind.finish()
     }
 
-    fun stateFinish(){
+    fun stateFinish() {
         state = OnlineSearchState.None
     }
 }
 
-enum class OnlineSearchState{
+enum class OnlineSearchState {
     None,
     Search,
     Finish
+}
+
+data class DeviceItem(
+    val ip: String,
+    val deviceName: String
+) {
+    constructor(string: String) : this(string.substringBefore(":"), string.substringAfter(":"))
+
+    override fun toString(): String {
+        return "$ip:$deviceName"
+    }
 }
