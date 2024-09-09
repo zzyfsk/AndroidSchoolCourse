@@ -89,8 +89,8 @@ class UserKoin : UserRes {
         var user: UserDetailHttp? = null
 
         val result = HttpUtil.instance.post<UserDetailHttp>(
-            url = "${Http.HTTP}/user/update",
-            params = mapOf("account" to account, "password" to password, "name" to name, "signature" to signature)
+            url = "${Http.HTTP}/user/updateUserDetail",
+            params = mapOf("username" to name, "loginName" to account, "password" to password, "signature" to signature)
         )
         if (result.code!= "0") {
             when (result.code) {
