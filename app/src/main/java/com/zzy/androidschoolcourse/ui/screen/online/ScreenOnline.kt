@@ -4,9 +4,11 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -62,58 +64,64 @@ class ScreenOnline : Screen {
 
         Column(modifier = Modifier.fillMaxSize()) {
             BarTitle(onFinish = { finish() })
-            Button(onClick = { viewModel.sendMessage() }) {
-                Text(text = "send message")
-            }
-            Button(onClick = { viewModel.finish() }) {
-                Text(text = "finish")
-            }
-            Button(onClick = { viewModel.find() }) {
-                Text(text = "find")
-            }
-            Button(onClick = {
-                navigator?.replace(
-                    ScreenFuTaRi(
-                        ip = "116.198.234.250",
-                        right = GameRight.Command
+            Row {
+                Button(onClick = { viewModel.find() }) {
+                    Text(text = "find")
+                }
+                Button(onClick = {
+                    navigator?.replace(
+                        ScreenFuTaRi(
+                            ip = "116.198.234.250",
+                            right = GameRight.Command
+                        )
                     )
-                )
-            }) {
-                Text(text = "连接远程服务器 房主")
-            }
-            Button(onClick = {
-                navigator?.replace(
-                    ScreenFuTaRi(
-                        ip = "116.198.234.250",
-                        right = GameRight.Client
+                }) {
+                    Text(text = "连接远程服务器 房主")
+                }
+                Button(onClick = {
+                    navigator?.replace(
+                        ScreenFuTaRi(
+                            ip = "116.198.234.250",
+                            right = GameRight.Client
+                        )
                     )
-                )
-            }) {
-                Text(text = "连接远程服务器 客户")
+                }) {
+                    Text(text = "连接远程服务器 客户")
+                }
             }
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(5.dp)
+            ) {
                 items(viewModel.deviceList) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(30.dp),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        HorizontalDivider()
-                        Text(
+                    if (it.ip != viewModel.ip) {
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable {
-                                    viewModel.connect(it.ip, onConfirm = {
-                                        navigator?.replace(
-                                            ScreenFuTaRi(
-                                                ip = it.ip,
-                                                right = GameRight.Client
-                                            )
-                                        )
-                                    })
-                                }, text = it.toString()
-                        )
+                                .height(40.dp),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            HorizontalDivider()
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        viewModel.connect(it.ip, onConfirm = {
+                                            CoroutineScope(Dispatchers.Default).launch {
+                                                Thread.sleep(500)
+                                                navigator?.replace(
+                                                    ScreenFuTaRi(
+                                                        ip = it.ip,
+                                                        right = GameRight.Client
+                                                    )
+                                                )
+                                            }
+                                        })
+                                    }, text = it.toString()
+                            )
+                        }
                     }
                 }
             }
@@ -121,10 +129,11 @@ class ScreenOnline : Screen {
         if (viewModel.showDialog) DialogOnline(onConfirm = {
             CoroutineScope(Dispatchers.Default).launch {
                 viewModel.sendResult(true)
+                Thread.sleep(500)
                 viewModel.finish()
             }
             scope.launch {
-                Thread.sleep(500)
+                Thread.sleep(600)
                 navigator?.replace(
                     ScreenFuTaRi(
                         ip = viewModel.ip,

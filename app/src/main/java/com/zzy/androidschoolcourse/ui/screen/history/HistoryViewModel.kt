@@ -3,17 +3,22 @@ package com.zzy.androidschoolcourse.ui.screen.history
 import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import cafe.adriel.voyager.core.model.ScreenModel
 import com.zzy.androidschoolcourse.ui.component.GameMode
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGameRecord
 import com.zzy.androidschoolcourse.ui.component.TwentyFourGameState
+import com.zzy.androidschoolcourse.ui.screen.online.ChatContent
 import com.zzy.base.util.FileUtil
 import kotlinx.serialization.json.Json
 
 class HistoryViewModel(context: Context) : ScreenModel {
     private val fileUtil = FileUtil(context)
+
+    var showText by mutableStateOf(false)
+    val chatList = mutableStateListOf<ChatContent>()
 
     /**
      * @see 1为单人2为多人
@@ -31,7 +36,8 @@ class HistoryViewModel(context: Context) : ScreenModel {
         showType = fileName[0].digitToInt()
         val content = file.readText()
         currentRecord = Json.decodeFromString(content)
-
+        chatList.clear()
+        chatList.addAll(currentRecord.recordChat)
     }
 
     fun previous1() {

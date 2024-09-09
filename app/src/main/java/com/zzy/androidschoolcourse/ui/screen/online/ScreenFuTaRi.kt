@@ -63,9 +63,6 @@ class ScreenFuTaRi(val ip: String, private val port: Int = 5123, val right: Game
                 Column(modifier = Modifier.fillMaxSize()) {
                     Row {
                         Text(text = "多人游戏界面 ${viewModel.gameState.numbers}")
-                        Button(onClick = { viewModel.showChat = true }) {
-                            Text(text = "聊天")
-                        }
                     }
                     BarTop()
                     GameOppose(opposeState = viewModel.opposeState)

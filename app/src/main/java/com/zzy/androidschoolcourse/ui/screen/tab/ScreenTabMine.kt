@@ -259,7 +259,8 @@ fun BottomItem(
     onClick: () -> Unit
 ) {
     Row(modifier = modifier
-        .height(30.dp)
+        .height(50.dp)
+        .padding(5.dp)
         .fillMaxWidth()
         .clickable { onClick() }, verticalAlignment = Alignment.CenterVertically) {
         Icon(

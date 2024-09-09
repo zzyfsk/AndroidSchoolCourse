@@ -2,6 +2,7 @@ package com.zzy.androidschoolcourse.ui.screen.tab
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -10,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
@@ -42,7 +44,7 @@ object ScreenTabMain: Tab{
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow.parent!!
 
-        Column (modifier = Modifier.fillMaxSize()){
+        Column (modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp, vertical = 5.dp)){
             Column {
                 Button(onClick = { navigator.push(ScreenGameHiToRi()) }) {
                     Text(text = "单人游戏")
